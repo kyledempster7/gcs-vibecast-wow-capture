@@ -1,0 +1,39 @@
+{
+  "schema": "vibecast_public_package/v1",
+  "product": "VibeCast",
+  "brand": "twe",
+  "day": "2026-08-09",
+  "status": "NOT_ARMED",
+  "product_ready": true,
+  "kyle_go": false,
+  "publishNow": false,
+  "law": [
+    "no_invent_FOOTAGE",
+    "no_silent_publish",
+    "human_KEEP",
+    "ARM_default_deny"
+  ],
+  "keep_ids": [
+    "c",
+    "c-pride-15s-start"
+  ],
+  "media": [
+    {
+      "role": "video",
+      "path": "samples/keep-2026-08-09/c-pride-15s-start-vertical.mp4",
+      "exists": true,
+      "sha256": "a94a452b29ba9c8197a607028740d5fcb4ff9b27420a86a7fb338451a7282ce9",
+      "bytes": 1888498
+    },
+    {
+      "role": "still",
+      "path": "samples/keep-2026-08-09/still-WoWScrnShot.jpg",
+      "exists": true,
+      "sha256": "55cb8f35b5be4287c20408e1edc9246e42a03cac5539cbb81ddc30349c24907b",
+      "bytes": 794866
+    }
+  ],
+  "moments_local_hint": "Moments-Library/2026-08-09-explorers-league (private Mac)",
+  "generated_at_utc": "2026-08-10T17:36:22.837560+00:00",
+  "notes": "Public sample package only. Social post requires explicit kyle_go arm. This release is the public-ready proof path when ARM is deny."
+}

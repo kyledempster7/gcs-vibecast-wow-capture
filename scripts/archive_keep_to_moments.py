@@ -22,10 +22,23 @@ def sha256_file(p: Path) -> str:
 
 
 def load_verdicts(day_dir: Path) -> dict:
+    """Return id→verdict dict only (unwrap gcs_human_verdicts/v1 envelope)."""
     hv = day_dir / "analysis" / "human_verdicts.json"
     if not hv.is_file():
         return {}
-    return json.loads(hv.read_text(encoding="utf-8"))
+    raw = json.loads(hv.read_text(encoding="utf-8"))
+    if isinstance(raw, dict) and isinstance(raw.get("verdicts"), dict):
+        raw = raw["verdicts"]
+    if not isinstance(raw, dict):
+        return {}
+    # keep only object verdicts (skip schema strings / bad shapes)
+    out: dict = {}
+    for k, v in raw.items():
+        if isinstance(v, dict) and "verdict" in v:
+            out[str(k)] = v
+        elif isinstance(v, str) and v.strip():
+            out[str(k)] = {"verdict": v.strip(), "reason": "", "source": "legacy_string"}
+    return out
 
 
 def resolve_clip(day_dir: Path, cid: str) -> Path | None:
