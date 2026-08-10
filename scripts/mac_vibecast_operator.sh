@@ -11,8 +11,39 @@ mkdir -p "$RECEIPTS"
 python3 "$SCRIPTS/assert_vibecast_write_fence.py" || exit 2
 
 echo "==== mac_vibecast_operator day=$DAY $(date -u +%Y-%m-%dT%H:%M:%SZ) ===="
-bash "$SCRIPTS/soft_poll_windows.sh"
-POLL=$?
+# Rate-limit: if LATEST < 90s old and not ready_today, skip re-poll thrash (watch still owns cadence)
+POLL=0
+SKIP_POLL=0
+if [[ -f "$OUT/SOFT_POLL_LATEST.json" ]]; then
+  SKIP_POLL=$(python3 - "$OUT/SOFT_POLL_LATEST.json" "$DAY" <<'PY'
+import json, sys, time
+from pathlib import Path
+p, day = Path(sys.argv[1]), sys.argv[2]
+age = time.time() - p.stat().st_mtime
+try:
+    d = json.loads(p.read_text(encoding="utf-8"))
+except Exception:
+    print(0); raise SystemExit
+ready_today = d.get("ready_today")
+if ready_today is None:
+    for row in d.get("days") or []:
+        if row.get("day") == day:
+            ready_today = bool(row.get("ready"))
+            break
+if age < 90 and not ready_today:
+    print(1)
+else:
+    print(0)
+PY
+)
+fi
+if [[ "$SKIP_POLL" == "1" && "${FORCE_POLL:-0}" != "1" ]]; then
+  echo "OPERATOR: soft_poll skip (LATEST <90s, not ready) — watch owns cadence"
+  POLL=0
+else
+  bash "$SCRIPTS/soft_poll_windows.sh"
+  POLL=$?
+fi
 
 python3 - "$OUT/SOFT_POLL_LATEST.json" "$DAY" <<'PY'
 import json, sys

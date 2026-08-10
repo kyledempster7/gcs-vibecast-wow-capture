@@ -107,15 +107,29 @@ def day_signals(day: Path | None) -> dict:
     today = datetime.now().strftime("%Y-%m-%d")
     day_id = day.name.replace("returner-daily-", "")
     prior = day_id != today
-    # age from folder mtime or MANIFEST
-    mtime = day.stat().st_mtime
+    # Age from harvest lock / MANIFEST — not folder mtime (REVIEW_READY writes reset mtime)
+    lock = day / ".harvest_once"
+    man = day / "MANIFEST.json" if (day / "MANIFEST.json").is_file() else day / "candidates" / "MANIFEST.json"
+    age_src = lock if lock.is_file() else (man if man.is_file() else day)
+    mtime = age_src.stat().st_mtime
     age_h = (datetime.now().timestamp() - mtime) / 3600.0
+    cal_h = age_h
+    try:
+        d0 = datetime.strptime(day_id, "%Y-%m-%d")
+        cal_h = (datetime.now() - d0).total_seconds() / 3600.0
+    except ValueError:
+        pass
     if day_id == today and n_mp4:
-        fresh_icon, fresh_note = "🟢", f"today · {age_h:.0f}h age"
+        fresh_icon, fresh_note = "🟢", f"today · harvest {age_h:.0f}h age"
+    elif prior:
+        stale = cal_h > 36
+        fresh_icon = "🟡"
+        tag = "STALE prior day" if stale else "prior harvest — not tonight"
+        fresh_note = f"`{day.name}` · day ~{cal_h:.0f}h old · {tag}"
     elif age_h <= 36:
-        fresh_icon, fresh_note = "🟡", f"`{day.name}` · {age_h:.0f}h ago · prior harvest"
+        fresh_icon, fresh_note = "🟡", f"`{day.name}` · {age_h:.0f}h ago · waiting media"
     else:
-        fresh_icon, fresh_note = "🟡", f"`{day.name}` · {age_h:.0f}h ago · STALE (>36h) · not tonight"
+        fresh_icon, fresh_note = "🟡", f"`{day.name}` · {age_h:.0f}h ago · STALE (>36h)"
     cand_note = f"{n_mp4} mp4"
     if prior and n_mp4:
         cand_note += " (prior day — not tonight)"
