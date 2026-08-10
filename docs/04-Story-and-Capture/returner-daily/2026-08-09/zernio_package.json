@@ -14,9 +14,9 @@
   "media": [
     {
       "role": "video",
-      "path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/db-20260809-c-full-170544.mp4",
+      "path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/vertical/c-pride-15s-start.mp4",
       "exists": true,
-      "sha256": "af3f8fb3b913e445e163be50cdb188e6ca6a230c9df12f6e6538f7027ccff611"
+      "sha256": "a94a452b29ba9c8197a607028740d5fcb4ff9b27420a86a7fb338451a7282ce9"
     },
     {
       "role": "still",
@@ -29,7 +29,7 @@
   "hold_reason": null,
   "kyle_go": false,
   "publishNow": false,
-  "generated_at": "2026-08-10T16:23:21.864522+00:00",
+  "generated_at": "2026-08-10T17:36:07.360878+00:00",
   "notes": "Local package only. Arm via outbox --kyle-go. No auto Zernio fire. Media present \u2014 still NOT_ARMED until Kyle go.",
   "gcs": {
     "citadel": "GCS",
@@ -42,9 +42,9 @@
   "arm_check": {
     "allowed": false,
     "why": "not_armed",
-    "package_sha256": "ae140c96a0c0e14ae63c6fb3167fc9a4357fd9d8d0cc84d83903104978c18e57",
+    "package_sha256": "50400d988a9238870088034f7961cc2d3f5e324306758d37df607afeeeff0686",
     "arm_path": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/returner-daily/2026-08-09/ARM_STATE.json",
-    "checked_at_utc": "2026-08-10T16:23:21.869770+00:00",
+    "checked_at_utc": "2026-08-10T17:36:07.365542+00:00",
     "law": "default_deny_stitch_cannot_arm"
   }
 }

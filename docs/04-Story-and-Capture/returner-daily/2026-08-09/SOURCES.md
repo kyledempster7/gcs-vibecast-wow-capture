@@ -4,10 +4,12 @@
 
 | Role | Path |
 |------|------|
-| video (Windows master) | `D:\WoW B-Roll Storage\2026-08-09 17-33-41.mp4` |
-| still (shipped) | Mac `…/Returns/returner-daily-2026-08-09/WoWScrnShot_080926_182343.jpg` |
+| video (KEEP c pride 15s · public sample) | `/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/vertical/c-pride-15s-start.mp4` |
+| video (KEEP c full · Moments archive) | `/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/db-20260809-c-full-170544.mp4` |
+| video (Windows master · Windows only) | `D:\WoW B-Roll Storage\2026-08-09 17-33-41.mp4` |
+| still (shipped) | `/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/WoWScrnShot_080926_182343.jpg` |
 | candidates (Mac) | `/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/` |
-| proxy scrub (Mac) | `…/proxy/hero-20260809-first5m-proxy-720p.mp4` |
+| Moments archive | `/Users/kyle/Movies/WoW-Broll-Workflow/Moments-Library/2026-08-09-explorers-league/` |
 | MANIFEST | `…/candidates/MANIFEST.json` (Mac-verified sha) |
 
 ## Candidate files (Mac)
