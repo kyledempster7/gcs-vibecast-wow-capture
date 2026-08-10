@@ -24,6 +24,14 @@ mkdir -p "$BC/gcs-vibecast-wow-capture" "$BC/receipts-wow" "$BC/moments-index" \
 
 echo "== mac_backup_vibecast ts=$TS =="
 python3 "$SCRIPTS/assert_vibecast_write_fence.py"
+# Dual-SoT: always redeploy Windows-facing scripts (gauntlet #19/#82)
+if [[ -f "$SCRIPTS/deploy_windows_scripts.sh" ]]; then
+  bash "$SCRIPTS/deploy_windows_scripts.sh" || echo "WARN deploy_windows non-zero"
+fi
+# Log rotate (gauntlet #85)
+if [[ -f "$SCRIPTS/rotate_gcs_logs.sh" ]]; then
+  bash "$SCRIPTS/rotate_gcs_logs.sh" || true
+fi
 
 # --- GitHub working tree ---
 if [[ -d "$REPO/.git" ]]; then
