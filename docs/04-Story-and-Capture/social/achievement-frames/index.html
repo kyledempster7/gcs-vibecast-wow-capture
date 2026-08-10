@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WoW returner — achievement frames (draft)</title>
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --panel: #121826;
+      --border: #c9a227;
+      --border-dim: #6b5420;
+      --ice: #7ec8e3;
+      --crimson: #8b1e2d;
+      --text: #f3e9d7;
+      --muted: #a89b84;
+      --glow: rgba(201, 162, 39, 0.35);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+      background: radial-gradient(ellipse at 50% 20%, #1a2233 0%, var(--bg) 60%);
+      color: var(--text);
+      padding: 2rem 1rem 4rem;
+    }
+    h1 {
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      font-size: 1.25rem;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+    .note {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      max-width: 40rem;
+      margin: 0 auto 2rem;
+      line-height: 1.4;
+    }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      align-items: center;
+    }
+    /* Horizontal toast — screenshot at ~1080 wide */
+    .toast {
+      width: min(920px, 96vw);
+      display: grid;
+      grid-template-columns: 88px 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      background:
+        linear-gradient(180deg, rgba(30, 38, 56, 0.96), rgba(12, 16, 24, 0.98));
+      border: 2px solid var(--border);
+      box-shadow:
+        0 0 0 1px var(--border-dim),
+        0 0 28px var(--glow),
+        inset 0 0 40px rgba(0, 0, 0, 0.45);
+      position: relative;
+      border-radius: 4px;
+    }
+    .toast::before,
+    .toast::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border);
+    }
+    .toast::before { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+    .toast::after { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+    .icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 6px;
+      border: 2px solid var(--border-dim);
+      background:
+        radial-gradient(circle at 35% 30%, #3a4a66, #151b28 70%);
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      color: var(--ice);
+      text-shadow: 0 0 12px rgba(126, 200, 227, 0.5);
+    }
+    .icon.rot { color: #c49bff; }
+    .icon.agony { color: #9b7ed9; }
+    .icon.pain { color: #7dcea0; }
+    .icon.care { color: var(--border); }
+    .body .eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--border);
+      margin-bottom: 0.2rem;
+    }
+    .body .title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin: 0 0 0.35rem;
+      color: var(--text);
+    }
+    .body .sub {
+      margin: 0;
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .points {
+      text-align: right;
+      min-width: 4.5rem;
+      padding-left: 0.5rem;
+      border-left: 1px solid var(--border-dim);
+    }
+    .points .n {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--border);
+      line-height: 1;
+    }
+    .points .lbl {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+    .footer {
+      grid-column: 1 / -1;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      border-top: 1px solid rgba(201, 162, 39, 0.2);
+      padding-top: 0.5rem;
+      margin-top: 0.15rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    /* Square story card */
+    .story {
+      width: min(420px, 92vw);
+      aspect-ratio: 1;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(139, 30, 45, 0.25), transparent 55%),
+        linear-gradient(165deg, #141b2a, #0a0d14 70%);
+      border: 2px solid var(--border);
+      box-shadow: 0 0 40px var(--glow);
+      border-radius: 6px;
+    }
+    .story .badge {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--border);
+    }
+    .story h2 {
+      font-size: 1.75rem;
+      margin: 0.75rem 0 0.5rem;
+      line-height: 1.15;
+    }
+    .story p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.4;
+    }
+    .story .big-points {
+      font-size: 2.5rem;
+      color: var(--border);
+      font-weight: 700;
+    }
+    .story .brand {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    code { color: var(--ice); font-size: 0.8em; }
+  </style>
+</head>
+<body>
+  <h1>Returner achievement frames · draft</h1>
+  <p class="note">
+    Exact text from scorecard evidence (2026-08-09). Screenshot a toast for IG.
+    Not Blizzard assets · not auto-publish · flavor “points” only.
+    Doctrine: <code>social/ACHIEVEMENT_FRAMES.md</code>
+  </p>
+
+  <div class="grid">
+    <!-- A1 Rot -->
+    <article class="toast" id="a1-rot" aria-label="Rot ilvl achievement">
+      <div class="icon rot" aria-hidden="true">✧</div>
+      <div class="body">
+        <div class="eyebrow">Achievement unlocked</div>
+        <h2 class="title">Rot Found Some Teeth</h2>
+        <p class="sub">Crimsonrot · Shadow · avg item level 33 → 44 · Thrall</p>
+        <div class="footer">
+          <span>Wrath brain · returner archive</span>
+          <span>Source: daily scorecard</span>
+        </div>
+      </div>
+      <div class="points">
+        <div class="n">25</div>
+        <div class="lbl">points</div>
+      </div>
+    </article>
+
+    <!-- A1 Agony -->
+    <article class="toast" id="a1-agony">
+      <div class="icon agony" aria-hidden="true">◈</div>
+      <div class="body">
+        <div class="eyebrow">Achievement unlocked</div>
+        <h2 class="title">Agony’s Wardrobe Grew</h2>
+        <p class="sub">Crimsonagony · Affliction · avg item level 49 → 58 · Thrall</p>
+        <div class="footer">
+          <span>Wrath brain · returner archive</span>
+          <span>Source: daily scorecard</span>
+        </div>
+      </div>
+      <div class="points">
+        <div class="n">25</div>
+        <div class="lbl">points</div>
+      </div>
+    </article>
+
+    <!-- A1 Pain -->
+    <article class="toast" id="a1-pain">
+      <div class="icon pain" aria-hidden="true">⚔</div>
+      <div class="body">
+        <div class="eyebrow">Achievement unlocked</div>
+        <h2 class="title">Main Notch</h2>
+        <p class="sub">Crimsonpain · Unholy · avg item level 107 → 110 · Thrall</p>
+        <div class="footer">
+          <span>Wrath brain · returner archive</span>
+          <span>Source: daily scorecard</span>
+        </div>
+      </div>
+      <div class="points">
+        <div class="n">10</div>
+        <div class="lbl">points</div>
+      </div>
+    </article>
+
+    <!-- A3 Care six -->
+    <article class="toast" id="a3-care">
+      <div class="icon care" aria-hidden="true">⬡</div>
+      <div class="body">
+        <div class="eyebrow">Achievement unlocked</div>
+        <h2 class="title">Care Six Online</h2>
+        <p class="sub">Six Thrall seats live on the local Armory board</p>
+        <div class="footer">
+          <span>Wrath brain · returner archive</span>
+          <span>Source: live API suite</span>
+        </div>
+      </div>
+      <div class="points">
+        <div class="n">50</div>
+        <div class="lbl">points</div>
+      </div>
+    </article>
+
+    <!-- A6 hold — visual only, not claimed complete -->
+    <article class="toast" id="a6-hold" style="opacity: 0.72; filter: grayscale(0.2);">
+      <div class="icon" aria-hidden="true">◎</div>
+      <div class="body">
+        <div class="eyebrow">Locked until recorded</div>
+        <h2 class="title">EP01 In The Can</h2>
+        <p class="sub">Still a Wrath Brain · unlock after flight-path VO + series tick</p>
+        <div class="footer">
+          <span>Hold · do not post as done</span>
+          <span>Path A</span>
+        </div>
+      </div>
+      <div class="points">
+        <div class="n">—</div>
+        <div class="lbl">hold</div>
+      </div>
+    </article>
+
+    <!-- Square story sample -->
+    <article class="story" id="story-rot">
+      <div>
+        <div class="badge">Returner win</div>
+        <h2>Rot Found Some Teeth</h2>
+        <p>Crimsonrot climbed from 33 to 44 average item level. Small notch. Real night.</p>
+      </div>
+      <div>
+        <div class="big-points">+11</div>
+        <div class="brand">WOTLK veteran · midnight return</div>
+      </div>
+    </article>
+  </div>
+</body>
+</html>

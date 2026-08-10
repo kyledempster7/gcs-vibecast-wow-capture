@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Rotgut L0 — OBS browser source</title>
+<style>
+  html, body { margin:0; background:transparent; overflow:hidden; font-family: Georgia, "Times New Roman", serif; }
+  #stage { width:400px; height:420px; position:relative; }
+  #rotgut {
+    width:220px; height:220px; margin:36px auto 0;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #6b7a5a, #2a3328 55%, #141810 100%);
+    border:3px solid #8b9a6b;
+    box-shadow: 0 0 24px #000a, inset 0 0 30px #0006;
+    position:relative;
+    transition: transform .25s ease, box-shadow .25s ease, filter .3s ease;
+  }
+  #rotgut::before, #rotgut::after {
+    content:""; position:absolute; width:28px; height:36px; background:#0c0e0a;
+    border-radius:50%; top:72px; box-shadow: inset 0 0 0 4px #c4d4a0;
+  }
+  #rotgut::before { left:58px; }
+  #rotgut::after { right:58px; }
+  #mouth {
+    position:absolute; left:50%; bottom:58px; width:48px; height:18px;
+    margin-left:-24px; border:3px solid #c4d4a0; border-top:none;
+    border-radius:0 0 24px 24px; opacity:.85;
+    transition: height .2s, border-radius .2s;
+  }
+  #name {
+    text-align:center; color:#d8e0c8; font-size:18px; margin-top:12px;
+    text-shadow: 0 2px 4px #000; letter-spacing:.08em;
+  }
+  #sub {
+    text-align:center; color:#8b9a6b; font-size:11px; margin-top:2px;
+    text-shadow: 0 1px 2px #000; letter-spacing:.04em;
+  }
+  #bubble {
+    display:none; position:absolute; left:16px; right:16px; bottom:8px;
+    background:#1a1f16ee; color:#e8ecd8; border:1px solid #8b9a6b;
+    border-radius:10px; padding:8px 10px; font-size:13px; line-height:1.35;
+    max-height:72px; overflow:hidden;
+  }
+  #hud {
+    position:absolute; top:6px; right:8px; font-size:10px; color:#8b9a6b88;
+    font-family: ui-monospace, monospace; letter-spacing:.04em;
+  }
+  /* states */
+  #rotgut.notice { transform: scale(1.04); box-shadow: 0 0 28px #8b9a6b88; }
+  #rotgut.talk { transform: scale(1.06); }
+  #rotgut.talk #mouth, #stage.talk #mouth {
+    height:28px; border-radius:0 0 28px 28px; opacity:1;
+  }
+  #stage.talk #bubble, #stage.notice #bubble, #stage.hype #bubble { display:block; }
+  #stage.sulk #rotgut { filter: grayscale(.35) brightness(.82); transform: scale(0.97); }
+  #stage.sulk #bubble { display:block; opacity:.9; }
+  #stage.hype #rotgut { box-shadow: 0 0 40px #c4d4a0aa; transform: scale(1.09); }
+  #stage.idle #bubble { display:none; }
+  @keyframes blink {
+    0%, 92%, 100% { transform: scaleY(1); }
+    96% { transform: scaleY(0.1); }
+  }
+  #rotgut.idle::before, #rotgut.idle::after {
+    animation: blink 4.5s infinite;
+    transform-origin: center;
+  }
+</style>
+</head>
+<body>
+<div id="stage" class="idle">
+  <div id="hud">L0</div>
+  <div id="rotgut" class="idle"><div id="mouth"></div></div>
+  <div id="name">ROTGUT</div>
+  <div id="sub">ghoul · supervisor · bad at both</div>
+  <div id="bubble">…supervising. poorly.</div>
+</div>
+<script>
+// L0 browser source for OBS
+// URL query: ?state=idle|notice|talk|sulk|hype  &text=  &cycle=1 (demo)
+// Keyboard (local browser only): 1 idle · 2 notice · 3 talk · 4 sulk · 5 hype · space cycle
+const LINES = {
+  idle: ["…supervising. poorly.", "bones: still attached.", "waiting for chaos."],
+  notice: ["someone typed.", "I saw that.", "chat lives?"],
+  talk: ["mm. noted.", "rotgut approves. barely.", "don't make it weird."],
+  sulk: ["chat left me.", "…fine.", "I'll just sit here. forever."],
+  hype: ["RAID. bones rattle.", "bits? for me?", "HYPE. controlled hype."]
+};
+const STATES = ["idle", "notice", "talk", "sulk", "hype"];
+const q = new URLSearchParams(location.search);
+let st = (q.get("state") || "idle").toLowerCase();
+if (!STATES.includes(st)) st = "idle";
+const stage = document.getElementById("stage");
+const gut = document.getElementById("rotgut");
+const bubble = document.getElementById("bubble");
+
+function setState(next, text) {
+  st = next;
+  stage.className = st;
+  gut.className = st;
+  const line = text || (LINES[st] && LINES[st][Math.floor(Math.random() * LINES[st].length)]) || "…";
+  bubble.textContent = line;
+  bubble.style.display = (st === "idle" && !text) ? "none" : "block";
+  if (st === "idle" && !text) bubble.style.display = "none";
+}
+
+const tx = q.get("text");
+setState(st, tx || null);
+
+if (q.get("cycle") === "1") {
+  let i = 0;
+  setInterval(() => {
+    i = (i + 1) % STATES.length;
+    setState(STATES[i]);
+  }, 4000);
+}
+
+window.addEventListener("keydown", (e) => {
+  const map = { "1": "idle", "2": "notice", "3": "talk", "4": "sulk", "5": "hype" };
+  if (map[e.key]) setState(map[e.key]);
+  if (e.key === " ") {
+    e.preventDefault();
+    const idx = (STATES.indexOf(st) + 1) % STATES.length;
+    setState(STATES[idx]);
+  }
+});
+</script>
+</body>
+</html>

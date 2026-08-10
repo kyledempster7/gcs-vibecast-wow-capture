@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# VibeCast fence: no Factory writes
 # One-shot after a real play/record night (or agent kickstart outside quiet hours).
 # soft_poll → harvest_if_ready → health. No invent. No publish.
 # NOT the same as post_night_mac.sh (legacy vibe pulse) — this is B-roll harvest spine.
@@ -9,6 +10,7 @@ LOGDIR="${HOME}/Library/Logs/gcs-vibecast-wow"
 RECEIPTS="${HOME}/Library/Application Support/UAH/butler/control-plane/receipts/wow"
 mkdir -p "$LOGDIR" "$RECEIPTS"
 LOG="$LOGDIR/post_play_harvest.log"
+python3 "$SCRIPTS/assert_vibecast_write_fence.py" || exit 2
 
 exec > >(tee -a "$LOG") 2>&1
 

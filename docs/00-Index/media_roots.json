@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "updated": "2026-08-09",
+  "sole_vault_home": "Games/WoW",
+  "windows": {
+    "host": "3900x",
+    "ssh": "kyled@100.92.159.73",
+    "vault": "D:\\\\KyleData\\\\KnownFolders\\\\Documents\\\\kyles_corner",
+    "broll_trusted": "D:\\\\WoW B-Roll Storage",
+    "broll_videos_untrusted": "C:\\\\Users\\\\kyled\\\\Videos\\\\WoW B-Roll",
+    "screenshots_memento": "C:\\\\Program Files (x86)\\\\World of Warcraft\\\\_retail_\\\\Screenshots",
+    "memento_addon": "C:\\\\Program Files (x86)\\\\World of Warcraft\\\\_retail_\\\\Interface\\\\AddOns\\\\Memento",
+    "publish_workspace": "C:\\\\Users\\\\kyled\\\\Videos\\\\WoW Publishing",
+    "tracker": "D:\\\\KyleData\\\\KnownFolders\\\\Documents\\\\kyles_corner\\\\Games\\\\WoW\\\\wow-roster-tracker"
+  },
+  "mac": {
+    "vault": "/Users/kyle/Kyles_Vault/kyles_corner",
+    "essay_drop": "/Users/kyle/Movies/WoW-Essays",
+    "hyperframes_kit": "Games/WoW/04-Story-and-Capture/hyperframes-brand-kit"
+  },
+  "vault_lists": {
+    "capture_inbox": "Games/WoW/04-Story-and-Capture/capture-inbox",
+    "memento_inbox": "Games/WoW/04-Story-and-Capture/memento-inbox",
+    "returner_daily": "Games/WoW/04-Story-and-Capture/returner-daily",
+    "vibe_sessions": "Games/WoW/04-Story-and-Capture/vibe-sessions",
+    "podcast_show_notes": "Games/WoW/04-Story-and-Capture/YouTube/podcast/show-notes",
+    "scorecards": "Games/WoW/Characters/scorecards"
+  },
+  "gcs": {
+    "name": "Gaming Content Studio",
+    "citadel_map": "00-Index/GCS_CITADEL.md",
+    "simple_start": "00-Index/SIMPLE_START.md",
+    "wings": {
+      "factory": "Saturday TWE/TDE/TFE zone products",
+      "vibecast": "Personal play+talk → Returner Daily / essays (brand twe)",
+      "armory": "UAH delivery-independence + optional Zernio"
+    },
+    "brand_for_vibecast_packages": "twe",
+    "factory_fleet": "~/.codex/saturday-fleet-readiness",
+    "factory_social_movies": "~/Movies/WoW-Social-Workflow"
+  },
+  "products": {
+    "vibecast": "00-Index/VIBECAST_OS.md",
+    "returner_daily": "04-Story-and-Capture/social/RETURNER_DAILY_SOCIAL.md",
+    "kyle_os": "00-Index/KYLE_OS.md",
+    "gcs_citadel": "00-Index/GCS_CITADEL.md",
+    "windows_hello": "00-Index/WINDOWS_HELLO.md",
+    "connectivity_board": "00-Index/CONNECTIVITY_BOARD.md",
+    "role_path_map": "00-Index/ROLE_PATH_MAP.json"
+  },
+  "agent_doors": {
+    "meta_front": "Games/WoW/00-Index/WINDOWS_HELLO.md",
+    "path_map": "Games/WoW/00-Index/ROLE_PATH_MAP.json",
+    "resolve_script": "Games/WoW/wow-roster-tracker/scripts/resolve_wow_door.py",
+    "windows_boot_ps1": "Games/WoW/wow-roster-tracker/scripts/Windows-Agent-Boot.ps1"
+  },
+  "rules": [
+    "Raw masters never SoR on Mac vault",
+    "Path lists and drafts only in vault",
+    "No auto-publish",
+    "Prefer broll_trusted over Videos mount",
+    "VibeCast is a GCS wing under brand TWE — not a second studio",
+    "Vibe-cast = muddy play+talk; vibe-podcast = clean essay path; one night can feed both",
+    "Vault id for this lane is kyles_corner not Claudes_Corner",
+    "If AIOS named-role fails: ROLE_PATH_MAP.json + resolve_wow_door.py — disk beats registry"
+  ]
+}
+
+

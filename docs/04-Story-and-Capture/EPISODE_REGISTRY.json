@@ -1,0 +1,83 @@
+{
+  "version": 2,
+  "updated": "2026-08-09",
+  "series": "WOTLK Veteran → Midnight Return",
+  "product_note": "Essay/EP path. Returner Daily is a separate product (carousel/B-roll).",
+  "episodes": [
+    {
+      "id": "EP01",
+      "title": "Still a Wrath Brain",
+      "status": "outline",
+      "record_note": "YouTube/EP01_Still_a_Wrath_Brain_RECORD.md",
+      "cutlist": "YouTube/EP01_CAPTIONS_AND_CUTLIST.md",
+      "flightpath": "YouTube/FLIGHTPATH_VO_TOPICS_EP01.md",
+      "audio_path": null,
+      "recorded": false
+    },
+    {
+      "id": "EP02",
+      "title": "The Gap Years",
+      "status": "outline",
+      "record_note": "YouTube/SERIES_CAPTIONS_CUTLISTS_EP02_EP07.md",
+      "cutlist": "YouTube/SERIES_CAPTIONS_CUTLISTS_EP02_EP07.md",
+      "audio_path": null,
+      "recorded": false
+    },
+    {
+      "id": "EP03",
+      "title": "Two Chairs",
+      "status": "outline",
+      "record_note": "YouTube/EP03_Two_Chairs_RECORD.md",
+      "cutlist": "YouTube/SERIES_CAPTIONS_CUTLISTS_EP02_EP07.md",
+      "audio_path": null,
+      "recorded": false
+    },
+    {
+      "id": "EP04",
+      "title": "First Nights Back",
+      "status": "outline",
+      "record_note": "YouTube/EP04_First_Nights_Back_RECORD.md",
+      "cutlist": "YouTube/SERIES_CAPTIONS_CUTLISTS_EP02_EP07.md",
+      "audio_path": null,
+      "recorded": false
+    },
+    {
+      "id": "EP05",
+      "title": "Midnight for Wrath Heads",
+      "status": "outline",
+      "record_note": "YouTube/EP05_Midnight_for_Wrath_Heads.md",
+      "cutlist": "YouTube/SERIES_CAPTIONS_CUTLISTS_EP02_EP07.md",
+      "audio_path": null,
+      "recorded": false
+    },
+    {
+      "id": "EP06",
+      "title": "Wait, What Happened to X?",
+      "status": "outline",
+      "record_note": "YouTube/EP06_Wait_What_Happened_to_X_RECORD.md",
+      "cutlist": "YouTube/SERIES_CAPTIONS_CUTLISTS_EP02_EP07.md",
+      "audio_path": null,
+      "recorded": false
+    },
+    {
+      "id": "EP07",
+      "title": "Coming Home by a Different Road",
+      "status": "outline",
+      "record_note": "YouTube/EP07_Coming_Home_by_a_Different_Road_RECORD.md",
+      "cutlist": "YouTube/SERIES_CAPTIONS_CUTLISTS_EP02_EP07.md",
+      "audio_path": null,
+      "recorded": false
+    }
+  ],
+  "returner_daily": {
+    "product": "returner_daily",
+    "root": "04-Story-and-Capture/returner-daily/",
+    "doctrine": "04-Story-and-Capture/social/RETURNER_DAILY_SOCIAL.md",
+    "not_class_p": true
+  },
+  "rules": [
+    "audio_path only when real file exists",
+    "recorded true only after Kyle ticks series board or provides path",
+    "no invent"
+  ]
+}

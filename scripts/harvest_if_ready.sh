@@ -11,6 +11,7 @@ OUT_DIR="${HOME}/Movies/WoW-Broll-Workflow/Returns"
 LATEST="${OUT_DIR}/SOFT_POLL_LATEST.json"
 mkdir -p "$RECEIPTS"
 LOCK="${OUT_DIR}/returner-daily-${DAY}/.harvest_once"
+python3 "$SCRIPTS/assert_vibecast_write_fence.py" || exit 2
 
 echo "== harvest_if_ready day=$DAY =="
 
@@ -91,4 +92,8 @@ if [[ -f "$SCRIPTS/catalog_query.py" ]]; then
   python3 "$SCRIPTS/catalog_query.py" --rebuild || true
 fi
 echo "HARVEST_OK day=$DAY"
+# M5: review-ready signal (after enhance usually; also mark raw harvest)
+if [[ -f "$SCRIPTS/notify_review_ready.sh" ]]; then
+  bash "$SCRIPTS/notify_review_ready.sh" "$DAY" || true
+fi
 exit 0

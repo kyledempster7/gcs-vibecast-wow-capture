@@ -113,7 +113,17 @@ PY
     fi
     echo "== archive KEEP to Moments zone=$ZONE (+ Drive if available) =="
     python3 "$SCRIPTS/archive_keep_to_moments.py" --day-dir "$ROOT" --zone "$ZONE" --drive || true
+    # M10: package stub NOT_ARMED (never auto-publish)
+    if [[ -f "$SCRIPTS/stitch_returner_package.py" ]]; then
+      echo "== package stub NOT_ARMED =="
+      python3 "$SCRIPTS/stitch_returner_package.py" --day "$DAY" || true
+    fi
   fi
+fi
+
+# M5 review ready after enhance (board exists)
+if [[ -f "$SCRIPTS/notify_review_ready.sh" ]]; then
+  bash "$SCRIPTS/notify_review_ready.sh" "$DAY" || true
 fi
 
 # healthboard after enhance
@@ -125,6 +135,7 @@ echo "== SHORTLIST =="
 cat "$ROOT/review-pack/SHORTLIST.md" 2>/dev/null || true
 echo "DONE enhance_returner_day day=$DAY (no publish)"
 echo "Open: $ROOT/review-pack/index.html"
+echo "Or: bash $SCRIPTS/open_review_pack.sh $DAY"
 echo "Pride: $CAND/pride/"
 echo "Vertical: $CAND/pride/vertical/"
 echo "Law: chat blur only if chat_present — see MACHINE_INTELLIGENCE_BROLL.md"

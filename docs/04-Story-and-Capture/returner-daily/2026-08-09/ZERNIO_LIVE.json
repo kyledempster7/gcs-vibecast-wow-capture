@@ -1,0 +1,12 @@
+{
+  "status": "SCHEDULED",
+  "provider_post_id": "6a791655ee8109217144f312",
+  "scheduledFor": "2026-08-10T14:30:00.000Z",
+  "platforms": ["instagram", "tiktok", "twitter"],
+  "youtube": "deferred_still_led_needs_video",
+  "publishNow": false,
+  "content_id": "twe-dragonblight-returner-20260809-still-d01",
+  "package": "/Users/kyle/Library/Application Support/UAH/butler/control-plane/social-ingest/TWE_RETURNER_DAILY_DRAGONBLIGHT_20260809.json",
+  "receipt": "/Users/kyle/Library/Application Support/UAH/butler/control-plane/social-ingest/RECEIPT_TWE_RETURNER_DRAGONBLIGHT_20260809_PUSH.json",
+  "kyle_go": true
+}
