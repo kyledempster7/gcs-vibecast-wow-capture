@@ -33,7 +33,11 @@ def main() -> int:
     data = {}
     if hv.is_file():
         data = json.loads(hv.read_text(encoding="utf-8"))
-    data[args.id] = {"verdict": args.verdict if args.verdict != "PRIDE_PICK" else "KEEP",
+    if "schema" not in data:
+        data = {"schema": "gcs_human_verdicts/v1", "verdicts": data if all(isinstance(v, dict) for v in data.values()) else {}}
+    if "verdicts" not in data:
+        data = {"schema": "gcs_human_verdicts/v1", "verdicts": data}
+    data["verdicts"][args.id] = {"verdict": args.verdict if args.verdict != "PRIDE_PICK" else "KEEP",
                      "reason": args.note or args.verdict, "source": "record_feedback"}
     hv.parent.mkdir(parents=True, exist_ok=True)
     hv.write_text(json.dumps(data, indent=2), encoding="utf-8")
