@@ -270,6 +270,32 @@ def main() -> int:
         )
     )
 
+    # decades tools present
+    for gid, name in (
+        ("G081", "rotate_gcs_logs.sh"),
+        ("G082", "park_limbo_shortlist.py"),
+        ("G083", "schema_audit.py"),
+        ("G084", "gcs_vibecast_gauntlet.py"),
+    ):
+        p = SCRIPTS / name
+        checks.append(
+            Check(gid, "AUTO", f"tool {name}", "PASS" if p.is_file() else "FAIL", str(p))
+        )
+    ext = STORY / "EXTENSIBILITY_SPINE.md"
+    checks.append(
+        Check("G085", "DOCS", "EXTENSIBILITY_SPINE", "PASS" if ext.is_file() else "FAIL", str(ext))
+    )
+    gauntlet_doc = STORY / "GAUNTLET_100_BUGS_VIBECAST.md"
+    checks.append(
+        Check(
+            "G086",
+            "DOCS",
+            "GAUNTLET_100 ledger",
+            "PASS" if gauntlet_doc.is_file() else "FAIL",
+            str(gauntlet_doc),
+        )
+    )
+
     # Drive backup-code
     drive = None
     cloud = Path.home() / "Library/CloudStorage"

@@ -32,6 +32,10 @@ fi
 if [[ -f "$SCRIPTS/rotate_gcs_logs.sh" ]]; then
   bash "$SCRIPTS/rotate_gcs_logs.sh" || true
 fi
+# Schema audit snapshot (decades #96)
+if [[ -f "$SCRIPTS/schema_audit.py" ]]; then
+  python3 "$SCRIPTS/schema_audit.py" || true
+fi
 
 # --- GitHub working tree ---
 if [[ -d "$REPO/.git" ]]; then

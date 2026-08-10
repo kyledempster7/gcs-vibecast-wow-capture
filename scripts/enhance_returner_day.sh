@@ -126,6 +126,11 @@ if [[ -f "$SCRIPTS/notify_review_ready.sh" ]]; then
   bash "$SCRIPTS/notify_review_ready.sh" "$DAY" || true
 fi
 
+# Park old second-play limbo (no force KEEP/REJECT)
+if [[ -f "$SCRIPTS/park_limbo_shortlist.py" ]]; then
+  python3 "$SCRIPTS/park_limbo_shortlist.py" --older-than-days 1 --apply || true
+fi
+
 # healthboard after enhance
 if [[ -f "$SCRIPTS/gcs_pipeline_health.py" ]]; then
   python3 "$SCRIPTS/gcs_pipeline_health.py" || true
