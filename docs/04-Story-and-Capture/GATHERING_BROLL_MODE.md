@@ -6,69 +6,67 @@ updated: 2026-08-10
 area: Games/WoW/04-Story-and-Capture
 role: GATHERING_BROLL_UI_MODE
 canon: Games/WoW
+goal: MINIMAP_ONLY_HARVEST_BROLL
 ---
 
-# Gathering B-Roll mode (UI operating note)
+# Gathering B-Roll mode — **minimap-only harvest** (product goal)
 
 **Canon surface:** `Games/WoW/` only.  
-**Research support (not a second index):** [[Kyle's Notes/Research/World of Warcraft/WoW Stream Deck Uniform Keybinds|Stream Deck Uniform Keybinds]].  
-**Umbrella:** [[../00-Index/WOW_CONTENT_UMBRELLA|WOW_CONTENT_UMBRELLA]].  
-**TitanPanel:** optional research only — [[../00-Index/TITANPANEL_AND_ADDON_BRIDGE|TITANPANEL_AND_ADDON_BRIDGE]] (not the owner of this mode).
+**Windows seat ticket (plain):** `wow-roster-tracker/scripts/MINIMAP_ONLY_GATHER_BROLL.md` (also deploys to `D:\WoW B-Roll Storage\_scripts\`).  
+**Related:** [[CINEMATIC_ORBIT_UI_MODE]] · [[MACHINE_INTELLIGENCE_BROLL]] · Deck Layer C.
 
-**Law:** no invent FOOTAGE · no auto-publish · Layer A two-deck action-bar work remains **P0 in parallel**.  
-**Alt+Z** stays the full cinematic hide (unchanged). This mode is **not** Alt+Z.
-
----
-
-## Intent
-
-Herb/mining and outdoor travel B-roll that keeps **node tracking + minimap** while stripping combat/chat clutter — so machine harvest and Moments Library get clean-ish frames without losing gather UX.
+**Law:** no invent FOOTAGE · no auto-publish · Layer A bars-to-Deck stays P0 in parallel.  
+**Alt+Z** = full cinematic hide (everything gone, including minimap). **This mode is different.**
 
 ---
 
-## On-screen contract
+## Product goal (Kyle 2026-08-10 — locked intent)
 
-| Keep fully visible | Hide or fade |
-|--------------------|--------------|
-| **Minimap** | Action bars (hover-hide OK — Kyle likes this live) |
-| **Herb / mining node tracking** | Unit frames |
-| (world + nodes) | **Chat** (Edit Mode alone often fails here) |
-| | **Objectives / quest tracker** (sticks in Edit Mode) |
-| | Bags / menus |
-| | Buffs / debuffs chrome |
-| | Other non-essential clutter |
+> A **harvester B-roll** setup: character **runs around gathering herbs/ore** while the screen shows **essentially only the minimap** (plus node tracking if needed to play). No chat, no quest tracker, no bags, no unit frames, no sticky bars. That is the **good B-roll**. We do **not** have this working yet. Figure it out (Edit Mode layout and/or **addon** — likely **Auto Hide UI**).
 
-**2026-08-10 Kyle:** Beneficial **bottom bars hide until hover** is live. **Still missing:** a saved state that is effectively **minimap-only** (tracker + chat still show after Edit Mode pruning). Closing this = named layout or Auto Hide rules, not more random toggles.
-
-**Recover** the full interface for combat and panels (exit mode).  
-**Cinematic total clean** = still **Alt+Z** only — do not replace or rebind Alt+Z for this mode.
+| | |
+|--|--|
+| **Done-when** | Named layout or one-key enter/exit; Kyle can herb/mine with **minimap-only** (nodes OK); record → harvest tags clean gather frames |
+| **Not done-when** | Hover-hide bars alone (nice, but not enough) · Edit Mode partial hide with chat/tracker still on · full Alt+Z (too clean — loses minimap navigation) |
 
 ---
 
-## Vault-Tec entry / exit (capture Layer C)
+## On-screen contract (target)
+
+| **ON (keep)** | **OFF (must hide)** |
+|---------------|---------------------|
+| **Minimap** | Chat |
+| **Herb/mine node tracking** (if needed to gather) | Objective / quest **tracker** |
+| World / character | Unit frames · bags · buffs chrome · extra panels |
+| | Action bars (hover-hide is OK interim; ideal = fully hidden while gathering) |
+
+**Interim live (2026-08-10):** bottom bars **hide until hover** — beneficial for play; **does not** close minimap-only.
+
+**Known friction:** stock **Edit Mode** can kill a lot but **chat + objective tracker often stick**. Need addon rules and/or a dedicated saved layout — not more random toggles mid-session.
+
+---
+
+## How we expect to close it (Windows work)
+
+| Approach | Notes |
+|----------|--------|
+| **A. Auto Hide UI v1.2.13** (authorized) | Install only when **WoW closed**. Configure: hide chat, tracker, bars, frames; **exclude minimap** (and node tracker if separate). |
+| **B. Edit Mode layout** named e.g. `VibeCast Gather` | Save layout; document which HUD elements still refuse to hide → feed addon config. |
+| **C. Deck Layer C** | `gather_ui_on` / `gather_ui_off` → `WOWCAP.GATHER_UI_ON/OFF` + marker (100 ms pad). |
+| **D. Not ElvUI** as a dependency for this mode | No mass addon thrash. |
+
+**If WoW is open:** stage notes only — do not force-install under live client.
+
+---
+
+## Vault-Tec / Deck (when wiring)
 
 | Action | Sequence |
 |--------|----------|
-| **Enter Gathering B-Roll** | toggle mode → **100 ms** → `WOWCAP.GATHER_UI_ON` |
-| **Exit Gathering B-Roll** | `WOWCAP.GATHER_UI_OFF` → **100 ms** → restore interface |
+| **Enter gather B-roll** | toggle → **100 ms** → `WOWCAP.GATHER_UI_ON` |
+| **Exit** | `WOWCAP.GATHER_UI_OFF` → **100 ms** → restore |
 
-- `WOWCAP.GATHER_UI_ON` / `WOWCAP.GATHER_UI_OFF` are the machine event names for Stream Deck / binder hooks.  
-- Prefer **Vault-Tec** capture page (Layer C) — never steal Layer A combat/utility keys.  
-- Optional: also append marker via `D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1` with `button_id` e.g. `layer_c.gather_ui_on` / `layer_c.gather_ui_off` when wiring multi-actions (see [[capture-inbox/DECK_BUTTON_MAP|DECK_BUTTON_MAP]] + contract).
-
----
-
-## Addon: Auto Hide UI (authorized install)
-
-| Rule | Detail |
-|------|--------|
-| **Product** | **Auto Hide UI v1.2.13 only** (no ElvUI/Titan as dependency for this mode) |
-| **When install allowed** | WoW client **confirmed closed** |
-| **If WoW running** | Remain **safely staged** — do not inject under a live client |
-| **Who** | WoW manager / Windows seat with this note as authority |
-| **Not** | Mass addon install · WTF thrash · Bartender overwrite |
-
-Default **two-deck action-bar** (bars 3–4 → SD1/SD2) remains **P0 in parallel** — this mode does not deprioritize that.
+Prefer Vault-Tec capture page (Layer C). Optional marker: `Append-StreamDeckMarker.ps1` `layer_c.gather_ui_on|off`.
 
 ---
 
@@ -76,29 +74,13 @@ Default **two-deck action-bar** (bars 3–4 → SD1/SD2) remains **P0 in paralle
 
 | When mode is ON | Prefer |
 |-----------------|--------|
-| Chat chrome gone | Chat blur often unnecessary (`chat_present=false`) |
-| Minimap kept | OK for fly/gather establish (MI doctrine) |
-| Nodes visible | Tag sessions `ui=gather_broll` when markers fire |
-| Mode OFF / combat | Full UI — score/reject as usual |
-
-Markers + MANIFEST may record `gather_ui=on|off` when Deck fires; Mac join tools treat them as press-evidence until human KEEP.
-
----
-
-## Related (single farm — no competing index)
-
-| Need | Path |
-|------|------|
-| Content umbrella | [[../00-Index/WOW_CONTENT_UMBRELLA]] |
-| Front door | [[../00-Index/README]] |
-| MI / detect→act | [[MACHINE_INTELLIGENCE_BROLL]] |
-| Record night pin | [[../00-Index/RECORD_NIGHT_NOW]] |
-| Deck marker sidecar | [[capture-inbox/STREAM_DECK_MARKER_SIDECAR_CONTRACT]] |
-| Deck Layer C map | [[capture-inbox/DECK_BUTTON_MAP]] |
-| Stream Deck doctrine (research) | [[Kyle's Notes/Research/World of Warcraft/WoW Stream Deck Uniform Keybinds]] |
+| Chat gone | Chat blur often unnecessary |
+| Minimap kept | Fly/gather establish OK for MI |
+| Nodes visible | Tag `ui=gather_broll` |
+| Mode OFF | Full combat UI — score as usual |
 
 ---
 
 ## One-liner
 
-**Gathering B-Roll = minimap + nodes on, clutter off; Vault-Tec ON/OFF with 100 ms pad; Alt+Z still full clean; Auto Hide UI v1.2.13 only when WoW closed; bars-to-Deck stays P0.**
+**Goal = minimap-only (nodes OK) while Kyle runs harvest routes for B-roll; not solved yet; Auto Hide + named layout + Deck ON/OFF; Alt+Z still full clean only.**

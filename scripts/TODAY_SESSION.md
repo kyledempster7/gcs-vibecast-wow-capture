@@ -59,3 +59,8 @@ Then ≤60s KEEP on review-pack. Done.
 | Session-End NO_MASTERS | Record actually started? Check `D:\WoW B-Roll Storage\*.mp4` |
 | Markers only agent_* | Press Deck mid-play with human multi-actions |
 | Audio silent | Desktop source muted / wrong device — meters first |
+
+## UI goal (OPEN) — minimap-only gather B-roll
+
+See `MINIMAP_ONLY_GATHER_BROLL.md` in this folder (and Mac `GATHERING_BROLL_MODE.md`).  
+Target: harvest routes with **only minimap** (+ nodes). Hover-hide bars = good interim. Chat/tracker still stick — figure via Edit Mode layout + Auto Hide UI (WoW closed to install).
