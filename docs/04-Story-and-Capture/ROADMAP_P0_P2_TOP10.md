@@ -154,6 +154,9 @@ Gather: `04-Story-and-Capture/GATHERING_BROLL_MODE.md`
 | D1 ARM_STATE | WIRED default deny | arm_state.py · stitch may_publish=false · day ARM_STATE.json · healthboard |
 | Export interval parity | SHIPPED test + real dry | test_export_marker_intervals PASS · export_dry_real_session agent_prove_only |
 | Chat cal rates | v1.1 majority+ROI | 3 true / 5 false · 223313 irreducible edge · guards PASS |
+| Archive KEEP future | SHIPPED v0 | archive_keep_to_moments · Moments+Drive archive-broll · CATALOG |
+| Plus-10 beyond now | DOCUMENTED | IMPROVEMENTS_PLUS10_BEYOND_NOW_20260810.md |
+| GitHub + Drive backup | SHIPPED | kyledempster7/gcs-vibecast-wow-capture · Drive backup-code |
 
 **Product spine:** [[PRODUCT_SYSTEM_SPEC]] · [[PRODUCT_PRD_PIPELINE]] · [[HOSTILE_REVIEW_PRODUCT_SYSTEM_20260810]] · [[INTELLIGENCE_STACK_AND_COST]]
 

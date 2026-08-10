@@ -52,6 +52,9 @@ HARVEST Mac  Returns/returner-daily-YYYY-MM-DD/
 REVIEW ≤60s  pride + second-play only  → verdicts / KEEP
         │ 9:16 vertical on pride · Moments Library tags
         ▼
+ARCHIVE KEEP  Moments-Library + optional Drive archive-broll  (future projects)
+        │ archive_keep_to_moments.py · for_future=true · no invent
+        ▼
 PACKAGE NOT_ARMED  (still-led Zernio OK if already scheduled; video on go)
         │
         ▼
@@ -78,6 +81,7 @@ NEXT_NIGHT_BRIEF  + healthboard  (what shot types won · what to record)
 | Speech peaks | speech_peaks.py → analysis/SPEECH_PEAKS.json | Mac (VO nights) |
 | Review | review-pack/index.html · SHORTLIST · record_feedback | Mac + Kyle |
 | Moments | Moments-Library/YYYY-MM-DD-*/ | Mac |
+| KEEP archive | archive_keep_to_moments.py · ARCHIVE_BROLL_FOR_FUTURE · Drive archive-broll | Mac |
 | Stitch dry | moments_stitch_dry.py (NOT_ARMED) | Mac |
 | Health + brief | gcs_pipeline_health · NEXT_NIGHT_BRIEF | Mac |
 | Market gaps | MARKET_100_MISSING (100) | Agents |

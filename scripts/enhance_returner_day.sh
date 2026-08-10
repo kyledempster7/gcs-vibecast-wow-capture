@@ -91,6 +91,14 @@ if [[ -f "$SCRIPTS/next_night_brief.py" ]]; then
   python3 "$SCRIPTS/next_night_brief.py" --day-dir "$ROOT" || true
 fi
 
+# KEEP → Moments (+ Drive) when human_verdicts has KEEP — future project library
+if [[ -f "$SCRIPTS/archive_keep_to_moments.py" ]] && [[ -f "$ANALYSIS/human_verdicts.json" ]]; then
+  if grep -q '"KEEP"' "$ANALYSIS/human_verdicts.json" 2>/dev/null; then
+    echo "== archive KEEP to Moments (+ Drive if available) =="
+    python3 "$SCRIPTS/archive_keep_to_moments.py" --day-dir "$ROOT" --zone archive --drive || true
+  fi
+fi
+
 echo "== SHORTLIST =="
 cat "$ROOT/review-pack/SHORTLIST.md" 2>/dev/null || true
 echo "DONE enhance_returner_day day=$DAY (no publish)"
