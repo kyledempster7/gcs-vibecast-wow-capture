@@ -83,6 +83,8 @@ These three can **feed each other** (a personality clip becomes carousel slide 1
 | Mic / talk | Talk clean or Talk muddy (Kyle OS) |
 | Clip harvest | Agent: pull peaks when you talk · keep short |
 | Live stream to public | **Not required** · optional later |
+| **Daily package recipe** | [[DAILY_PERSONALITY_PACKAGE]] · style [[CONTENT_STYLE_COMMUNITY]] · funny peaks [[../FUNNY_MIC_CUE_MOMENTS]] |
+| **Play→post north star** | [[../FUTURE_GOALS_PLAY_TO_POST_20260810]] |
 
 **Honest product line:** “I’m learning · chatting with a friend · not performing for a stadium.” Boring minutes are OK; agents keep the interesting 8–20s.
 

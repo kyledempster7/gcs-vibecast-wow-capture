@@ -54,10 +54,18 @@ Audacity truth: `AUDACITY_FIELD_NOTES_WINDOWS.md`
 - Agent cleanup later = ffmpeg on file, not UI automation  
 
 ### P2 — OBS crop/zoom
-Kyle found a good **zoom-in** for herb/mine capture. Preserve that scene/filter setup; document path if you change it.
+Kyle found a good **zoom-in** for herb/mine capture. Preserve that scene/filter setup; document path if you change it.  
+**Framing decision open:** Mode A zoom-OBS vs Mode B full-frame masters + Mac crop (recommend B for stream/MI). See `WINDOWS_FUTURE_GOALS_PACKET.md` · do not thrash mid-session.
+
+### P2 — Future goals / daily personality (Mac doctrine 2026-08-10)
+Read **`WINDOWS_FUTURE_GOALS_PACKET.md`** in this folder.  
+Funny/herb-rival: Deck `funny_moment` or `talk_peak`. Dual audio keep testing. Style = community, not toxic min-max. Mac drafts Returner Daily personality package after KEEP (NOT_ARMED).
 
 ---
 
+
+### BLOCKER today (2026-08-10) — markers only / raw empty
+See `WINDOWS_TODAY_MARKERS_ONLY_NOTE.md` — agent_prove markers only; no masters. Session-End after real OBS record.
 ## Soft-poll honesty (do not lie green)
 
 | Signal | Meaning |
@@ -75,6 +83,7 @@ Mac will **not** invent masters. Your job is real export → Session-End.
 | File | Use |
 |------|-----|
 | **WINDOWS_SEAT_INVESTIGATION_PACKET.md** | This index (start here) |
+| **WINDOWS_FUTURE_GOALS_PACKET.md** | Play→post future · framing · funny_moment · style |
 | MINIMAP_ONLY_GATHER_BROLL.md | Minimap-only gather ticket |
 | GATHERING_BROLL_MODE.md | Full gather UI contract (if deployed) |
 | CINEMATIC_ORBIT_UI_MODE.md | Alt+Z / clean orbit vs gather |

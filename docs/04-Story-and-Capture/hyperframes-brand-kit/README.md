@@ -18,6 +18,9 @@ Reusable visuals for audio essays, Returner Daily borders, Dear-developers beats
 | League stamp | `slots/league-stamp/index.html` | Explorer’s League original |
 | Essay bed frame | `slots/essay-frame/index.html` | Audio-essay YT look |
 | Daily border | `slots/daily-border/index.html` | Still frame for Memento crops |
+| **League pitch flash** | `slots/league-pitch-flash/index.html?id=flash.welcome` | Sales-pitch on-screen cards (`product_id=twe_explorers_league_community_pitch_v1`) |
+
+**Pitch pack:** [[../social/EXPLORERS_LEAGUE_PITCH_BROLL_PACK|EXPLORERS_LEAGUE_PITCH_BROLL_PACK]] · storyboard builder: `wow-roster-tracker/scripts/build_league_pitch_storyboard.py`
 
 ## Rules
 

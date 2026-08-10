@@ -58,6 +58,51 @@ def main() -> int:
         if watch_pid
         else "pid `none`"
     )
+    # Golden long-run status (agent-green durable loop)
+    golden_cell = "pid `none`"
+    g_status = BROLL / "GOLDEN_LONG_RUN_STATUS.json"
+    g_pid = None
+    g_alive = False
+    g_state = ""
+    for glock in (
+        LOGDIR / "golden_long_run.lockdir" / "pid",
+    ):
+        if glock.is_file():
+            raw = glock.read_text(encoding="utf-8").strip()
+            if raw.isdigit():
+                g_pid = raw
+                try:
+                    import os
+
+                    os.kill(int(raw), 0)
+                    g_alive = True
+                except OSError:
+                    g_alive = False
+            break
+    if g_status.is_file():
+        try:
+            gs = json.loads(g_status.read_text(encoding="utf-8"))
+            g_state = str(gs.get("state") or "")
+            if not g_pid and gs.get("pid"):
+                g_pid = str(gs.get("pid"))
+        except Exception:
+            pass
+    if g_pid:
+        golden_cell = (
+            f"pid `{g_pid}` · {'alive' if g_alive else 'stale'} · {g_state or '—'}"
+        )
+    # Optional OBS probe (read-only JSON from mac_probe_obs_windows)
+    obs_cell = "—"
+    obs_path = BROLL / "OBS_PATH_PROBE_LATEST.json"
+    if obs_path.is_file():
+        try:
+            od = json.loads(obs_path.read_text(encoding="utf-8"))
+            obs_cell = (
+                f"running={od.get('obs_running')} path_ok={od.get('product_path_ok')} "
+                f"tracks={od.get('rec_tracks')} today_masters={od.get('has_today_masters')}"
+            )
+        except Exception:
+            obs_cell = "probe unreadable"
     state = "READY_TO_HARVEST" if ready_today else "WAITING_WINDOWS_MASTERS"
     body = f"""---
 type: waiting-board
@@ -82,6 +127,8 @@ day: {today}
 | Piece | Status |
 |-------|--------|
 | Watch ready-harvest | {watch_cell} |
+| Golden long run | {golden_cell} |
+| OBS probe | {obs_cell} |
 | Auto Session-End | runs when **today** masters land on D: base/raw |
 | LaunchAgent | active 12:00–02:59 local (quiet 03–11) |
 | Gauntlet | `python3 scripts/gcs_vibecast_gauntlet.py` |

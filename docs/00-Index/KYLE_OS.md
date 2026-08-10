@@ -47,6 +47,8 @@ Agents own boards, scorecards, **Returner Daily** harvest. **You do not organize
 
 **Record content night (zero thought):** press Deck actions mid-session · 10s dual audio once · agents pull with `post_play_harvest` — you only KEEP later in review-pack.
 
+**Future (agents own):** play → funny peaks → Returner Daily personality draft (video + still + story) → archive/weight — [[../04-Story-and-Capture/FUTURE_GOALS_PLAY_TO_POST_20260810|play-to-post goals]] · style [[../04-Story-and-Capture/social/CONTENT_STYLE_COMMUNITY|community voice]]. Not Class-P.
+
 ---
 
 ## Talk modes (what agents harvest later)

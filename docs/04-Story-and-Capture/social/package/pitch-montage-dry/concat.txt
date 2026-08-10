@@ -1,0 +1,3 @@
+file '/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/social/package/pitch-montage-dry/trim/pitch_hub_thrall-t12.mp4'
+file '/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/social/package/pitch-montage-dry/trim/pitch_flight_soft-t12.mp4'
+file '/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/social/package/pitch-montage-dry/trim/pitch_play_together-t12.mp4'

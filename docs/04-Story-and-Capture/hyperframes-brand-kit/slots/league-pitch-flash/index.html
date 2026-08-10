@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>TWE — League pitch flash card</title>
+  <style>
+    :root {
+      --bg: #0b0e14; --ice: #7ec8e3; --bone: #f3e9d7; --crimson: #8b1e2d; --gold: #c9a227;
+    }
+    html, body { margin:0; height:100%; background:transparent; color:var(--bone);
+      font-family: Palatino, Georgia, serif; overflow:hidden; }
+    .card {
+      height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;
+      background: radial-gradient(ellipse at 50% 45%, rgba(18,24,38,.92) 0%, rgba(11,14,20,.96) 70%);
+      border: 3px solid var(--crimson); box-sizing:border-box; padding:6vmin;
+    }
+    .eyebrow { color:var(--ice); letter-spacing:.22em; text-transform:uppercase; font-size:clamp(11px,1.6vmin,16px);
+      font-family: system-ui,sans-serif; margin-bottom:2vmin; }
+    h1 { font-size:clamp(28px,5.5vmin,56px); margin:0; text-align:center; max-width:92%; line-height:1.12; }
+    .sub { margin-top:2.5vmin; color:var(--gold); font-size:clamp(12px,1.8vmin,18px);
+      font-family:system-ui,sans-serif; text-align:center; max-width:90%; }
+    .footer { position:absolute; bottom:3vmin; left:0; right:0; text-align:center;
+      font-family:system-ui,sans-serif; font-size:11px; color:#a89b84; letter-spacing:.08em; }
+  </style>
+</head>
+<body>
+  <!-- product_id: twe_explorers_league_community_pitch_v1 · flash cards · NOT_ARMED ops -->
+  <div class="card">
+    <div class="eyebrow" id="eyebrow">Explorer’s League</div>
+    <h1 id="line">Welcome back — or welcome first.</h1>
+    <div class="sub" id="sub">Thrall · Horde · not toxic</div>
+    <div class="footer">scaffold pitch · no fake roster · go-only</div>
+  </div>
+  <script>
+    // ?id=flash.welcome | flash.league | flash.fair | flash.dungeons | flash.discord_door | flash.not_alone | flash.community | flash.guild_intent
+    const CARDS = {
+      "flash.welcome": { line: "Welcome back — or welcome first.", sub: "New · returner · overwhelmed — all welcome" },
+      "flash.league": { line: "Explorer’s League energy", sub: "Thrall · Horde" },
+      "flash.guild_intent": { line: "A guild home when the time is right", sub: "Intent only — not a live roster claim" },
+      "flash.fair": { line: "Crafting fair vibe", sub: "Mats · craft · questions · no gatekeeping" },
+      "flash.dungeons": { line: "Learner dungeon nights · no shame", sub: "Play together · calm · friend energy" },
+      "flash.discord_door": { line: "Gathering door for explorers", sub: "Not a spam list · invite when real" },
+      "flash.not_alone": { line: "You’re not late. You’re here.", sub: "Returner energy · Thrall · Horde" },
+      "flash.community": { line: "New · returner · overwhelmed — all welcome", sub: "Community first · not toxic min-max" }
+    };
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id") || "flash.welcome";
+    const card = CARDS[id] || CARDS["flash.welcome"];
+    document.getElementById("line").textContent = card.line;
+    document.getElementById("sub").textContent = card.sub;
+    document.title = "TWE flash · " + id;
+  </script>
+</body>
+</html>

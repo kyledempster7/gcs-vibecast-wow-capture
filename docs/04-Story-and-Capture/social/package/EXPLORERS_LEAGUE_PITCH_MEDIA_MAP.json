@@ -1,0 +1,41 @@
+{
+  "schema": "gcs_explorers_league_pitch_media_map/v1",
+  "product_id": "twe_explorers_league_community_pitch_v1",
+  "generated_at_utc": "2026-08-10T22:20:20.956488+00:00",
+  "armed": false,
+  "kyle_go": false,
+  "product": "Explorer\u2019s League community pitch B-roll",
+  "not_class_p": true,
+  "law": "no invent FOOTAGE \u00b7 no silent publish \u00b7 never invent League roster \u00b7 go-only",
+  "status": "scaffold_no_media",
+  "videos": [],
+  "stills": [],
+  "flash_text_ids": [
+    "flash.welcome",
+    "flash.league",
+    "flash.guild_intent",
+    "flash.fair",
+    "flash.dungeons",
+    "flash.discord_door",
+    "flash.not_alone",
+    "flash.community"
+  ],
+  "shot_ids": [
+    "pitch.hub_thrall",
+    "pitch.cast_lineup",
+    "pitch.flight_soft",
+    "pitch.prof_panel",
+    "pitch.craft_cast",
+    "pitch.ah_browse",
+    "pitch.gather_to_craft",
+    "pitch.bag_relief",
+    "pitch.dungeon_door",
+    "pitch.learner_pull",
+    "pitch.group_cheer",
+    "pitch.still_waitlist",
+    "pitch.play_together"
+  ],
+  "spine": "Games/WoW/community-surface/EXPLORERS_LEAGUE_COMMUNITY_SPINE.md",
+  "pack": "Games/WoW/04-Story-and-Capture/social/EXPLORERS_LEAGUE_PITCH_BROLL_PACK.md",
+  "storyboard": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/social/package/EXPLORERS_LEAGUE_PITCH_STORYBOARD.json"
+}

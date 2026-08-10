@@ -67,6 +67,10 @@ fi
 # Investigation / product tickets for Windows seat (Mac SoT → D:\_scripts)
 for f in \
   WINDOWS_SEAT_INVESTIGATION_PACKET.md \
+  WINDOWS_FUTURE_GOALS_PACKET.md \
+  CAPTURE_LEAGUE_PITCH_TONIGHT.md \
+  WINDOWS_TODAY_MARKERS_ONLY_NOTE.md \
+  Probe-OBS-ProductPath.ps1 \
   MINIMAP_ONLY_GATHER_BROLL.md \
   GATHERING_BROLL_MODE.md \
   CINEMATIC_ORBIT_UI_MODE.md \

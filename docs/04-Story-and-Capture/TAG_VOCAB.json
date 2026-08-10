@@ -29,7 +29,14 @@
     "second_play",
     "auto_tag=v0",
     "human_KEEP=false",
-    "human_KEEP=true"
+    "human_KEEP=true",
+    "peak=funny",
+    "story=rival_gather",
+    "audio=mic_cue",
+    "ui=gather_broll",
+    "framing=full_master",
+    "framing=zoom_obs",
+    "product_crop=tight"
   ],
   "source": [
     "source=c",

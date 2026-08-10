@@ -198,6 +198,30 @@ def soft_poll_line() -> tuple[str, str]:
     return "🟡", f"ready_today=false · {reasons or 'no days'}"
 
 
+def obs_probe_line() -> tuple[str, str]:
+    """OBS product path probe (read-only JSON). Yellow if no today masters."""
+    p = BROLL / "OBS_PATH_PROBE_LATEST.json"
+    if not p.is_file():
+        return "🟡", "no OBS_PATH_PROBE_LATEST (run mac_probe_obs_windows.sh)"
+    try:
+        d = json.loads(p.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return "🔴", "OBS probe parse fail"
+    path_ok = bool(d.get("product_path_ok"))
+    running = bool(d.get("obs_running"))
+    masters = bool(d.get("has_today_masters"))
+    tracks = d.get("rec_tracks")
+    note = (
+        f"running={running} path_ok={path_ok} tracks={tracks} "
+        f"today_masters={masters} raw={d.get('day_raw_mp4')} cand={d.get('day_cand_mp4')}"
+    )
+    if path_ok and masters:
+        return "🟢", note
+    if path_ok and not masters:
+        return "🟡", note + " · press OBS Record then Session-End"
+    return "🔴", note + " · fix OBS FilePath to D:\\WoW B-Roll Storage"
+
+
 def arm_state(day: Path | None) -> tuple[str, str]:
     # Prefer day ARM_STATE.json contract
     if day:
@@ -240,6 +264,7 @@ def main() -> int:
     d = day_signals(day)
     arm_icon, arm_note = arm_state(day)
     sp_icon, sp_note = soft_poll_line()
+    obs_icon, obs_note = obs_probe_line()
     lines = [
         f"# GCS pipeline health — {datetime.now().strftime('%Y-%m-%d %H:%M')}",
         "",
@@ -247,6 +272,7 @@ def main() -> int:
         "|-------|-------|------|",
         f"| Windows online | {w_icon} | {w_note} |",
         f"| Soft-poll READY | {sp_icon} | {sp_note} |",
+        f"| OBS product path | {obs_icon} | {obs_note} |",
         f"| Harvest freshness | {d.get('fresh_icon', '—')} | {d.get('fresh_note', '')} |",
         f"| Audio stamp | {a_icon} | {a_note} |",
         f"| Latest return day | — | `{d.get('day', 'none')}` |",
@@ -259,8 +285,9 @@ def main() -> int:
         "",
         "## Next",
         "",
-        "- Phase A play night: Deck multi-act + AUDIO_GREEN + export → `post_play_harvest.sh`.",
-        "- LaunchAgent quiet morning 03–11; active 12:00–02:59 so afternoon export is harvested. No invent FOOTAGE.",
+        "- If OBS path OK but no today masters: press **OBS Record** during play, then Session-End.",
+        "- League pitch: `CAPTURE_LEAGUE_PITCH_TONIGHT.md` · storyboard cutlist NOT_ARMED.",
+        "- LaunchAgent quiet morning 03–11; active 12:00–02:59. No invent FOOTAGE.",
         "",
         f"Spec: `04-Story-and-Capture/PRODUCT_SYSTEM_SPEC.md`",
         "",

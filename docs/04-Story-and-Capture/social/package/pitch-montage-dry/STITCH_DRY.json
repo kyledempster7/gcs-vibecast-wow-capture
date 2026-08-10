@@ -1,0 +1,31 @@
+{
+  "schema": "gcs_league_pitch_stitch_dry/v1",
+  "product_id": "twe_explorers_league_community_pitch_v1",
+  "generated_at_utc": "2026-08-10T22:20:21.069955+00:00",
+  "armed": false,
+  "kyle_go": false,
+  "status": "DRY_OK",
+  "picked": [
+    {
+      "shot_id": "pitch.hub_thrall",
+      "path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/c-pride-15s-start.mp4",
+      "flash_id": "flash.welcome",
+      "keep_id": "c-pride-15s-start"
+    },
+    {
+      "shot_id": "pitch.flight_soft",
+      "path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/c-pride-30s-best.mp4",
+      "flash_id": "flash.league",
+      "keep_id": "c-pride-30s-best"
+    },
+    {
+      "shot_id": "pitch.play_together",
+      "path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/db-20260809-c-full-170544.mp4",
+      "flash_id": "flash.community",
+      "keep_id": "c"
+    }
+  ],
+  "law": "no invent \u00b7 no silent publish \u00b7 NOT_ARMED",
+  "out_mp4": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/social/package/pitch-montage-dry/league-pitch-montage-dry.mp4",
+  "bytes": 10123327
+}

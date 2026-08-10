@@ -25,6 +25,7 @@ $seq = @(
   @{ ButtonId = 'layer_c.rotate_end'; Label = 'End rotate'; State = 'end' }
   @{ ButtonId = 'layer_c.broll_exit'; Label = 'Exit b-roll'; State = 'end' }
   @{ ButtonId = 'layer_c.talk_peak'; Label = 'Talk peak'; State = 'pulse' }
+  @{ ButtonId = 'layer_c.funny_moment'; Label = 'Funny moment'; State = 'pulse' }
   @{ ButtonId = 'layer_c.gather_ui_on'; Label = 'Gather UI ON'; State = 'begin' }
   @{ ButtonId = 'layer_c.gather_ui_off'; Label = 'Gather UI OFF'; State = 'end' }
   @{ ButtonId = 'layer_c.skip_zone'; Label = 'Skip / bad'; State = 'pulse' }

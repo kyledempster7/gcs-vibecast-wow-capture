@@ -1,0 +1,213 @@
+{
+  "schema": "gcs_explorers_league_pitch_storyboard/v1",
+  "product_id": "twe_explorers_league_community_pitch_v1",
+  "generated_at_utc": "2026-08-10T22:20:20.956488+00:00",
+  "armed": false,
+  "kyle_go": false,
+  "status": "scaffold_storyboard",
+  "law": "no invent FOOTAGE \u00b7 no silent publish \u00b7 never invent League roster \u00b7 go-only",
+  "flash_cards": [
+    {
+      "id": "flash.welcome",
+      "text": "Welcome back \u2014 or welcome first.",
+      "over": "City hub establish",
+      "overlay": "file:///Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html?id=flash.welcome"
+    },
+    {
+      "id": "flash.league",
+      "text": "Explorer\u2019s League energy \u00b7 Thrall \u00b7 Horde",
+      "over": "Hub / charter still",
+      "overlay": "file:///Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html?id=flash.league"
+    },
+    {
+      "id": "flash.guild_intent",
+      "text": "A guild home when the time is right",
+      "over": "Orgrimmar / charter UI (if real later)",
+      "overlay": "file:///Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html?id=flash.guild_intent"
+    },
+    {
+      "id": "flash.fair",
+      "text": "Crafting fair vibe \u2014 mats, craft, questions",
+      "over": "Profession table / AH",
+      "overlay": "file:///Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html?id=flash.fair"
+    },
+    {
+      "id": "flash.dungeons",
+      "text": "Learner dungeon nights \u00b7 no shame",
+      "over": "Group finder / dungeon door (real session only)",
+      "overlay": "file:///Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html?id=flash.dungeons"
+    },
+    {
+      "id": "flash.discord_door",
+      "text": "Gathering door for explorers \u2014 not a spam list",
+      "over": "Soft Discord *intent* card only",
+      "overlay": "file:///Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html?id=flash.discord_door"
+    },
+    {
+      "id": "flash.not_alone",
+      "text": "You\u2019re not late. You\u2019re here.",
+      "over": "Any calm travel / flight",
+      "overlay": "file:///Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html?id=flash.not_alone"
+    },
+    {
+      "id": "flash.community",
+      "text": "New \u00b7 returner \u00b7 overwhelmed \u2014 all welcome",
+      "over": "Cast lineup / multi-toon still",
+      "overlay": "file:///Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html?id=flash.community"
+    }
+  ],
+  "shots": [
+    {
+      "shot_id": "pitch.hub_thrall",
+      "description": "Thrall / Horde hub establish (Orgrimmar or current home)",
+      "why": "Place the League story",
+      "captured": true,
+      "media_path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/c-pride-15s-start.mp4",
+      "keep_id": "c-pride-15s-start",
+      "map_mode": "explicit"
+    },
+    {
+      "shot_id": "pitch.cast_lineup",
+      "description": "Character select or multi-toon still",
+      "why": "\u201cWho\u2019s who\u201d energy",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.flight_soft",
+      "description": "Calm flight / travel",
+      "why": "Soft welcome bed",
+      "captured": true,
+      "media_path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/c-pride-30s-best.mp4",
+      "keep_id": "c-pride-30s-best",
+      "map_mode": "explicit"
+    },
+    {
+      "shot_id": "pitch.prof_panel",
+      "description": "Profession panel tour",
+      "why": "Fair education",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.craft_cast",
+      "description": "Craft cast / progress bar beauty",
+      "why": "Fair hero moment",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.ah_browse",
+      "description": "AH browse mats / crafts",
+      "why": "Fair market energy",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.gather_to_craft",
+      "description": "Gather loop \u2192 bank/craft",
+      "why": "Fair pipeline",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.bag_relief",
+      "description": "Bag relief \u2192 bank",
+      "why": "Shared frustration honesty",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.dungeon_door",
+      "description": "Dungeon entrance / queue UI",
+      "why": "Night invite visual",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.learner_pull",
+      "description": "Calm pull / teach moment",
+      "why": "Learner night energy",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.group_cheer",
+      "description": "Win toast / hearth after clear",
+      "why": "Community beat",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.still_waitlist",
+      "description": "Title card still: waitlist / door language",
+      "why": "Soft CTA without fake URL",
+      "captured": false,
+      "media_path": null
+    },
+    {
+      "shot_id": "pitch.play_together",
+      "description": "Duo or multi-character play honesty",
+      "why": "\u201cPlay together\u201d pitch",
+      "captured": true,
+      "media_path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/db-20260809-c-full-170544.mp4",
+      "keep_id": "c",
+      "map_mode": "explicit"
+    }
+  ],
+  "sequence": [
+    {
+      "order": 1,
+      "shot_id": "pitch.hub_thrall",
+      "flash_id": "flash.welcome"
+    },
+    {
+      "order": 2,
+      "shot_id": "pitch.flight_soft",
+      "flash_id": "flash.league"
+    },
+    {
+      "order": 3,
+      "shot_id": "pitch.play_together",
+      "flash_id": "flash.community"
+    },
+    {
+      "order": 4,
+      "shot_id": "pitch.craft_cast",
+      "flash_id": "flash.fair"
+    },
+    {
+      "order": 5,
+      "shot_id": "pitch.prof_panel",
+      "flash_id": "flash.fair"
+    },
+    {
+      "order": 6,
+      "shot_id": "pitch.gather_to_craft",
+      "flash_id": "flash.fair"
+    },
+    {
+      "order": 7,
+      "shot_id": "pitch.dungeon_door",
+      "flash_id": "flash.dungeons"
+    },
+    {
+      "order": 8,
+      "shot_id": "pitch.still_waitlist",
+      "flash_id": "flash.discord_door"
+    },
+    {
+      "order": 9,
+      "shot_id": "pitch.cast_lineup",
+      "flash_id": "flash.not_alone"
+    }
+  ],
+  "captured_n": 3,
+  "shots_n": 13,
+  "flash_n": 8,
+  "flash_html": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/hyperframes-brand-kit/slots/league-pitch-flash/index.html",
+  "pack": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/social/EXPLORERS_LEAGUE_PITCH_BROLL_PACK.md",
+  "ready_to_edit": true,
+  "last_map_utc": "2026-08-10T22:20:20.993700+00:00",
+  "last_map_day": "returner-daily-2026-08-09"
+}

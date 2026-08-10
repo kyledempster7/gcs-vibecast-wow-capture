@@ -47,6 +47,18 @@ Windows 3900x online · harvest + score + MOTION_TAGS + chat detect + review-pac
 
 ---
 
+## P2 add-ons (future goals 2026-08-10 — do not demote P0)
+
+Doctrine live under `FUTURE_GOALS_PLAY_TO_POST_20260810.md`. Wire after P0 dual audio + markers + KEEP nights.
+
+| Rank | Work | Owner | Done when |
+|------|------|-------|-----------|
+| **P2-A** | Funny/mic-cue peaks shortlist (`peak=funny` · Deck `funny_moment`) | Mac+Win | Real KEEP uses path; no invent comedy |
+| **P2-B** | Daily personality package draft (video+still+story NOT_ARMED) | Mac | `package/DAILY_PERSONALITY_DRAFT.md` after KEEP when played |
+| **P2-C** | Weight ledger rows → NEXT_NIGHT_BRIEF | Mac | ≥3 KEEP nights cited from WEIGHT |
+| **P2-D** | Framing default B (full masters + product crop) | Windows | `CAPTURE_FRAMING_DECISION` confirmed |
+| **P2-E** | Community style gate on caption drafts | Mac | Style checklist in package |
+
 ## Explicit defer (not top 10 — still in 100)
 
 | Defer | Why |
@@ -57,6 +69,8 @@ Windows 3900x online · harvest + score + MOTION_TAGS + chat detect + review-pac
 | Munch trend scoring | Suggestion layer only after analytics (10) |
 | Replay buffer Medal clone | After session arm (feeds 1–2) |
 | Multi-lang captions | After EN burned captions (5) |
+| Live Twitch productization | Framing B first; optional later |
+| Class-P letter mix into daily social | Separate product — Returner Daily only |
 
 ---
 

@@ -67,8 +67,12 @@ sys.exit(0 if ready else 1)
 PY
 TODAY_READY=$?
 
-# If not ready, try auto Session-End when masters already on Windows (zero Kyle PowerShell)
+# If not ready, probe OBS path (read-only) then try auto Session-End when masters exist
 if [[ "$TODAY_READY" -ne 0 ]]; then
+  if [[ -f "$SCRIPTS/mac_probe_obs_windows.sh" ]]; then
+    echo "OPERATOR: OBS product path probe (read-only)"
+    bash "$SCRIPTS/mac_probe_obs_windows.sh" "$DAY" || echo "obs_probe_rc=$?"
+  fi
   echo "OPERATOR: try Auto-Session-End-If-Masters"
   bash "$SCRIPTS/windows_auto_session_end.sh" "$DAY"
   AEC=$?

@@ -30,8 +30,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scri
 | Personality line | `talk_peak` |
 | Bad stretch | `skip_zone` |
 | Optional clean gather | `gather_ui_on` / `off` · Alt+Z for full cinematic |
+| Funny / herb-rival laugh | `funny_moment` or `talk_peak` within ~5–10s |
 
 Stop when fun ends. Full logout.
+
+**Future goals (Mac + Windows):** `D:\_scripts\WINDOWS_FUTURE_GOALS_PACKET.md` · vault `04-Story-and-Capture/FUTURE_GOALS_PLAY_TO_POST_20260810.md` — daily personality package, framing A/B, community style.
+
+**League pitch B-roll (optional tonight):** `D:\_scripts\CAPTURE_LEAGUE_PITCH_TONIGHT.md` — hub + craft/gather shots for product `twe_explorers_league_community_pitch_v1` (scaffold, no fake guild/Discord claims).
 
 ## 3. After stop (one command)
 

@@ -118,6 +118,20 @@ PY
       echo "== package stub NOT_ARMED =="
       python3 "$SCRIPTS/stitch_returner_package.py" --day "$DAY" || true
     fi
+    # Phase B: weight ledger + Returner Daily personality draft (armed=false; no invent)
+    if [[ -f "$SCRIPTS/write_weight_row.py" ]]; then
+      echo "== weight row from verdicts =="
+      python3 "$SCRIPTS/write_weight_row.py" --day-dir "$ROOT" --note "post-enhance after KEEP" || true
+    fi
+    if [[ -f "$SCRIPTS/draft_daily_personality_package.py" ]]; then
+      echo "== daily personality draft NOT_ARMED =="
+      python3 "$SCRIPTS/draft_daily_personality_package.py" --day-dir "$ROOT" --force || true
+    fi
+    # League pitch: suggest KEEP → pitch.* when files real (NOT_ARMED storyboard)
+    if [[ -f "$SCRIPTS/map_keep_to_league_pitch.py" ]]; then
+      echo "== map KEEP to League pitch storyboard (auto-suggest) =="
+      python3 "$SCRIPTS/map_keep_to_league_pitch.py" --day-dir "$ROOT" --auto-suggest --apply || true
+    fi
   fi
 fi
 
