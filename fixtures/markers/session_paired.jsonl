@@ -1,0 +1,9 @@
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:00:00+00:00","button_id":"layer_c.record_start","state":"begin","recording":true,"session_id":"fixture"}
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:00:10+00:00","button_id":"layer_c.broll_enter","state":"begin","recording":true,"session_id":"fixture"}
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:00:40+00:00","button_id":"layer_c.broll_exit","state":"end","recording":true,"session_id":"fixture"}
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:00:50+00:00","button_id":"layer_c.rotate_begin","state":"begin","recording":true,"session_id":"fixture"}
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:01:05+00:00","button_id":"layer_c.rotate_end","state":"end","recording":true,"session_id":"fixture"}
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:01:20+00:00","button_id":"layer_c.talk_peak","state":"pulse","recording":true,"session_id":"fixture"}
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:01:30+00:00","button_id":"layer_c.skip_zone","state":"pulse","recording":true,"session_id":"fixture"}
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:02:00+00:00","button_id":"layer_c.gather_ui_on","state":"begin","recording":true,"session_id":"fixture"}
+{"schema":"gcs_obs_marker/v1","ts_utc":"2026-08-10T00:02:25+00:00","button_id":"layer_c.gather_ui_off","state":"end","recording":true,"session_id":"fixture"}
