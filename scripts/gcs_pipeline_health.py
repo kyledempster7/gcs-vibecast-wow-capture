@@ -60,11 +60,29 @@ def win_online() -> tuple[str, str]:
     if not data:
         return "🔴", "reachability parse fail"
     verdict = str(data.get("verdict") or "")
+    # Soft-poll LATEST fresh = SSH proved recently (reachability may only report ONLINE_TS)
+    soft = BROLL / "SOFT_POLL_LATEST.json"
+    soft_age = None
+    if soft.is_file():
+        soft_age = datetime.now().timestamp() - soft.stat().st_mtime
+        if soft_age < 900:  # 15 min
+            try:
+                sd = json.loads(soft.read_text(encoding="utf-8"))
+                if sd.get("days") is not None or sd.get("host"):
+                    return (
+                        "🟢",
+                        f"verdict={verdict}+soft_poll_ssh_fresh_{int(soft_age)}s",
+                    )
+            except (json.JSONDecodeError, OSError):
+                pass
     # ONLINE_SSH = full SCH-readable; ONLINE_TS = Tailscale only (tasks unproven)
     if verdict == "ONLINE_SSH":
         return "🟢", f"verdict={verdict}"
     if verdict.startswith("ONLINE"):
-        return "🟡", f"verdict={verdict} (TS ok; SCH unproven until ONLINE_SSH)"
+        note = f"verdict={verdict} (TS ok; SCH unproven until ONLINE_SSH"
+        if soft_age is not None:
+            note += f"; soft_poll age {int(soft_age)}s"
+        return "🟡", note + ")"
     return "🔴", f"verdict={verdict}"
 
 

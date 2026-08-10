@@ -25,6 +25,10 @@ echo "harvest_if_ready_rc=$HRC"
 python3 "$SCRIPTS/gcs_pipeline_health.py" || true
 if [[ "$HRC" -eq 0 ]]; then
   echo "POST_PLAY_HARVEST_OK day=$DAY"
+  # Future-proof: offsite refresh after real harvest (no thrash when not ready)
+  if [[ -f "$SCRIPTS/mac_backup_vibecast.sh" ]]; then
+    bash "$SCRIPTS/mac_backup_vibecast.sh" || echo "backup_warn non-zero"
+  fi
 elif [[ "$HRC" -eq 1 ]]; then
   echo "POST_PLAY_NOT_READY day=$DAY — export/stage candidates on Windows first"
 else

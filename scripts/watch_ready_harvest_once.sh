@@ -10,6 +10,18 @@ END=$(( $(date +%s) + MAX_MIN * 60 ))
 LOGDIR="${HOME}/Library/Logs/gcs-vibecast-wow"
 mkdir -p "$LOGDIR"
 DETAIL="$LOGDIR/watch_ready_harvest.log"
+LOCK="$LOGDIR/watch_ready_harvest.lock"
+# Single-instance: refuse second watch
+if [[ -f "$LOCK" ]]; then
+  oldpid=$(cat "$LOCK" 2>/dev/null || true)
+  if [[ -n "$oldpid" ]] && kill -0 "$oldpid" 2>/dev/null; then
+    echo "FAILED"
+    echo "watch already running pid=$oldpid" >>"$DETAIL"
+    exit 1
+  fi
+fi
+echo $$ >"$LOCK"
+trap 'rm -f "$LOCK"' EXIT
 
 while [[ $(date +%s) -lt $END ]]; do
   {
