@@ -11,13 +11,26 @@
   "caption": {
     "body": "# Caption draft \u2014 2026-08-09\n\n**Status:** filled from real Dragonblight duo \u00b7 edit before go \u00b7 NOT published\n\n## Feed\n\n```\nDragonblight with Mac \u2014 Blood DK + Resto Shaman, low-band Northrend pace.\n\nReturner energy \u00b7 Thrall \u00b7 Horde\n```\n\n## One-liner (template A)\n\n```\nDuo night in Dragonblight \u00b7 Crimsonblood + Macraven (resto) \u00b7 no rush.\n\nReturner energy \u00b7 Thrall \u00b7 Horde\n```\n\n## Still-led alt (template C \u2014 if video cut heavy)\n\n```\nStill from Dragonblight \u00b7 duo questing with Mac\n\nExplorer pace. No speedrun required.\n```\n\n## Optional positive friction (template B \u00b7 real)\n\n```\nDragonblight duo with Mac \u2014 Blood DK leveling next to Resto Shaman.\n\nFriction tonight: OBS was on Fable_BRoll profile so masters landed under Videos\\Fable Anniversary B-Roll instead of D:\\WoW B-Roll Storage\nWorked around it by: path-truth harvest + attach real Fable folder clips; next record night use WoW_BRoll_1440p60 \u2192 D:\nGot a workaround?\n```\n\n## Facts used (no invent)\n\n| Fact | Source |\n|------|--------|\n| Zone Dragonblight | Kyle + DUO_SESSION_2026-08-09 |\n| Kyle Blood DK Crimsonblood L17\u219219 (API later 21 Unholy) | play notes + roster latest |\n| Mac Macraven Resto Shaman ~L16 | Kyle live |\n| B-roll real under Fable OBS folder | capture-inbox + Windows verify |\n| NO_GUESTS | Mac is duo friend |\n\n## Seed source\n\n`caption-seeds/TEMPLATES.md` A/B/C \u00b7 duo session \u00b7 harvest receipt\n\n---\n**Soft promo (optional):** Explorer\u2019s League someday \u00b7 Thrall \u00b7 returner energy \u2014 never invent members or force CTA.\n\n\u2014 The WoW Explorer \u00b7 GCS"
   },
-  "media": [],
-  "product_ready": false,
-  "hold_reason": "media_empty_or_missing_on_disk",
+  "media": [
+    {
+      "role": "video",
+      "path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/db-20260809-c-full-170544.mp4",
+      "exists": true,
+      "sha256": "af3f8fb3b913e445e163be50cdb188e6ca6a230c9df12f6e6538f7027ccff611"
+    },
+    {
+      "role": "still",
+      "path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/WoWScrnShot_080926_182343.jpg",
+      "exists": true,
+      "sha256": "55cb8f35b5be4287c20408e1edc9246e42a03cac5539cbb81ddc30349c24907b"
+    }
+  ],
+  "product_ready": true,
+  "hold_reason": null,
   "kyle_go": false,
   "publishNow": false,
-  "generated_at": "2026-08-10T05:04:22.366677+00:00",
-  "notes": "Local package only. Arm via outbox --kyle-go. No auto Zernio fire. HOLD: media_empty_or_missing_on_disk.",
+  "generated_at": "2026-08-10T16:23:21.864522+00:00",
+  "notes": "Local package only. Arm via outbox --kyle-go. No auto Zernio fire. Media present \u2014 still NOT_ARMED until Kyle go.",
   "gcs": {
     "citadel": "GCS",
     "wing": "VibeCast",
@@ -29,9 +42,9 @@
   "arm_check": {
     "allowed": false,
     "why": "not_armed",
-    "package_sha256": "1bbfc239eb8688bbfd45d9399b4d1fee23fc96effc9db20bce909930c5dccdfd",
+    "package_sha256": "ae140c96a0c0e14ae63c6fb3167fc9a4357fd9d8d0cc84d83903104978c18e57",
     "arm_path": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/returner-daily/2026-08-09/ARM_STATE.json",
-    "checked_at_utc": "2026-08-10T05:04:22.373520+00:00",
+    "checked_at_utc": "2026-08-10T16:23:21.869770+00:00",
     "law": "default_deny_stitch_cannot_arm"
   }
 }
