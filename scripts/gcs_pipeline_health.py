@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 SCRIPTS = Path(__file__).resolve().parent
@@ -84,7 +84,16 @@ def audio() -> tuple[str, str]:
 
 def day_signals(day: Path | None) -> dict:
     if not day:
-        return {"markers": "🔴 none", "candidates": "🔴 none", "vertical": "🔴", "speech": "—", "shortlist": "🔴"}
+        return {
+            "markers": "🔴 none",
+            "candidates": "🔴 none",
+            "vertical": "🔴",
+            "speech": "—",
+            "shortlist": "🔴",
+            "day": "none",
+            "fresh_icon": "🔴",
+            "fresh_note": "no return day",
+        }
     markers = day / "markers" / "SESSION.jsonl"
     cand = day / "candidates"
     n_mp4 = len(list(cand.glob("*.mp4"))) if cand.is_dir() else 0
@@ -95,13 +104,30 @@ def day_signals(day: Path | None) -> dict:
     if speech.is_file():
         sp = json.loads(speech.read_text(encoding="utf-8")).get("status", "?")
     short = day / "review-pack" / "SHORTLIST.md"
+    today = datetime.now().strftime("%Y-%m-%d")
+    day_id = day.name.replace("returner-daily-", "")
+    prior = day_id != today
+    # age from folder mtime or MANIFEST
+    mtime = day.stat().st_mtime
+    age_h = (datetime.now().timestamp() - mtime) / 3600.0
+    if day_id == today and n_mp4:
+        fresh_icon, fresh_note = "🟢", f"today · {age_h:.0f}h age"
+    elif age_h <= 36:
+        fresh_icon, fresh_note = "🟡", f"`{day.name}` · {age_h:.0f}h ago · prior harvest"
+    else:
+        fresh_icon, fresh_note = "🟡", f"`{day.name}` · {age_h:.0f}h ago · STALE (>36h) · not tonight"
+    cand_note = f"{n_mp4} mp4"
+    if prior and n_mp4:
+        cand_note += " (prior day — not tonight)"
     return {
         "markers": "🟢" if markers.is_file() and markers.stat().st_size > 10 else "🟡 empty/missing",
-        "candidates": f"{'🟢' if n_mp4 else '🔴'} {n_mp4} mp4",
-        "vertical": f"{'🟢' if n_vert else '🟡'} {n_vert} vertical",
+        "candidates": f"{'🟢' if n_mp4 and not prior else ('🟡' if n_mp4 else '🔴')} {cand_note}",
+        "vertical": f"{'🟢' if n_vert and not prior else ('🟡' if n_vert else '🟡')} {n_vert} vertical",
         "speech": sp,
-        "shortlist": "🟢" if short.is_file() else "🔴",
+        "shortlist": "🟢" if short.is_file() and not prior else ("🟡" if short.is_file() else "🔴"),
         "day": day.name,
+        "fresh_icon": fresh_icon,
+        "fresh_note": fresh_note,
     }
 
 
@@ -123,19 +149,21 @@ def soft_poll_line() -> tuple[str, str]:
         (d for d in days if isinstance(d, dict) and d.get("day") == today),
         None,
     )
-    any_ready = bool(data.get("ready"))
-    if today_row is not None:
-        today_ready = bool(today_row.get("ready"))
-        if today_ready:
-            return "🟢", f"today READY · {reasons or today}"
-        if any_ready:
-            # yesterday (or other day) ready only — not a false green for harvest-today
-            return "🟡", f"today not ready · other day ready · {reasons}"
-        return "🟡", f"ready=False · {reasons or 'no days'}"
-    # single-day payload without today key
-    if any_ready:
-        return "🟢", f"ready=True · {reasons or 'no days'}"
-    return "🟡", f"ready=False · {reasons or 'no days'}"
+    ready_today = data.get("ready_today")
+    if ready_today is None and today_row is not None:
+        ready_today = bool(today_row.get("ready"))
+    elif ready_today is None:
+        ready_today = bool(data.get("ready"))
+    ready_any = data.get("ready_any")
+    if ready_any is None:
+        ready_any = any(bool(d.get("ready")) for d in days if isinstance(d, dict)) or bool(
+            data.get("ready")
+        )
+    if ready_today:
+        return "🟢", f"ready_today=true · {reasons or today}"
+    if ready_any:
+        return "🟡", f"ready_today=false · stale other-day READY still staged · {reasons}"
+    return "🟡", f"ready_today=false · {reasons or 'no days'}"
 
 
 def arm_state(day: Path | None) -> tuple[str, str]:
@@ -187,6 +215,7 @@ def main() -> int:
         "|-------|-------|------|",
         f"| Windows online | {w_icon} | {w_note} |",
         f"| Soft-poll READY | {sp_icon} | {sp_note} |",
+        f"| Harvest freshness | {d.get('fresh_icon', '—')} | {d.get('fresh_note', '')} |",
         f"| Audio stamp | {a_icon} | {a_note} |",
         f"| Latest return day | — | `{d.get('day', 'none')}` |",
         f"| Markers SESSION.jsonl | {d['markers']} | |",
@@ -198,8 +227,8 @@ def main() -> int:
         "",
         "## Next",
         "",
-        "- ROADMAP Phase A: Deck multi-act + dual audio (Kyle play); agents: READY harvest e2e when ready=true.",
-        "- Kyle: KEEP/go only when proud. Agents: no invent FOOTAGE.",
+        "- Phase A play night: Deck multi-act + AUDIO_GREEN + export → `post_play_harvest.sh`.",
+        "- Idle daytime LaunchAgent quiet hours are intentional. Agents: no invent FOOTAGE.",
         "",
         f"Spec: `04-Story-and-Capture/PRODUCT_SYSTEM_SPEC.md`",
         "",

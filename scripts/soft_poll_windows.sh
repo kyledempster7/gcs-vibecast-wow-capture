@@ -74,13 +74,27 @@ printf '%s\n' "$JSON" > "$RECEIPT"
 
 python3 - "$RECEIPT" "$OUT_DIR" <<'PY'
 import json, sys
+from datetime import date
 from pathlib import Path
 p = Path(sys.argv[1])
 out_dir = Path(sys.argv[2])
 data = json.loads(p.read_text(encoding="utf-8"))
-ready = bool(data.get("ready"))
-print(f"soft_poll ready={ready} days={len(data.get('days') or [])} -> {p}")
-for d in data.get("days") or []:
+days = data.get("days") or []
+ready_any = any(bool(d.get("ready")) for d in days if isinstance(d, dict))
+today = date.today().isoformat()
+today_row = next((d for d in days if isinstance(d, dict) and d.get("day") == today), None)
+ready_today = bool(today_row.get("ready")) if today_row else False
+# Preserve Windows ready (any-day) as ready_any; ready = ready_today for ops honesty
+data["ready_any"] = ready_any if days else bool(data.get("ready"))
+data["ready_today"] = ready_today
+data["ready"] = ready_today  # harvest-today truth; multi-day detail stays in days[]
+data["schema"] = data.get("schema") or "gcs_soft_poll_ready/v1"
+p.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+print(
+    f"soft_poll ready_today={ready_today} ready_any={data['ready_any']} "
+    f"days={len(days)} -> {p}"
+)
+for d in days:
     day = d.get("day") or "unknown"
     day_dir = out_dir / f"returner-daily-{day}" / "analysis"
     day_dir.mkdir(parents=True, exist_ok=True)
@@ -89,6 +103,7 @@ for d in data.get("days") or []:
         "generated_at_utc": data.get("generated_at_utc"),
         "host": data.get("host"),
         "ready": bool(d.get("ready")),
+        "ready_today": ready_today,
         "days": [d],
         "law": data.get("law"),
     }
@@ -97,5 +112,6 @@ for d in data.get("days") or []:
         f"  day={day} ready={d.get('ready')} reason={d.get('reason')} "
         f"cand={d.get('candidates_n')} stage={d.get('stage_mp4_n')}"
     )
-sys.exit(0 if ready else 1)
+# Exit 0 only if *today* ready (matches harvest_if_ready / post_play)
+sys.exit(0 if ready_today else 1)
 PY
