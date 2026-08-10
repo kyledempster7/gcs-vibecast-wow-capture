@@ -203,6 +203,11 @@ def main() -> int:
   {img}
   {vid}
   {vert}
+  <div class="gcs-one-tap-verdict" data-id="{html.escape(c["id"])}">
+    <button class="keep" type="button" data-v="KEEP">KEEP</button>
+    <button class="reject" type="button" data-v="REJECT">REJECT</button>
+    <div class="msg"></div>
+  </div>
 </div>'''
 
     second_play = [c for c in cards if c.get("second_play")]
@@ -215,15 +220,39 @@ body {{ font-family: system-ui,sans-serif; background:#0b0e14; color:#f3e9d7; ma
 h1 {{ color:#7ec8e3; }}
 .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px; }}
 .note {{ color:#a89b84; max-width:720px; }}
+.gcs-one-tap-verdict button {{ margin:4px 4px 0 0; padding:6px 10px; border-radius:6px; border:0; cursor:pointer; font-weight:600; }}
+.gcs-one-tap-verdict .keep {{ background:#2d6a4f; color:#fff; }}
+.gcs-one-tap-verdict .reject {{ background:#9b2226; color:#fff; }}
+.gcs-one-tap-verdict .msg {{ font-size:12px; color:#9bdeac; min-height:1em; }}
 </style></head>
 <body>
 <h1>Returner Daily review pack</h1>
 <p class="note">No publish. Human feedback wins. Pride cuts first, then <strong>second-play orbit</strong> shortlist, then earlier eyes.
-Say: <em>keep mid</em> · <em>reject h2</em> · plain English · <em>go video with &lt;id&gt;</em> only if proud.</p>
+One-tap KEEP/REJECT needs: <code>python3 scripts/review_pack_feedback_server.py --day-dir &lt;day&gt;</code> then open the local URL.
+Or CLI: <em>keep mid</em> · <em>reject h2</em> · plain English · <em>go video with &lt;id&gt;</em> only if proud.</p>
 <p class="note">eyes_on: {", ".join(html.escape(x) for x in sorted(eyes)) or "(none)"}</p>
 <div class="grid">
 {body}
 </div>
+<script>
+async function gcsVerdict(id, verdict, el) {{
+  const msg = el.parentElement.querySelector('.msg');
+  try {{
+    const r = await fetch('/verdict', {{
+      method: 'POST',
+      headers: {{'Content-Type': 'application/json'}},
+      body: JSON.stringify({{id, verdict, note: 'one_tap_board'}})
+    }});
+    const j = await r.json();
+    msg.textContent = j.ok ? (verdict + ' saved') : ('err ' + (j.stderr || j.error || ''));
+  }} catch (e) {{
+    msg.textContent = 'start review_pack_feedback_server.py for one-tap';
+  }}
+}}
+document.querySelectorAll('.gcs-one-tap-verdict button').forEach(btn => {{
+  btn.addEventListener('click', () => gcsVerdict(btn.parentElement.dataset.id, btn.dataset.v, btn));
+}});
+</script>
 </body></html>'''
     (pack / "index.html").write_text(page, encoding="utf-8")
 

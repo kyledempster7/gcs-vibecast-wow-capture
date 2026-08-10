@@ -13,14 +13,24 @@ parent: ROADMAP_P0_P2_TOP10 · RIGHTSIZE_SWARM
 **Agent harvest button:** `wow-roster-tracker/scripts/post_play_harvest.sh`  
 **Laws:** no invent FOOTAGE · no silent publish · ARM deny  
 
+## Agent preflight (already done — do not re-thrash)
+
+| Item | State |
+|------|--------|
+| OBS profile `WoW_BRoll_1440p60` path | **D:\WoW B-Roll Storage** · RecTracks=3 dual · Advanced |
+| Scene dual-route | Desktop→T1 · Mic→T2 · `Untitled` + `WoW_BRoll_Product` |
+| Day tree + Move masters | `Move-TodayMastersToDayRoot.ps1` after stop |
+| Layer C Open commands | `D:\_scripts\DECK_OPEN_COMMANDS.txt` (wire once in Elgato UI) |
+| Agent marker prove | product-shaped join windows OK — **not** human A1 |
+
 ## Before / during play (Kyle)
 
 | ☐ | Item | Done-when |
 |---|------|-----------|
-| A1 | Deck multi-act mid-session | SESSION.jsonl has real `record_start` + broll/rotate/skip (not only agent_prove) |
-| A2 | Dual audio 10s | Mic + game meters; path on [[AUDIO_GREEN_STAMP]] → GREEN only if real file |
+| A1 | Deck multi-act mid-session | SESSION.jsonl has **human** `record_start` + broll/rotate/skip (not `agent_install_prove` / `agent_prove`) |
+| A2 | Dual audio 10s | Mic + game meters both move; run `audio_green_probe.py --file <path> --write-stamp` only if dual |
 | — | Optional B | Cinematic hide UI orbit · Titan location module up |
-| A3 prep | Record + Export candidates | `D:\WoW B-Roll Storage\<day>\candidates\` + MANIFEST (or Stage) |
+| A3 prep | Record + Export candidates | masters→`raw` · `Export-ShipCandidates.ps1` → candidates + MANIFEST `marker_window` |
 
 ## After play (agent or one Mac command)
 

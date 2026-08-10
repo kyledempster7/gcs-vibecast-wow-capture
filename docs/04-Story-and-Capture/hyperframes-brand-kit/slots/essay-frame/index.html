@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>TWE — Audio essay bed frame</title>
+  <style>
+    html, body { margin:0; height:100%; background:#0b0e14; overflow:hidden; }
+    .bed { height:100%; box-sizing:border-box; border:16px solid #121826;
+      outline: 2px solid #8b1e2d; outline-offset:-24px;
+      background:
+        linear-gradient(180deg, #0b0e14 0%, #121826 40%, #0b0e14 100%);
+      position:relative; }
+    .bar { position:absolute; left:8%; right:8%; bottom:10%; height:48px;
+      background: repeating-linear-gradient(90deg, #7ec8e3 0 3px, transparent 3px 8px);
+      opacity:.35; border-radius:4px; }
+    .label { position:absolute; top:8%; left:8%; color:#7ec8e3; font-family:system-ui,sans-serif;
+      letter-spacing:.15em; text-transform:uppercase; font-size:13px; }
+    .title { position:absolute; top:14%; left:8%; right:8%; color:#f3e9d7;
+      font-family: Palatino, Georgia, serif; font-size:42px; }
+  </style>
+</head>
+<body>
+  <div class="bed">
+    <div class="label">Audio essay · The WoW Explorer</div>
+    <div class="title" data-slot="title">Chapter title</div>
+    <div class="bar" aria-hidden="true"></div>
+  </div>
+</body>
+</html>

@@ -16,6 +16,9 @@ FILES=(
   Install-InboxTasks.ps1
   Install-RemainingTasks.ps1
   Install-GCS-ShipTasks.ps1
+  Install-LayerC-DeckMarkers.ps1
+  Configure-WoW-BRoll-OBS.ps1
+  Move-TodayMastersToDayRoot.ps1
   Run-NightlyInboxes.ps1
   Run-CaptureInbox.ps1
   Run-MementoInbox.ps1

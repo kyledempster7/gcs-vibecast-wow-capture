@@ -146,7 +146,7 @@ def lint_tags(entries: list[dict], allowed: set[str]) -> list[dict]:
                     if not any(a.startswith("shot=") and a == t for a in allowed):
                         warns.append({"id": e.get("id"), "tag": t, "issue": "unknown_shot"})
                 continue
-            if t.startswith("auto_tag=") or t.startswith("source="):
+            if t.startswith("auto_tag=") or t.startswith("source=") or t.startswith("human_KEEP="):
                 continue
             if allowed and t not in allowed:
                 warns.append({"id": e.get("id"), "tag": t, "issue": "unknown_tag"})

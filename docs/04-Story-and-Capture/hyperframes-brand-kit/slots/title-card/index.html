@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>TWE — Title card</title>
+  <style>
+    :root {
+      --bg: #0b0e14; --ice: #7ec8e3; --bone: #f3e9d7; --crimson: #8b1e2d; --gold: #c9a227;
+    }
+    html, body { margin:0; height:100%; background:var(--bg); color:var(--bone);
+      font-family: Palatino, Georgia, serif; overflow:hidden; }
+    .frame { height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;
+      background: radial-gradient(ellipse at 50% 40%, #121826 0%, #0b0e14 70%);
+      border: 3px solid var(--crimson); box-sizing:border-box; }
+    .eyebrow { color:var(--ice); letter-spacing:.2em; text-transform:uppercase; font-size:14px;
+      font-family: system-ui,sans-serif; margin-bottom:16px; }
+    h1 { font-size:56px; margin:0; text-align:center; max-width:90%; line-height:1.1; }
+    .sub { margin-top:20px; color:var(--gold); font-size:18px; font-family:system-ui,sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="eyebrow">The WoW Explorer</div>
+    <h1 data-slot="title">Still a Wrath Brain</h1>
+    <div class="sub" data-slot="series">Midnight Return · Audio essay</div>
+  </div>
+</body>
+</html>

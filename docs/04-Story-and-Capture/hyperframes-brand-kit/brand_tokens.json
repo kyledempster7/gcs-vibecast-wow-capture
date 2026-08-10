@@ -1,0 +1,41 @@
+{
+  "brand": "The WoW Explorer",
+  "updated": "2026-08-09",
+  "palette": {
+    "bg_deep": "#0b0e14",
+    "bg_panel": "#121826",
+    "ice": "#7ec8e3",
+    "crimson": "#8b1e2d",
+    "bone": "#f3e9d7",
+    "muted": "#a89b84",
+    "gold_ornament": "#c9a227",
+    "plague_green": "#3d5c45",
+    "horde_red": "#8c1c1c"
+  },
+  "type": {
+    "display": "Palatino, Georgia, serif",
+    "ui": "system-ui, sans-serif",
+    "title_max_chars": 32
+  },
+  "voice_keywords": [
+    "returner",
+    "Wrath brain",
+    "positive friction",
+    "Explorer's League",
+    "Death Knight",
+    "Forsaken",
+    "Horde",
+    "Thrall"
+  ],
+  "avoid": [
+    "Alliance gold primary",
+    "ragebait",
+    "guest call-in",
+    "ripped Blizzard achievement chrome"
+  ],
+  "products": {
+    "returner_daily": "carousel + broll + personality",
+    "explorer_eps": "audio essays",
+    "class_p": "separate TWE letters — do not rename daily"
+  }
+}

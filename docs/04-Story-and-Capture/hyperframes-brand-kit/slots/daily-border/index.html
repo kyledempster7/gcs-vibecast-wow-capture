@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>TWE — Returner Daily still border</title>
+  <style>
+    html, body { margin:0; height:100%; background:#0b0e14; display:flex; align-items:center; justify-content:center; }
+    .frame { width:min(90vw, 720px); aspect-ratio:1; box-sizing:border-box;
+      border:12px solid #8b1e2d; outline:4px solid #c9a227; outline-offset:-20px;
+      background:#121826; position:relative; overflow:hidden; }
+    .frame::after { content:"RETURNER DAILY"; position:absolute; bottom:18px; left:0; right:0;
+      text-align:center; color:#7ec8e3; letter-spacing:.3em; font-size:12px;
+      font-family:system-ui,sans-serif; }
+    .inner { position:absolute; inset:28px; background:#0b0e14; border:1px solid #3d5c45;
+      display:flex; align-items:center; justify-content:center; color:#a89b84;
+      font-family:system-ui,sans-serif; font-size:14px; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="inner" data-slot="still">Memento / still slot</div>
+  </div>
+</body>
+</html>

@@ -138,16 +138,16 @@ Gather: `04-Story-and-Capture/GATHERING_BROLL_MODE.md`
 
 | Rank | Status | Proof path |
 |------|--------|------------|
-| 1 Deck multi-act | OPEN (install card + script; need human press night) | DECK_MULTI_ACTION_INSTALL.md · D:\_scripts |
-| 2 OBS dual audio+path | OPEN (mic present as AI cue; game/desktop still OPEN) | AUDIO_ROLE.json · AUDIO_GREEN OPEN · GAME_AUDIO_RESETUP |
-| 3 Marker export | CODE join-aligned v1 (needs real masters+markers e2e) | Export-ShipCandidates.ps1 paired windows + skip intervals · deploy D:\_scripts |
+| 1 Deck multi-act | AGENT_READY (Open cmds + agent_install_prove join 6 windows) · HUMAN press still OPEN | DECK_OPEN_COMMANDS.txt · Install-LayerC-DeckMarkers · MARKER_JOIN_AGENT_PROVE |
+| 2 OBS dual audio+path | PATH+TRACKS CONFIGURED · 10s dual GREEN still OPEN | Configure-WoW-BRoll-OBS · FilePath D: · RecTracks=3 · mixers T1/T2 · AUDIO_GREEN OPEN until probe |
+| 3 Marker export | CODE CLOSED (join-aligned + product fixture) · live masters e2e OPEN | Export-ShipCandidates · PRODUCT_MARKER_FIXTURE_JOIN · test_export_marker_intervals PASS |
 | 4 Pride 9:16 | SHIPPED v0 | pride_vertical.py · candidates/pride/vertical/ |
 | 5 Speech peaks | SHIPPED (honest skip ambience) | analysis/SPEECH_PEAKS.json |
-| 6 Gather UI live | OPEN (doctrine + install) | GATHERING_BROLL_MODE.md · DECK gather_ui_* |
-| 6b Cinematic orbit UI | OPEN (Kyle: not set last night) | CINEMATIC_ORBIT_UI_MODE.md |
+| 6 Gather UI live | AGENT_READY markers (gather on/off in prove) · addon/UI night OPEN | GATHERING_BROLL_MODE · layer_c.gather_ui_* |
+| 6b Cinematic orbit UI | OPEN (human orbit night) · checklist ready | CINEMATIC_ORBIT_UI_MODE.md |
 | 7 Detector cal | PARTIAL v1.1 majority+ROI · 223313 still T | DETECTOR_CALIBRATION_V1 · chat_detect schema v1.1 |
 | 8 Moments stitch | SHIPPED dry | Moments-Library/…/montage-dry/ |
-| 9 60s review | SHIPPED cap + CLI | SHORTLIST ≤8 · record_feedback.py |
+| 9 60s review | SHIPPED cap + CLI + one-tap board | SHORTLIST ≤8 · record_feedback · review_pack_feedback_server |
 | 10 Health+brief | SHIPPED | gcs_pipeline_health.py · NEXT_NIGHT_BRIEF.md |
 | C1 soft_poll READY | SHIPPED multi-day | default today+yest · -Command days fix · per-day SOFT_POLL.json · LATEST multi-day |
 | C2 harvest_if_ready | SHIPPED e2e + lock exit 0 | HARVEST_OK 08-09 · lock idempotent rc=0 · skip not-ready rc=1 |
