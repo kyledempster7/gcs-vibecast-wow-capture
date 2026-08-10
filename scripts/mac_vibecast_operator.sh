@@ -98,6 +98,9 @@ else
 fi
 
 python3 "$SCRIPTS/gcs_pipeline_health.py" || true
+if [[ -f "$SCRIPTS/write_waiting_board.py" ]]; then
+  python3 "$SCRIPTS/write_waiting_board.py" || true
+fi
 
 # Always refresh offsite lightly when asked via BACKUP=1
 if [[ "${BACKUP:-0}" == "1" ]]; then
