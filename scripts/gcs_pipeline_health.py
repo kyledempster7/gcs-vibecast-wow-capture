@@ -60,8 +60,12 @@ def win_online() -> tuple[str, str]:
     if not data:
         return "🔴", "reachability parse fail"
     verdict = str(data.get("verdict") or "")
-    online = verdict.startswith("ONLINE")
-    return ("🟢" if online else "🔴"), f"verdict={verdict}"
+    # ONLINE_SSH = full SCH-readable; ONLINE_TS = Tailscale only (tasks unproven)
+    if verdict == "ONLINE_SSH":
+        return "🟢", f"verdict={verdict}"
+    if verdict.startswith("ONLINE"):
+        return "🟡", f"verdict={verdict} (TS ok; SCH unproven until ONLINE_SSH)"
+    return "🔴", f"verdict={verdict}"
 
 
 def audio() -> tuple[str, str]:
@@ -102,6 +106,7 @@ def day_signals(day: Path | None) -> dict:
 
 
 def soft_poll_line() -> tuple[str, str]:
+    """Honest multi-day READY: green only if *today* is ready (not yesterday-only)."""
     p = BROLL / "SOFT_POLL_LATEST.json"
     if not p.is_file():
         return "🟡", "no SOFT_POLL_LATEST.json"
@@ -109,12 +114,28 @@ def soft_poll_line() -> tuple[str, str]:
         data = json.loads(p.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return "🔴", "SOFT_POLL parse fail"
-    ready = bool(data.get("ready"))
     days = data.get("days") or []
     reasons = ", ".join(
         f"{d.get('day')}:{d.get('reason')}" for d in days[:3] if isinstance(d, dict)
     )
-    return ("🟢" if ready else "🟡"), f"ready={ready} · {reasons or 'no days'}"
+    today = datetime.now().strftime("%Y-%m-%d")
+    today_row = next(
+        (d for d in days if isinstance(d, dict) and d.get("day") == today),
+        None,
+    )
+    any_ready = bool(data.get("ready"))
+    if today_row is not None:
+        today_ready = bool(today_row.get("ready"))
+        if today_ready:
+            return "🟢", f"today READY · {reasons or today}"
+        if any_ready:
+            # yesterday (or other day) ready only — not a false green for harvest-today
+            return "🟡", f"today not ready · other day ready · {reasons}"
+        return "🟡", f"ready=False · {reasons or 'no days'}"
+    # single-day payload without today key
+    if any_ready:
+        return "🟢", f"ready=True · {reasons or 'no days'}"
+    return "🟡", f"ready=False · {reasons or 'no days'}"
 
 
 def arm_state(day: Path | None) -> tuple[str, str]:

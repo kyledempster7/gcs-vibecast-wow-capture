@@ -1,6 +1,11 @@
 # Wire remaining scheduled tasks: nightly inbox chain + weekly health
 $ErrorActionPreference = "Stop"
-$base = "D:\KyleData\KnownFolders\Documents\kyles_corner\Games\WoW\wow-roster-tracker\scripts"
+# Prefer D:\_scripts (dual-SoT deploy target); fall back to Documents tree
+$base = "D:\WoW B-Roll Storage\_scripts"
+if (-not (Test-Path (Join-Path $base "Run-NightlyInboxes.ps1"))) {
+  $alt = "D:\KyleData\KnownFolders\Documents\kyles_corner\Games\WoW\wow-roster-tracker\scripts"
+  if (Test-Path (Join-Path $alt "Run-NightlyInboxes.ps1")) { $base = $alt }
+}
 
 function Ensure-Task {
   param([string]$Name, [string]$Ps1, [string]$At, [string]$TriggerType = "Daily")

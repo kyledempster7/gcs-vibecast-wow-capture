@@ -1,0 +1,25 @@
+{
+  "schema": "gcs_moments_tag_vocab/v1",
+  "law": "fixed vocabulary for Moments + CATALOG; agents may only add listed tags",
+  "required_keep_tags": ["kyle_keep", "for_future=true"],
+  "shot": ["shot=orbit", "shot=fly", "shot=gameplay", "shot=gather", "shot=talk", "shot=still", "shot=load"],
+  "context": [
+    "around_toon",
+    "map_travel",
+    "ui_heavy",
+    "ui_clean",
+    "pride",
+    "ratio=9x16",
+    "chat_present=true",
+    "chat_present=false",
+    "kyle_liked",
+    "kyle_keep",
+    "for_future=true",
+    "second_play",
+    "auto_tag=v0"
+  ],
+  "source": ["source=c", "source=h1", "source=agent", "source_day=*"],
+  "verdict": ["verdict=KEEP", "verdict=PRIDE_PICK", "verdict=REJECT"],
+  "zone": ["zone=*"],
+  "notes": "catalog_query may filter by any of these; unknown tags allowed but warned on --lint"
+}

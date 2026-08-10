@@ -112,6 +112,47 @@ def query(entries: list[dict], tag: str | None, day: str | None, keep_only: bool
     return out
 
 
+def load_vocab() -> set[str]:
+    candidates = [
+        Path(__file__).resolve().parents[2] / "04-Story-and-Capture" / "TAG_VOCAB.json",
+        Path(__file__).resolve().parent.parent.parent
+        / "04-Story-and-Capture"
+        / "TAG_VOCAB.json",
+    ]
+    allowed: set[str] = set()
+    for p in candidates:
+        if not p.is_file():
+            continue
+        try:
+            doc = json.loads(p.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        for key in ("shot", "context", "source", "verdict", "required_keep_tags"):
+            for t in doc.get(key) or []:
+                if isinstance(t, str) and not t.endswith("=*"):
+                    allowed.add(t)
+        break
+    return allowed
+
+
+def lint_tags(entries: list[dict], allowed: set[str]) -> list[dict]:
+    warns = []
+    for e in entries:
+        for t in e.get("tags") or []:
+            if t.startswith("source_day=") or t.startswith("zone=") or t.startswith("shot="):
+                # shot=* listed; zone/source_day freeform ok
+                if t.startswith("shot=") and allowed and t not in allowed:
+                    # allow only listed shot=*
+                    if not any(a.startswith("shot=") and a == t for a in allowed):
+                        warns.append({"id": e.get("id"), "tag": t, "issue": "unknown_shot"})
+                continue
+            if t.startswith("auto_tag=") or t.startswith("source="):
+                continue
+            if allowed and t not in allowed:
+                warns.append({"id": e.get("id"), "tag": t, "issue": "unknown_tag"})
+    return warns
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Moments CATALOG query/rebuild")
     ap.add_argument(
@@ -124,6 +165,7 @@ def main() -> int:
     ap.add_argument("--day", default=None)
     ap.add_argument("--keep-only", action="store_true")
     ap.add_argument("--json", action="store_true", help="Print full JSON results")
+    ap.add_argument("--lint", action="store_true", help="Lint tags against TAG_VOCAB.json")
     args = ap.parse_args()
     root = args.moments_root.resolve()
     catalog_path = root / "CATALOG.json"
@@ -145,6 +187,12 @@ def main() -> int:
         return 0
 
     cat = load_catalog(catalog_path)
+    if args.lint:
+        allowed = load_vocab()
+        warns = lint_tags(cat.get("entries") or [], allowed)
+        print(json.dumps({"lint_warns": len(warns), "samples": warns[:20], "vocab_n": len(allowed)}, indent=2))
+        return 0 if len(warns) == 0 else 1
+
     hits = query(cat.get("entries") or [], args.tag, args.day, args.keep_only)
     if args.json:
         print(json.dumps(hits, indent=2))

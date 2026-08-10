@@ -26,11 +26,17 @@ echo "== deploy stage script =="
 ssh -o BatchMode=yes -o ConnectTimeout=20 "$HOST" \
   "powershell -NoProfile -Command \"New-Item -ItemType Directory -Force -Path 'D:\\WoW B-Roll Storage\\_scripts' | Out-Null\"" \
   || echo "SSH mkdir soft-fail"
-scp -o BatchMode=yes -o ConnectTimeout=30 \
-  "$SCRIPTS/Stage-ShipCandidates.ps1" \
-  "$SCRIPTS/soft_poll_windows.ps1" \
-  "$SCRIPTS/Append-StreamDeckMarker.ps1" \
-  "${HOST}:${REMOTE_SCRIPTS}/" || echo "scp scripts soft-fail"
+# Dual-SoT: full ship set (not only stage/soft_poll)
+if [[ -x "$SCRIPTS/deploy_windows_scripts.sh" ]] || [[ -f "$SCRIPTS/deploy_windows_scripts.sh" ]]; then
+  bash "$SCRIPTS/deploy_windows_scripts.sh" || echo "deploy_windows_scripts soft-fail"
+else
+  scp -o BatchMode=yes -o ConnectTimeout=30 \
+    "$SCRIPTS/Stage-ShipCandidates.ps1" \
+    "$SCRIPTS/soft_poll_windows.ps1" \
+    "$SCRIPTS/Append-StreamDeckMarker.ps1" \
+    "$SCRIPTS/Export-ShipCandidates.ps1" \
+    "${HOST}:${REMOTE_SCRIPTS}/" || echo "scp scripts soft-fail"
+fi
 
 echo "== stage check + stage for scp =="
 ssh -o BatchMode=yes -o ConnectTimeout=60 "$HOST" \

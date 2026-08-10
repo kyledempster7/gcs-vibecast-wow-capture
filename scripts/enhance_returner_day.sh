@@ -94,9 +94,31 @@ fi
 # KEEP → Moments (+ Drive) when human_verdicts has KEEP — future project library
 if [[ -f "$SCRIPTS/archive_keep_to_moments.py" ]] && [[ -f "$ANALYSIS/human_verdicts.json" ]]; then
   if grep -q '"KEEP"' "$ANALYSIS/human_verdicts.json" 2>/dev/null; then
-    echo "== archive KEEP to Moments (+ Drive if available) =="
-    python3 "$SCRIPTS/archive_keep_to_moments.py" --day-dir "$ROOT" --zone archive --drive || true
+    ZONE="archive"
+    # Prefer real zone probe (no invent) when present
+    if [[ -f "$ANALYSIS/ZONE_LABEL.json" ]]; then
+      ZONE=$(python3 - <<PY
+import json
+from pathlib import Path
+p=Path("$ANALYSIS/ZONE_LABEL.json")
+try:
+    d=json.loads(p.read_text())
+    z=(d.get("zone") or d.get("zone_hint") or d.get("label") or "").strip().lower()
+    z="".join(c if c.isalnum() or c in "-_" else "-" for c in z).strip("-") or "archive"
+    print(z[:40])
+except Exception:
+    print("archive")
+PY
+)
+    fi
+    echo "== archive KEEP to Moments zone=$ZONE (+ Drive if available) =="
+    python3 "$SCRIPTS/archive_keep_to_moments.py" --day-dir "$ROOT" --zone "$ZONE" --drive || true
   fi
+fi
+
+# healthboard after enhance
+if [[ -f "$SCRIPTS/gcs_pipeline_health.py" ]]; then
+  python3 "$SCRIPTS/gcs_pipeline_health.py" || true
 fi
 
 echo "== SHORTLIST =="

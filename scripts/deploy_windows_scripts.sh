@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Dual-SoT deploy: Mac vault scripts → Windows D:\WoW B-Roll Storage\_scripts
+# No invent. No publish. Idempotent scp.
+set -euo pipefail
+SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
+HOST="${WINDOWS_SSH_HOST:-kyled@100.92.159.73}"
+REMOTE="D:/WoW B-Roll Storage/_scripts"
+RECEIPTS="${HOME}/Library/Application Support/UAH/butler/control-plane/receipts/wow"
+mkdir -p "$RECEIPTS"
+
+FILES=(
+  Append-StreamDeckMarker.ps1
+  Export-ShipCandidates.ps1
+  Stage-ShipCandidates.ps1
+  soft_poll_windows.ps1
+  Install-InboxTasks.ps1
+  Install-RemainingTasks.ps1
+  Install-GCS-ShipTasks.ps1
+  Run-NightlyInboxes.ps1
+  Run-CaptureInbox.ps1
+  Run-MementoInbox.ps1
+  Run-EngineHealth.ps1
+  check_disk_headroom.ps1
+  Windows-Agent-Boot.ps1
+)
+
+echo "== deploy_windows_scripts host=$HOST =="
+ssh -o BatchMode=yes -o ConnectTimeout=20 "$HOST" \
+  "powershell -NoProfile -Command \"New-Item -ItemType Directory -Force -Path 'D:\\WoW B-Roll Storage\\_scripts' | Out-Null\"" \
+  || { echo "SSH fail"; exit 2; }
+
+ok=0
+miss=0
+for f in "${FILES[@]}"; do
+  src="$SCRIPTS/$f"
+  if [[ ! -f "$src" ]]; then
+    echo "SKIP missing local $f"
+    miss=$((miss + 1))
+    continue
+  fi
+  if scp -o BatchMode=yes -o ConnectTimeout=30 "$src" "${HOST}:${REMOTE}/"; then
+    echo "OK $f"
+    ok=$((ok + 1))
+  else
+    echo "FAIL $f" >&2
+    exit 2
+  fi
+done
+
+# short card files for Deck
+for f in DECK_BUTTON_MAP.md DECK_MULTI_ACTION_INSTALL.md; do
+  src="${SCRIPTS}/../../04-Story-and-Capture/$f"
+  # resolve from Games/WoW
+  src2="$(cd "$SCRIPTS/../.." && pwd)/04-Story-and-Capture/$f"
+  if [[ -f "$src2" ]]; then
+    scp -o BatchMode=yes -o ConnectTimeout=20 "$src2" "${HOST}:${REMOTE}/" && echo "OK doc $f" || true
+  fi
+done
+
+ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+cat > "${RECEIPTS}/DEPLOY_WINDOWS_SCRIPTS_LATEST.md" <<EOF
+# Deploy Windows scripts
+**When (UTC):** $ts
+**Host:** $HOST
+**Remote:** D:\\WoW B-Roll Storage\\_scripts
+**ok:** $ok **local_miss:** $miss
+**Law:** dual SoT — Mac vault is source; scp after every Windows-facing edit
+EOF
+echo "DEPLOY_OK ok=$ok miss=$miss"
+exit 0
