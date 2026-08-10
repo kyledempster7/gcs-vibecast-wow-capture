@@ -115,3 +115,5 @@ for d in days:
 # Exit 0 only if *today* ready (matches harvest_if_ready / post_play)
 sys.exit(0 if ready_today else 1)
 PY
+# Propagate ready_today exit (script has no set -e)
+exit $?

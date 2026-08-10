@@ -47,8 +47,17 @@ def main() -> int:
     zone_hints: list[str] = []
     zl_p = analysis / "ZONE_LABEL.json"
     if zl_p.is_file():
-        for c in json.loads(zl_p.read_text(encoding="utf-8")).get("clips") or []:
-            if c.get("zone_hint"):
+        try:
+            zl = json.loads(zl_p.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            zl = {}
+        # day-level zone (Loc: parse / v1) first
+        for key in ("zone", "zone_hint", "label"):
+            if zl.get(key):
+                zone_hints.append(str(zl[key]))
+                break
+        for c in zl.get("clips") or []:
+            if c.get("zone_hint") and str(c["zone_hint"]) not in zone_hints:
                 zone_hints.append(str(c["zone_hint"]))
 
     vertical_n = 0
@@ -121,6 +130,7 @@ def main() -> int:
         "- Press **Deck multi-actions** (broll/rotate/talk/skip/gather) so marker export can cut smart.",
         "- Game/desktop dual audio still OPEN until AUDIO_GREEN 10s proof.",
         "- Close **CINEMATIC_ORBIT_UI_MODE** with one clean Alt+Z (or Auto Hide) orbit night.",
+        "- After export/stage: agents run `post_play_harvest.sh` (B-roll spine — not post_night_mac).",
         "",
         "## Law",
         "",
