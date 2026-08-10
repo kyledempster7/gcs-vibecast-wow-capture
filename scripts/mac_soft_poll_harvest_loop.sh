@@ -22,11 +22,19 @@ HOUR=$((10#$HOUR))
     exit 0
   fi
 
+  # Keep exactly one watch_ready_harvest_once (lockdir single-instance)
+  if [[ -f "$SCRIPTS/ensure_single_watch.sh" ]]; then
+    bash "$SCRIPTS/ensure_single_watch.sh" "$DAY" || echo "ensure_watch_rc=$?"
+  fi
+
   # ONE multi-day soft_poll per tick
   bash "$SCRIPTS/soft_poll_windows.sh" || echo "soft_poll_rc=$?"
   # harvest reads LATEST for today — no second/third poll when not ready
   bash "$SCRIPTS/harvest_if_ready.sh" "$DAY" || echo "harvest_rc=$?"
   python3 "$SCRIPTS/gcs_pipeline_health.py" || echo "health_rc=$?"
+  if [[ -f "$SCRIPTS/write_waiting_board.py" ]]; then
+    python3 "$SCRIPTS/write_waiting_board.py" || true
+  fi
   echo "loop_done"
 } >>"$LOG" 2>&1
 exit 0

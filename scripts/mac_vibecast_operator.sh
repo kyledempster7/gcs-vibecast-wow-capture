@@ -10,6 +10,11 @@ mkdir -p "$RECEIPTS"
 
 python3 "$SCRIPTS/assert_vibecast_write_fence.py" || exit 2
 
+# Exclusive single watch path (no dual thrash)
+if [[ -f "$SCRIPTS/ensure_single_watch.sh" ]]; then
+  bash "$SCRIPTS/ensure_single_watch.sh" "$DAY" || true
+fi
+
 echo "==== mac_vibecast_operator day=$DAY $(date -u +%Y-%m-%dT%H:%M:%SZ) ===="
 # Rate-limit: if LATEST < 90s old and not ready_today, skip re-poll thrash (watch still owns cadence)
 POLL=0

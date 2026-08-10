@@ -33,9 +33,31 @@ def main() -> int:
                 f"cand={row.get('candidates_n')} raw={row.get('raw_mp4_n')} |"
             )
     watch_pid = None
-    lock = LOGDIR / "watch_ready_harvest.lock"
-    if lock.is_file():
-        watch_pid = lock.read_text(encoding="utf-8").strip()
+    watch_alive = False
+    # Prefer lockdir/pid (atomic single-instance); fall back to classic .lock
+    for lock in (
+        LOGDIR / "watch_ready_harvest.lockdir" / "pid",
+        LOGDIR / "watch_ready_harvest.lock",
+    ):
+        if not lock.is_file():
+            continue
+        raw = lock.read_text(encoding="utf-8").strip()
+        if not raw.isdigit():
+            continue
+        watch_pid = raw
+        try:
+            import os
+
+            os.kill(int(raw), 0)
+            watch_alive = True
+        except OSError:
+            watch_alive = False
+        break
+    watch_cell = (
+        f"pid `{watch_pid}` · {'alive' if watch_alive else 'stale/dead'}"
+        if watch_pid
+        else "pid `none`"
+    )
     state = "READY_TO_HARVEST" if ready_today else "WAITING_WINDOWS_MASTERS"
     body = f"""---
 type: waiting-board
@@ -59,7 +81,7 @@ day: {today}
 
 | Piece | Status |
 |-------|--------|
-| Watch ready-harvest | pid `{watch_pid or 'none'}` |
+| Watch ready-harvest | {watch_cell} |
 | Auto Session-End | runs when **today** masters land on D: base/raw |
 | LaunchAgent | active 12:00–02:59 local (quiet 03–11) |
 | Gauntlet | `python3 scripts/gcs_vibecast_gauntlet.py` |
