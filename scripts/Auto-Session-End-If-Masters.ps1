@@ -38,11 +38,11 @@ if (Test-Path -LiteralPath $raw) {
 $masters = @($masters | Select-Object -Unique FullName)
 
 if ($masters.Count -eq 0) {
-  Write-Output "NO_MASTERS — record first"
+  Write-Output 'NO_MASTERS - record first'
   exit 1
 }
 
-Write-Output ("FOUND_MASTERS n={0} — Session-End-Ship" -f $masters.Count)
+Write-Output ("FOUND_MASTERS n={0} - running Session-End-Ship" -f $masters.Count)
 if (-not (Test-Path -LiteralPath $ship)) {
   Write-Error "Missing $ship"
   exit 2
