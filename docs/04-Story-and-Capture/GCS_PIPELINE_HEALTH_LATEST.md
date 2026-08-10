@@ -1,8 +1,8 @@
-# GCS pipeline health — 2026-08-10 13:56
+# GCS pipeline health — 2026-08-10 14:26
 
 | Check | State | Note |
 |-------|-------|------|
-| Windows online | 🟢 | verdict=ONLINE_TS+soft_poll_ssh_fresh_1s |
+| Windows online | 🟢 | verdict=ONLINE_TS+soft_poll_ssh_fresh_0s |
 | Soft-poll READY | 🟡 | ready_today=false · stale other-day READY still staged · 2026-08-10:markers_only_no_candidates, 2026-08-09:candidates_present |
 | Harvest freshness | 🟡 | `returner-daily-2026-08-09` · day ~38h old · STALE prior day |
 | Audio stamp | 🟡 | OPEN (not GREEN) |

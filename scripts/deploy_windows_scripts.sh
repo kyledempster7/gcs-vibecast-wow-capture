@@ -64,7 +64,7 @@ if [[ -f "$SCRIPTS/TODAY_SESSION.md" ]]; then
   scp -o BatchMode=yes -o ConnectTimeout=20 "$SCRIPTS/TODAY_SESSION.md" "${HOST}:${REMOTE}/" && echo "OK doc TODAY_SESSION.md" || true
 fi
 # UI product tickets for Windows seat (minimap-only gather B-roll)
-for f in MINIMAP_ONLY_GATHER_BROLL.md; do
+for f in MINIMAP_ONLY_GATHER_BROLL.md FIELD_NOTES_SCRIPT_TODAY.md AUDACITY_FIELD_NOTES_WINDOWS.md; do
   if [[ -f "$SCRIPTS/$f" ]]; then
     scp -o BatchMode=yes -o ConnectTimeout=20 "$SCRIPTS/$f" "${HOST}:${REMOTE}/" && echo "OK doc $f" || true
   fi

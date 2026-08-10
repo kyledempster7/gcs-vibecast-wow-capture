@@ -64,3 +64,6 @@ Then ≤60s KEEP on review-pack. Done.
 
 See `MINIMAP_ONLY_GATHER_BROLL.md` in this folder (and Mac `GATHERING_BROLL_MODE.md`).  
 Target: harvest routes with **only minimap** (+ nodes). Hover-hide bars = good interim. Chat/tracker still stick — figure via Edit Mode layout + Auto Hide UI (WoW closed to install).
+
+## Field Notes (audio)
+See FIELD_NOTES_SCRIPT_TODAY.md and AUDACITY_FIELD_NOTES_WINDOWS.md in this folder. After video B-roll run Session-End-Ship.ps1 (today soft-poll stays markers_only until candidates exist).
