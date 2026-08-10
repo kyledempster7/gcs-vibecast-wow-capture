@@ -19,6 +19,8 @@ FILES=(
   Install-LayerC-DeckMarkers.ps1
   Configure-WoW-BRoll-OBS.ps1
   Move-TodayMastersToDayRoot.ps1
+  Session-End-Ship.ps1
+  Windows-Preflight.ps1
   Run-NightlyInboxes.ps1
   Run-CaptureInbox.ps1
   Run-MementoInbox.ps1
@@ -50,15 +52,16 @@ for f in "${FILES[@]}"; do
   fi
 done
 
-# short card files for Deck
+# short card files for Deck + today session
 for f in DECK_BUTTON_MAP.md DECK_MULTI_ACTION_INSTALL.md; do
-  src="${SCRIPTS}/../../04-Story-and-Capture/$f"
-  # resolve from Games/WoW
   src2="$(cd "$SCRIPTS/../.." && pwd)/04-Story-and-Capture/$f"
   if [[ -f "$src2" ]]; then
     scp -o BatchMode=yes -o ConnectTimeout=20 "$src2" "${HOST}:${REMOTE}/" && echo "OK doc $f" || true
   fi
 done
+if [[ -f "$SCRIPTS/TODAY_SESSION.md" ]]; then
+  scp -o BatchMode=yes -o ConnectTimeout=20 "$SCRIPTS/TODAY_SESSION.md" "${HOST}:${REMOTE}/" && echo "OK doc TODAY_SESSION.md" || true
+fi
 
 ts=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 cat > "${RECEIPTS}/DEPLOY_WINDOWS_SCRIPTS_LATEST.md" <<EOF

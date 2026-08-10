@@ -30,7 +30,15 @@ parent: ROADMAP_P0_P2_TOP10 · RIGHTSIZE_SWARM
 | A1 | Deck multi-act mid-session | SESSION.jsonl has **human** `record_start` + broll/rotate/skip (not `agent_install_prove` / `agent_prove`) |
 | A2 | Dual audio 10s | Mic + game meters both move; run `audio_green_probe.py --file <path> --write-stamp` only if dual |
 | — | Optional B | Cinematic hide UI orbit · Titan location module up |
-| A3 prep | Record + Export candidates | masters→`raw` · `Export-ShipCandidates.ps1` → candidates + MANIFEST `marker_window` |
+| A3 prep | Record + **one** session-end command | `Session-End-Ship.ps1` → raw + candidates + MANIFEST `marker_window` |
+
+## After play on Windows (one command)
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Session-End-Ship.ps1"
+```
+
+Card on disk: `D:\WoW B-Roll Storage\_scripts\TODAY_SESSION.md` · Mac: `00-Index/TODAY_WINDOWS_SESSION.md`
 
 ## After play (agent or one Mac command)
 
