@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Mac LaunchAgent: one soft_poll → harvest_if_ready (no nested poll thrash) → health.
-# Play-night mode: quiet hours 03:00–19:59 local (Mac clock); active 20:00–02:59.
+# Quiet: 03:00–11:59 local (dead morning). Active: 12:00–02:59 so afternoon export is seen.
 # Exit always 0 for launchd. No invent. No publish. No catalog rebuild on idle.
+# ONE soft_poll per tick when active — no triple-poll thrash.
 set -uo pipefail
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
 LOGDIR="${HOME}/Library/Logs/gcs-vibecast-wow"
@@ -14,9 +15,9 @@ HOUR=$((10#$HOUR))
 {
   echo "==== $(date -u +%Y-%m-%dT%H:%M:%SZ) day=$DAY hour_local=$HOUR ===="
 
-  # Quiet daytime: no SSH chatter for 1–3 nights/week product
-  if [[ "$HOUR" -ge 3 && "$HOUR" -lt 20 ]]; then
-    echo "quiet_hours skip (play-night window is 20:00-02:59 local)"
+  # Dead morning only — afternoon play/export must still be discovered (2026-08-10 product fix)
+  if [[ "$HOUR" -ge 3 && "$HOUR" -lt 12 ]]; then
+    echo "quiet_morning skip (active 12:00-02:59 local for export discovery)"
     echo "loop_done quiet"
     exit 0
   fi
