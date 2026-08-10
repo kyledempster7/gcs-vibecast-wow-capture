@@ -42,5 +42,5 @@ EOF
 launchctl bootout "gui/$(id -u)/${LABEL}" 2>/dev/null || true
 launchctl bootstrap "gui/$(id -u)" "$PLIST"
 launchctl enable "gui/$(id -u)/${LABEL}" 2>/dev/null || true
-echo "INSTALLED $PLIST interval=1800s quiet_hours_in_loop=03-19 local RunAtLoad=false"
+echo "INSTALLED $PLIST interval=1800s quiet_hours_in_loop=03-11 local (active 12:00-02:59) RunAtLoad=false defer_if_golden=true"
 launchctl print "gui/$(id -u)/${LABEL}" 2>/dev/null | head -30 || true

@@ -1,23 +1,19 @@
 ---
 type: pitch-progress
 product_id: twe_explorers_league_community_pitch_v1
-updated: 2026-08-10T22:20:20.993700+00:00
+updated: 2026-08-10T22:42:54.650063+00:00
 armed: false
 ---
 
 # Explorer’s League pitch — capture progress
 
-**Day source:** returner-daily-2026-08-09
+**Day source:** tmpww7i6zkx
 **Shots captured (path attached):** 3 / 13
 **Armed:** false
 
 ## Attachments this run
 
-| keep_id | shot_id | path | mode |
-|---------|---------|------|------|
-| `c-pride-15s-start` | `pitch.hub_thrall` | `/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/c-pride-15s-start.mp4` | explicit |
-| `c-pride-30s-best` | `pitch.flight_soft` | `/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/c-pride-30s-best.mp4` | explicit |
-| `c` | `pitch.play_together` | `/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/db-20260809-c-full-170544.mp4` | explicit |
+_None — waiting for KEEP + explicit map or --auto-suggest with real files._
 
 ## Shot board
 

@@ -1,7 +1,7 @@
 {
   "schema": "gcs_explorers_league_pitch_media_map/v1",
   "product_id": "twe_explorers_league_community_pitch_v1",
-  "generated_at_utc": "2026-08-10T22:20:20.956488+00:00",
+  "generated_at_utc": "2026-08-10T22:42:54.502840+00:00",
   "armed": false,
   "kyle_go": false,
   "product": "Explorer\u2019s League community pitch B-roll",
@@ -37,5 +37,5 @@
   ],
   "spine": "Games/WoW/community-surface/EXPLORERS_LEAGUE_COMMUNITY_SPINE.md",
   "pack": "Games/WoW/04-Story-and-Capture/social/EXPLORERS_LEAGUE_PITCH_BROLL_PACK.md",
-  "storyboard": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/social/package/EXPLORERS_LEAGUE_PITCH_STORYBOARD.json"
+  "storyboard": "/var/folders/ky/fhrq54tj5d17_qvkn_mvx96m0000gn/T/tmpctdfpbgy/storyboard.json"
 }

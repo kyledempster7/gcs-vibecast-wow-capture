@@ -18,10 +18,14 @@ param(
   [string]$Ffmpeg = '',
   # When set (or day markers\SESSION.jsonl exists), prefer talk/broll/gather windows; hard-skip skip_zone.
   [string]$MarkersJsonl = '',
-  [switch]$UseMarkers
+  [switch]$UseMarkers,
+  # Codex W0-4: silent t=0 after marker reject is banned unless explicitly allowed
+  [switch]$AllowFallbackT0,
+  # Allow weak record_start = first marker timestamp (default OFF when UseMarkers)
+  [switch]$AllowWeakRecordStart
 )
 
-$ErrorActionPreference = 'Continue'
+$ErrorActionPreference = 'Stop'
 if (-not $Ffmpeg) {
   $winget = Get-ChildItem "$env:LOCALAPPDATA\Microsoft\WinGet\Packages" -Recurse -Filter 'ffmpeg.exe' -ErrorAction SilentlyContinue |
     Select-Object -First 1 -ExpandProperty FullName
@@ -72,17 +76,22 @@ function Get-MarkerWindows([string]$jsonlPath) {
     if (-not $ts) { continue }
     if ($bid -match 'record_start' -and -not $recordStart) { $recordStart = $ts }
   }
+  $usedWeak = $false
   if (-not $recordStart) {
-    # weak: first gcs marker timestamp
-    foreach ($line in $lines) {
-      try { $o = $line | ConvertFrom-Json } catch { continue }
-      if ($o.ts_utc) {
-        try { $recordStart = [DateTimeOffset]::Parse([string]$o.ts_utc); break } catch {}
+    if ($AllowWeakRecordStart) {
+      foreach ($line in $lines) {
+        try { $o = $line | ConvertFrom-Json } catch { continue }
+        if ($o.ts_utc) {
+          try { $recordStart = [DateTimeOffset]::Parse([string]$o.ts_utc); $usedWeak = $true; break } catch {}
+        }
       }
     }
   }
   if (-not $recordStart) {
-    return @{ windows = @(); skips = @(); record_start = $null; status = 'WEAK_OR_EMPTY' }
+    return @{ windows = @(); skips = @(); record_start = $null; status = 'NO_RECORD_START'; weak = $false }
+  }
+  if ($usedWeak) {
+    Write-Host 'MARKERS record_start=WEAK first_marker (AllowWeakRecordStart)'
   }
 
   function Sec([DateTimeOffset]$t) {
@@ -159,6 +168,7 @@ $i = 0
 foreach ($src in $MasterPaths) {
   if (-not (Test-Path -LiteralPath $src)) { Write-Error "missing $src"; exit 2 }
   $clips = @()
+  $rejectedSkip = 0
   if ($markerInfo.status -eq 'MARKER_WINDOWS' -and @($markerInfo.windows).Count -gt 0) {
     foreach ($w in @($markerInfo.windows)) {
       $st = [double]$w.start_sec
@@ -166,13 +176,34 @@ foreach ($src in $MasterPaths) {
       if ($en -le $st) { continue }
       if (Test-OverlapsSkip $st $en $markerInfo.skips) {
         Write-Host ("SKIP_ZONE reject window kind={0} {1}-{2}" -f $w.kind, $st, $en)
+        $rejectedSkip++
         continue
       }
       $dur = [math]::Min([double]$Seconds, [math]::Max(1.0, $en - $st))
       $clips += [ordered]@{ start_sec = $st; duration_sec = $dur; kind = [string]$w.kind; end_sec = $en }
     }
   }
+
   if ($clips.Count -eq 0) {
+    # Codex W0-4: silent t=0 after skip-zone rejection is banned.
+    # Product still allows first-N-seconds when markers exist but define no windows
+    # (RECORD_START_ONLY / NO_MARKERS) — that is intentional ship policy, not a reject fallback.
+    if ($UseMarkers -or $MarkersJsonl) {
+      if ($markerInfo.status -eq 'NO_RECORD_START' -and -not $AllowFallbackT0) {
+        Write-Error 'EXPORT_FAIL NO_RECORD_START — press record_start or -AllowWeakRecordStart / -AllowFallbackT0'
+        exit 6
+      }
+      if ($rejectedSkip -gt 0 -and -not $AllowFallbackT0) {
+        Write-Error ("EXPORT_FAIL NO_USABLE_WINDOWS all marker windows hit skip_zone (n={0}) — no silent t=0" -f $rejectedSkip)
+        exit 5
+      }
+      if ($markerInfo.status -eq 'MARKER_WINDOWS' -and $rejectedSkip -eq 0 -and -not $AllowFallbackT0) {
+        # Windows listed but none produced clips (bad intervals)
+        Write-Error 'EXPORT_FAIL MARKER_WINDOWS empty after parse — no silent t=0'
+        exit 5
+      }
+    }
+    Write-Host ("FALLBACK_T0 status={0} rejected_skip={1} allow={2}" -f $markerInfo.status, $rejectedSkip, [bool]$AllowFallbackT0)
     $clips = @([ordered]@{ start_sec = 0; duration_sec = [double]$Seconds; kind = 'fallback_t0'; end_sec = [double]$Seconds })
   }
 
@@ -180,8 +211,14 @@ foreach ($src in $MasterPaths) {
     $i++
     $startSec = [double]$cl.start_sec
     $sec = [double]$cl.duration_sec
-    $outName = 'cand-{0}-{1:d2}-t{2}-s{3}.mp4' -f $Day, $i, [int][math]::Floor($sec), [int][math]::Floor($startSec)
+    # Unique name avoids concurrent overwrite of identical deterministic outputs (gap 37)
+    $stamp = Get-Date -Format 'HHmmss'
+    $outName = 'cand-{0}-{1:d2}-t{2}-s{3}-{4}.mp4' -f $Day, $i, [int][math]::Floor($sec), [int][math]::Floor($startSec), $stamp
     $dest = Join-Path $cand $outName
+    if (Test-Path -LiteralPath $dest) {
+      $outName = 'cand-{0}-{1:d2}-t{2}-s{3}-{4}-{5}.mp4' -f $Day, $i, [int][math]::Floor($sec), [int][math]::Floor($startSec), $stamp, $i
+      $dest = Join-Path $cand $outName
+    }
     Write-Host ("EXPORT {0} start={1} dur={2} kind={3}" -f $outName, $startSec, $sec, $cl.kind)
     $code = Invoke-TrimAt $src $dest $startSec $sec
     if ($code -ne 0 -or -not (Test-Path -LiteralPath $dest)) {

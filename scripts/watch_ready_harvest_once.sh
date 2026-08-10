@@ -14,45 +14,64 @@ DETAIL="$LOGDIR/watch_ready_harvest.log"
 LOCKDIR="$LOGDIR/watch_ready_harvest.lockdir"
 PIDFILE="$LOCKDIR/pid"
 SELF_PID=$$
+DAYFILE="$LOCKDIR/day"
+HBFILE="$LOCKDIR/heartbeat"
 
 release_lock() {
-  rm -f "$PIDFILE" 2>/dev/null || true
+  rm -f "$PIDFILE" "$DAYFILE" "$HBFILE" 2>/dev/null || true
   rmdir "$LOCKDIR" 2>/dev/null || true
 }
 
-# If lockdir exists with live pid, refuse. If stale, reclaim.
+write_meta() {
+  printf '%s\n' "$SELF_PID" >"$PIDFILE"
+  printf '%s\n' "$DAY" >"$DAYFILE"
+  date -u +%Y-%m-%dT%H:%M:%SZ >"$HBFILE"
+  printf '%s\n' "$SELF_PID" >"$LOGDIR/watch_ready_harvest.lock"
+}
+
+# If lockdir exists with live pid for same day, refuse. Stale or wrong-day → reclaim.
 if ! mkdir "$LOCKDIR" 2>/dev/null; then
   oldpid=""
+  oldday=""
   if [[ -f "$PIDFILE" ]]; then
     oldpid=$(cat "$PIDFILE" 2>/dev/null || true)
   fi
+  if [[ -f "$DAYFILE" ]]; then
+    oldday=$(cat "$DAYFILE" 2>/dev/null || true)
+  fi
   if [[ -n "$oldpid" ]] && kill -0 "$oldpid" 2>/dev/null; then
-    # Holder must still look like this watch (avoid random pid reuse false-hold)
     if ps -p "$oldpid" -o command= 2>/dev/null | grep -q 'watch_ready_harvest_once\.sh'; then
+      # Same day holder → refuse; different day → leave to ensure_single (do not steal mid-flight)
+      if [[ -z "$oldday" || "$oldday" == "$DAY" ]]; then
+        echo "FAILED"
+        echo "watch already running pid=$oldpid day=${oldday:-?} (lockdir)" >>"$DETAIL"
+        exit 1
+      fi
       echo "FAILED"
-      echo "watch already running pid=$oldpid (lockdir)" >>"$DETAIL"
+      echo "watch other_day pid=$oldpid day=$oldday want=$DAY — use ensure_single_watch" >>"$DETAIL"
       exit 1
     fi
   fi
-  # Stale lock — remove and retry once
-  release_lock
+  # Stale lock — remove files then rmdir (no blind thrash of foreign live process)
+  rm -f "$PIDFILE" "$DAYFILE" "$HBFILE" 2>/dev/null || true
+  rmdir "$LOCKDIR" 2>/dev/null || true
   if ! mkdir "$LOCKDIR" 2>/dev/null; then
     echo "FAILED"
     echo "watch lockdir busy after reclaim" >>"$DETAIL"
     exit 1
   fi
 fi
-echo "$SELF_PID" >"$PIDFILE"
-# Compat: also write classic lock file for older tools reading .lock
-echo "$SELF_PID" >"$LOGDIR/watch_ready_harvest.lock"
+write_meta
 trap 'rm -f "$LOGDIR/watch_ready_harvest.lock"; release_lock' EXIT
 
 while [[ $(date +%s) -lt $END ]]; do
   {
     echo "---- $(date -u +%Y-%m-%dT%H:%M:%SZ) pid=$SELF_PID day=$DAY ----"
+    write_meta
     bash "$SCRIPTS/soft_poll_windows.sh" || true
     bash "$SCRIPTS/windows_auto_session_end.sh" "$DAY" || true
     bash "$SCRIPTS/soft_poll_windows.sh" || true
+    write_meta
   } >>"$DETAIL" 2>&1
 
   python3 - "$HOME/Movies/WoW-Broll-Workflow/Returns/SOFT_POLL_LATEST.json" "$DAY" <<'PY' >>"$DETAIL" 2>&1

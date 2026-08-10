@@ -1,24 +1,55 @@
 #!/usr/bin/env bash
 # Exactly-once-ish: READY → harvest_mac. No invent. No publish.
-# Exit: 0 harvested OR already-locked, 1 not ready, 2 fail
-# Right-size: read SOFT_POLL_LATEST for *today* first — no nested soft_poll when not ready.
-# Set HARVEST_FORCE_POLL=1 to always soft_poll before decide.
+# Exit: 0 harvested OR already-locked, 1 not ready, 2 fail, 3 claim held by other
+# Codex P0-3: atomic harvest CLAIM before any analysis / soft-fail work.
+# Set HARVEST_FORCE_POLL=1 to always soft_poll before decide (after claim).
 set -euo pipefail
 DAY="${1:-$(date +%F)}"
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
 RECEIPTS="${HOME}/Library/Application Support/UAH/butler/control-plane/receipts/wow"
 OUT_DIR="${HOME}/Movies/WoW-Broll-Workflow/Returns"
+DAY_DIR="${OUT_DIR}/returner-daily-${DAY}"
 LATEST="${OUT_DIR}/SOFT_POLL_LATEST.json"
-mkdir -p "$RECEIPTS"
-LOCK="${OUT_DIR}/returner-daily-${DAY}/.harvest_once"
+mkdir -p "$RECEIPTS" "$DAY_DIR"
+LOCK="${DAY_DIR}/.harvest_once"
+CLAIMDIR="${DAY_DIR}/.harvest_claim.lockdir"
+CLAIMPID="${CLAIMDIR}/pid"
+CLAIMHB="${CLAIMDIR}/heartbeat"
+SELF=$$
+
 python3 "$SCRIPTS/assert_vibecast_write_fence.py" || exit 2
 
 echo "== harvest_if_ready day=$DAY =="
 
+release_claim() {
+  rm -f "$CLAIMPID" "$CLAIMHB" 2>/dev/null || true
+  rmdir "$CLAIMDIR" 2>/dev/null || true
+}
+
+# --- Atomic claim BEFORE ready checks / analysis (Codex gap 27/50) ---
 if [[ -f "$LOCK" ]]; then
   echo "SKIP already harvested once for $DAY (lock $LOCK) exit=0"
   exit 0
 fi
+
+if ! mkdir "$CLAIMDIR" 2>/dev/null; then
+  opid=""
+  [[ -f "$CLAIMPID" ]] && opid=$(cat "$CLAIMPID" 2>/dev/null || true)
+  # Live pid in claim = held (only harvest writers create this dir). Dead pid = stale reclaim.
+  if [[ -n "$opid" ]] && kill -0 "$opid" 2>/dev/null; then
+    echo "SKIP harvest claim held by pid=$opid exit=3"
+    exit 3
+  fi
+  # stale claim
+  release_claim
+  if ! mkdir "$CLAIMDIR" 2>/dev/null; then
+    echo "FAIL claimdir busy exit=2" >&2
+    exit 2
+  fi
+fi
+printf '%s\n' "$SELF" >"$CLAIMPID"
+date -u +%Y-%m-%dT%H:%M:%SZ >"$CLAIMHB"
+trap 'release_claim' EXIT
 
 today_ready_from_latest() {
   python3 - "$LATEST" "$DAY" <<'PY'
@@ -49,11 +80,11 @@ else
     echo "SKIP not READY (from SOFT_POLL_LATEST today=$DAY) exit=1"
     cat > "${RECEIPTS}/HARVEST_SKIP_${DAY//-/}.md" <<EOF
 # Harvest skip — $DAY
-reason: SOFT_POLL_LATEST today not ready (no nested poll)
+reason: SOFT_POLL_LATEST today not ready (claim held then released)
+claim: pre-analysis
 EOF
     exit 1
   fi
-  # TR=0 ready → harvest without extra poll; TR=3 missing → poll once
   if [[ "$TR" -eq 0 ]]; then
     NEED_POLL=0
   else
@@ -62,7 +93,6 @@ EOF
 fi
 
 if [[ "${NEED_POLL}" -eq 1 ]]; then
-  # one multi-day poll (honest board); then require *today* ready
   bash "$SCRIPTS/soft_poll_windows.sh"
   POLL_RC=$?
   if [[ "$POLL_RC" -eq 2 ]]; then
@@ -78,21 +108,22 @@ if [[ "${NEED_POLL}" -eq 1 ]]; then
 reason: soft_poll today not READY
 poll_rc: $POLL_RC
 today_row_rc: $TR
+claim: pre-analysis
 EOF
     exit 1
   fi
 fi
 set -e
 
+# Still claimed — run harvest
+date -u +%Y-%m-%dT%H:%M:%SZ >"$CLAIMHB"
 bash "$SCRIPTS/harvest_mac.sh" "$DAY"
-mkdir -p "$(dirname "$LOCK")"
 date -u +%Y-%m-%dT%H:%M:%SZ > "$LOCK"
 # post-harvest catalog only (not idle loop)
 if [[ -f "$SCRIPTS/catalog_query.py" ]]; then
   python3 "$SCRIPTS/catalog_query.py" --rebuild || true
 fi
 echo "HARVEST_OK day=$DAY"
-# M5: review-ready signal (after enhance usually; also mark raw harvest)
 if [[ -f "$SCRIPTS/notify_review_ready.sh" ]]; then
   bash "$SCRIPTS/notify_review_ready.sh" "$DAY" || true
 fi

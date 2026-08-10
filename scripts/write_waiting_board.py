@@ -17,6 +17,44 @@ RECEIPTS = (
     / "Library/Application Support/UAH/butler/control-plane/receipts/wow"
 )
 LOGDIR = Path.home() / "Library/Logs/gcs-vibecast-wow"
+# Codex P0-4: heartbeat TTL (seconds). Beyond this, report stalled even if pid lives.
+WATCH_HB_TTL_S = 600  # watch soft_poll every ~120s; 10m stall is real
+GOLDEN_HB_TTL_S = 900  # golden tick ~3m; 15m stall is real
+
+
+def pid_cmd_match(pid: str, needle: str) -> bool:
+    """Alive only if kill(0) OK *and* command line still matches needle (Codex gap 30/95)."""
+    import os
+    import subprocess
+
+    try:
+        os.kill(int(pid), 0)
+    except (OSError, ValueError):
+        return False
+    try:
+        out = subprocess.check_output(
+            ["ps", "-p", str(pid), "-o", "command="],
+            text=True,
+            errors="replace",
+        ).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
+    return needle in out
+
+
+def file_age_s(path: Path) -> int | None:
+    try:
+        return int(datetime.now().timestamp() - path.stat().st_mtime)
+    except OSError:
+        return None
+
+
+def hb_label(age: int | None, ttl: int) -> str:
+    if age is None:
+        return "hb=missing"
+    if age > ttl:
+        return f"hb={age}s STALLED(>{ttl}s)"
+    return f"hb={age}s ok"
 
 
 def main() -> int:
@@ -24,7 +62,10 @@ def main() -> int:
     soft = BROLL / "SOFT_POLL_LATEST.json"
     ready_today = False
     days_lines = []
+    soft_age = "no file"
     if soft.is_file():
+        age_s = file_age_s(soft)
+        soft_age = f"{age_s}s" if age_s is not None else "?"
         d = json.loads(soft.read_text(encoding="utf-8"))
         ready_today = bool(d.get("ready_today"))
         for row in d.get("days") or []:
@@ -34,9 +75,11 @@ def main() -> int:
             )
     watch_pid = None
     watch_alive = False
+    watch_day = ""
+    watch_lockdir = LOGDIR / "watch_ready_harvest.lockdir"
     # Prefer lockdir/pid (atomic single-instance); fall back to classic .lock
     for lock in (
-        LOGDIR / "watch_ready_harvest.lockdir" / "pid",
+        watch_lockdir / "pid",
         LOGDIR / "watch_ready_harvest.lock",
     ):
         if not lock.is_file():
@@ -45,16 +88,27 @@ def main() -> int:
         if not raw.isdigit():
             continue
         watch_pid = raw
-        try:
-            import os
-
-            os.kill(int(raw), 0)
-            watch_alive = True
-        except OSError:
-            watch_alive = False
+        watch_alive = pid_cmd_match(raw, "watch_ready_harvest_once.sh")
         break
+    day_f = watch_lockdir / "day"
+    if day_f.is_file():
+        watch_day = day_f.read_text(encoding="utf-8").strip()
+    # Heartbeat: lockdir/heartbeat preferred; else detail log mtime
+    whb = file_age_s(watch_lockdir / "heartbeat")
+    if whb is None:
+        whb = file_age_s(LOGDIR / "watch_ready_harvest.log")
+    whb_s = hb_label(whb, WATCH_HB_TTL_S)
+    if watch_alive and whb is not None and whb > WATCH_HB_TTL_S:
+        watch_status = f"cmd_ok but {whb_s}"
+    elif watch_alive:
+        watch_status = f"cmd_ok · {whb_s}"
+    else:
+        watch_status = "stale/dead/mismatch"
+    day_note = f" · day={watch_day}" if watch_day else ""
+    if watch_day and watch_day != today:
+        day_note += " DAY_MISMATCH"
     watch_cell = (
-        f"pid `{watch_pid}` · {'alive' if watch_alive else 'stale/dead'}"
+        f"pid `{watch_pid}` · {watch_status}{day_note}"
         if watch_pid
         else "pid `none`"
     )
@@ -71,26 +125,27 @@ def main() -> int:
             raw = glock.read_text(encoding="utf-8").strip()
             if raw.isdigit():
                 g_pid = raw
-                try:
-                    import os
-
-                    os.kill(int(raw), 0)
-                    g_alive = True
-                except OSError:
-                    g_alive = False
+                g_alive = pid_cmd_match(raw, "golden_long_run.sh")
             break
+    ghb = file_age_s(g_status)
     if g_status.is_file():
         try:
             gs = json.loads(g_status.read_text(encoding="utf-8"))
             g_state = str(gs.get("state") or "")
             if not g_pid and gs.get("pid"):
                 g_pid = str(gs.get("pid"))
+                g_alive = pid_cmd_match(g_pid, "golden_long_run.sh")
         except Exception:
             pass
+    ghb_s = hb_label(ghb, GOLDEN_HB_TTL_S)
     if g_pid:
-        golden_cell = (
-            f"pid `{g_pid}` · {'alive' if g_alive else 'stale'} · {g_state or '—'}"
-        )
+        if g_alive and ghb is not None and ghb > GOLDEN_HB_TTL_S:
+            g_status_s = f"cmd_ok but {ghb_s}"
+        elif g_alive:
+            g_status_s = f"cmd_ok · {ghb_s}"
+        else:
+            g_status_s = "stale/mismatch"
+        golden_cell = f"pid `{g_pid}` · {g_status_s} · {g_state or '—'}"
     # Optional OBS probe (read-only JSON from mac_probe_obs_windows)
     obs_cell = "—"
     obs_path = BROLL / "OBS_PATH_PROBE_LATEST.json"
@@ -130,18 +185,20 @@ day: {today}
 | Golden long run | {golden_cell} |
 | OBS probe | {obs_cell} |
 | Auto Session-End | runs when **today** masters land on D: base/raw |
-| LaunchAgent | active 12:00–02:59 local (quiet 03–11) |
-| Gauntlet | `python3 scripts/gcs_vibecast_gauntlet.py` |
+| LaunchAgent | interval loaded · quiet 03–11 · **defers soft_poll if golden owns cadence** |
+| Soft-poll freshness | age `{soft_age}` (do not treat board as product-green) |
+| Gauntlet | `python3 scripts/gcs_vibecast_gauntlet.py` (~29 checks — not 100 behavioral) |
+| Verdict | RUNTIME_PARTIAL_E2E_UNPROVEN until serialize + same-day masters path |
 
-## What unblocks
+## What unblocks (honest)
 
-1. Windows: OBS WoW B-Roll record → mp4 on `D:\\WoW B-Roll Storage`  
-2. Auto or `Session-End-Ship.ps1` → candidates  
-3. Mac harvest → `open_review_pack.sh`  
+1. Agent P0 residual: serialize export/harvest gates (not “play alone”) — [[RELIABILITY_RESIDUAL_SERIALIZE_20260810]]  
+2. Windows: OBS Record → stop → Session-End with recording-stopped/stable-size  
+3. Mac harvest → KEEP → draft NOT_ARMED  
 
 ## Agent rule
 
-If `WAITING_WINDOWS_MASTERS`: do **not** invent candidates. Prefer backup, gauntlet, fence, docs — or wait for watch.
+If `WAITING_WINDOWS_MASTERS`: do **not** invent candidates. agent-green waiting ≠ PRODUCT_GREEN. Prefer reliability residual, fence, backup — not dual thrash.
 
 Generated UTC: {datetime.now(timezone.utc).isoformat()}
 """

@@ -70,15 +70,17 @@ if [[ -z "$JSON_LINE" ]]; then
 fi
 JSON="${JSON_LINE#READY_JSON:}"
 RECEIPT="${OUT_DIR}/SOFT_POLL_LATEST.json"
-printf '%s\n' "$JSON" > "$RECEIPT"
+# Stage raw JSON then Python rewrites via temp+rename (Codex gap 46 — no in-place partial write)
+printf '%s\n' "$JSON" > "${RECEIPT}.incoming"
 
 python3 - "$RECEIPT" "$OUT_DIR" <<'PY'
-import json, sys
+import json, os, sys
 from datetime import date
 from pathlib import Path
 p = Path(sys.argv[1])
 out_dir = Path(sys.argv[2])
-data = json.loads(p.read_text(encoding="utf-8"))
+incoming = Path(str(p) + ".incoming")
+data = json.loads(incoming.read_text(encoding="utf-8"))
 days = data.get("days") or []
 ready_any = any(bool(d.get("ready")) for d in days if isinstance(d, dict))
 today = date.today().isoformat()
@@ -89,10 +91,18 @@ data["ready_any"] = ready_any if days else bool(data.get("ready"))
 data["ready_today"] = ready_today
 data["ready"] = ready_today  # harvest-today truth; multi-day detail stays in days[]
 data["schema"] = data.get("schema") or "gcs_soft_poll_ready/v1"
-p.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+text = json.dumps(data, indent=2) + "\n"
+tmp = Path(str(p) + f".tmp.{os.getpid()}")
+tmp.write_text(text, encoding="utf-8")
+os.replace(tmp, p)
+try:
+    incoming.unlink(missing_ok=True)
+except TypeError:
+    if incoming.exists():
+        incoming.unlink()
 print(
     f"soft_poll ready_today={ready_today} ready_any={data['ready_any']} "
-    f"days={len(days)} -> {p}"
+    f"days={len(days)} -> {p} (atomic)"
 )
 for d in days:
     day = d.get("day") or "unknown"
@@ -107,7 +117,10 @@ for d in days:
         "days": [d],
         "law": data.get("law"),
     }
-    (day_dir / "SOFT_POLL.json").write_text(json.dumps(slice_doc, indent=2) + "\n", encoding="utf-8")
+    slice_path = day_dir / "SOFT_POLL.json"
+    stmp = day_dir / f"SOFT_POLL.json.tmp.{os.getpid()}"
+    stmp.write_text(json.dumps(slice_doc, indent=2) + "\n", encoding="utf-8")
+    os.replace(stmp, slice_path)
     print(
         f"  day={day} ready={d.get('ready')} reason={d.get('reason')} "
         f"cand={d.get('candidates_n')} stage={d.get('stage_mp4_n')}"
