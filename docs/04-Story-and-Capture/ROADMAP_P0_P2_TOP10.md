@@ -158,6 +158,11 @@ Gather: `04-Story-and-Capture/GATHERING_BROLL_MODE.md`
 | CATALOG query/rebuild | SHIPPED | catalog_query.py · rebuild 13/13 sha · restore drill match=68 |
 | Plus-10 beyond now | DOCUMENTED | IMPROVEMENTS_PLUS10_BEYOND_NOW_20260810.md |
 | GitHub + Drive backup | SHIPPED | kyledempster7/gcs-vibecast-wow-capture · Drive backup-code · RESTORE_DRILL |
+| Mac soft_poll LaunchAgent | SHIPPED | com.kyle.gcs.wow-soft-poll-harvest 30m |
+| Dual-SoT deploy + Stage SCH | SHIPPED | deploy_windows_scripts · GCS Stage Nightly |
+| Honest multi-day READY health | SHIPPED | today-aware · ONLINE_TS yellow |
+| Tag vocab wave2 | SHIPPED | TAG_VOCAB · catalog --lint · UNWIRED_20 |
+| Play-night operator path | SHIPPED | post_play_harvest · PLAY_NIGHT_CHECKLIST · Loc: zone · Stage default Day |
 
 **Product spine:** [[PRODUCT_SYSTEM_SPEC]] · [[PRODUCT_PRD_PIPELINE]] · [[HOSTILE_REVIEW_PRODUCT_SYSTEM_20260810]] · [[INTELLIGENCE_STACK_AND_COST]]
 

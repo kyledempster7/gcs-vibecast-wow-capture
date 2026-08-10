@@ -79,15 +79,53 @@ TITAN_CHROME = re.compile(
     r"(XP/hr|Time To Level|Durability|Loot Specialization|Specialization:|Mail:)",
     re.I,
 )
+# Titan location module often OCR as "Loc: Mardum the Shattered" (or Loc - Zone)
+LOC_LINE = re.compile(
+    r"\bLoc(?:ation)?\s*[:\-–]\s*([A-Za-z][A-Za-z0-9' \-]{2,48})",
+    re.I,
+)
+
+
+def _slug_zone(name: str) -> str:
+    s = re.sub(r"[^A-Za-z0-9]+", "-", name.strip().lower()).strip("-")
+    return s[:48] if s else ""
 
 
 def extract_zone(lines: list[str]) -> dict:
     joined = " | ".join(lines)
     titan_chrome = bool(TITAN_CHROME.search(joined))
+    # Prefer explicit Loc: capture (Titan location module) — not invent from chrome alone
+    for ln in lines:
+        lm = LOC_LINE.search(ln)
+        if lm:
+            raw = lm.group(1).strip()
+            # drop trailing junk tokens often glued by OCR
+            raw = re.split(r"\s{2,}|\|", raw)[0].strip()
+            if len(raw) >= 3:
+                return {
+                    "zone_hint": raw,
+                    "zone_slug": _slug_zone(raw),
+                    "confidence": 0.85,
+                    "matched_from": "loc_line",
+                    "titan_chrome_present": titan_chrome or True,
+                    "raw_lines": lines[:20],
+                }
+    lm2 = LOC_LINE.search(joined)
+    if lm2:
+        raw = lm2.group(1).strip()
+        return {
+            "zone_hint": raw,
+            "zone_slug": _slug_zone(raw),
+            "confidence": 0.8,
+            "matched_from": "loc_line_joined",
+            "titan_chrome_present": titan_chrome or True,
+            "raw_lines": lines[:20],
+        }
     m = ZONEISH.search(joined)
     if m:
         return {
             "zone_hint": m.group(0),
+            "zone_slug": _slug_zone(m.group(0)),
             "confidence": 0.7,
             "matched_from": "token_list",
             "titan_chrome_present": titan_chrome,
@@ -102,6 +140,7 @@ def extract_zone(lines: list[str]) -> dict:
         )
     return {
         "zone_hint": None,
+        "zone_slug": None,
         "confidence": 0.0,
         "matched_from": None,
         "titan_chrome_present": titan_chrome,
@@ -175,18 +214,32 @@ def main() -> int:
             entry["status"] = "NO_ZONE_TOKEN"
         results.append(entry)
 
+    # Day-level zone for archive_keep (enhance reads zone / zone_hint / label)
+    day_zone = next((r.get("zone_hint") for r in results if r.get("zone_hint")), None)
+    day_slug = next(
+        (
+            (r.get("best") or {}).get("zone_slug") or _slug_zone(r.get("zone_hint") or "")
+            for r in results
+            if r.get("zone_hint")
+        ),
+        None,
+    )
     report = {
-        "schema": "gcs_zone_label_probe/v0",
+        "schema": "gcs_zone_label_probe/v1",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "day_dir": str(day),
-        "law": "no_invent_zone_titan_when_visible",
+        "law": "no_invent_zone_titan_when_visible; loc_line_ok",
         "kyle_signal_20260810": "TitanPanel location readable when bar up",
+        "zone": day_zone,
+        "zone_hint": day_zone,
+        "zone_slug": day_slug or "archive",
+        "label": day_zone,
         "clips": results,
     }
     out = analysis / "ZONE_LABEL.json"
-    out.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    out.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     zones = [r.get("zone_hint") for r in results if r.get("zone_hint")]
-    print(f"zone_label_probe clips={len(results)} zones_found={zones} -> {out}")
+    print(f"zone_label_probe clips={len(results)} zones_found={zones} day_zone={day_zone} -> {out}")
     return 0
 
 
