@@ -7,7 +7,7 @@ MAX_BYTES="${MAX_LOG_BYTES:-2000000}"
 mkdir -p "$LOGDIR"
 shopt -s nullglob
 for f in "$LOGDIR"/*.log; do
-  base=$(basename "$f")
+  [[ -f "$f" ]] || continue
   sz=$(wc -c <"$f" | tr -d ' ')
   if [[ "$sz" -lt "$MAX_BYTES" ]]; then
     continue
@@ -15,14 +15,19 @@ for f in "$LOGDIR"/*.log; do
   ts=$(date -u +%Y%m%dT%H%M%SZ)
   dest="${f}.${ts}"
   mv "$f" "$dest"
-  gzip -f "$dest" 2>/dev/null || true
+  if command -v gzip >/dev/null 2>&1; then
+    gzip -f "$dest" || true
+  fi
   : >"$f"
-  echo "ROTATED $base size=$sz"
+  echo "ROTATED $(basename "$f") size=$sz"
 done
-# prune old gz
-ls -1t "$LOGDIR"/*.log.*.gz 2>/dev/null | tail -n +"$((KEEP + 1))" | while read -r old; do
-  rm -f "$old"
-  echo "PRUNE $old"
-done
+# prune oldest gz beyond KEEP
+mapfile -t gz < <(ls -1t "$LOGDIR"/*.log.*.gz 2>/dev/null || true)
+if ((${#gz[@]} > KEEP)); then
+  for ((i = KEEP; i < ${#gz[@]}; i++)); do
+    rm -f -- "${gz[i]}"
+    echo "PRUNE ${gz[i]}"
+  done
+fi
 echo "LOG_ROTATE_OK dir=$LOGDIR keep=$KEEP"
 exit 0
