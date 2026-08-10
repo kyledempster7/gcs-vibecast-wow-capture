@@ -2,7 +2,7 @@
 type: operating-note
 status: active
 created: 2026-08-09
-updated: 2026-08-09
+updated: 2026-08-10
 area: Games/WoW/04-Story-and-Capture
 role: GATHERING_BROLL_UI_MODE
 canon: Games/WoW
@@ -30,13 +30,15 @@ Herb/mining and outdoor travel B-roll that keeps **node tracking + minimap** whi
 
 | Keep fully visible | Hide or fade |
 |--------------------|--------------|
-| **Minimap** | Action bars |
+| **Minimap** | Action bars (hover-hide OK — Kyle likes this live) |
 | **Herb / mining node tracking** | Unit frames |
-| (world + nodes) | Chat |
-| | Objectives / quest tracker |
+| (world + nodes) | **Chat** (Edit Mode alone often fails here) |
+| | **Objectives / quest tracker** (sticks in Edit Mode) |
 | | Bags / menus |
 | | Buffs / debuffs chrome |
 | | Other non-essential clutter |
+
+**2026-08-10 Kyle:** Beneficial **bottom bars hide until hover** is live. **Still missing:** a saved state that is effectively **minimap-only** (tracker + chat still show after Edit Mode pruning). Closing this = named layout or Auto Hide rules, not more random toggles.
 
 **Recover** the full interface for combat and panels (exit mode).  
 **Cinematic total clean** = still **Alt+Z** only — do not replace or rebind Alt+Z for this mode.
