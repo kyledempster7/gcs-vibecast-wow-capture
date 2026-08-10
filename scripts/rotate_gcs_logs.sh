@@ -19,8 +19,9 @@ for f in "$LOGDIR"/*.log; do
   : >"$f"
   echo "ROTATED $(basename "$f") size=$sz"
 done
-# prune oldest gz beyond KEEP (bash3: no mapfile)
+# prune oldest gz beyond KEEP (bash3: no mapfile; tolerate zero gz)
 n=0
+set +e
 ls -1t "$LOGDIR"/*.log.*.gz 2>/dev/null | while read -r old; do
   n=$((n + 1))
   if [ "$n" -gt "$KEEP" ]; then
@@ -28,5 +29,6 @@ ls -1t "$LOGDIR"/*.log.*.gz 2>/dev/null | while read -r old; do
     echo "PRUNE $old"
   fi
 done
+set -e
 echo "LOG_ROTATE_OK dir=$LOGDIR keep=$KEEP"
 exit 0
