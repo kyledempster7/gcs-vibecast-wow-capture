@@ -31,6 +31,27 @@ sys.exit(0 if ready else 1)
 PY
 TODAY_READY=$?
 
+# If not ready, try auto Session-End when masters already on Windows (zero Kyle PowerShell)
+if [[ "$TODAY_READY" -ne 0 ]]; then
+  echo "OPERATOR: try Auto-Session-End-If-Masters"
+  bash "$SCRIPTS/windows_auto_session_end.sh" "$DAY"
+  AEC=$?
+  if [[ "$AEC" -eq 0 ]]; then
+    bash "$SCRIPTS/soft_poll_windows.sh" || true
+    python3 - "$OUT/SOFT_POLL_LATEST.json" "$DAY" <<'PY'
+import json, sys
+from pathlib import Path
+p, day = Path(sys.argv[1]), sys.argv[2]
+d = json.loads(p.read_text(encoding="utf-8")) if p.is_file() else {}
+for row in d.get("days") or []:
+    if row.get("day") == day and row.get("ready"):
+        sys.exit(0)
+sys.exit(1)
+PY
+    TODAY_READY=$?
+  fi
+fi
+
 HRC=1
 if [[ "$TODAY_READY" -eq 0 ]]; then
   export HARVEST_FORCE_POLL=0
@@ -41,7 +62,7 @@ if [[ "$TODAY_READY" -eq 0 ]]; then
     echo "OPERATOR: harvest ok — open_review_pack.sh $DAY"
   fi
 else
-  echo "OPERATOR: waiting Windows export (Session-End-Ship) — no invent"
+  echo "OPERATOR: waiting masters+export on Windows — no invent"
   HRC=1
 fi
 

@@ -20,6 +20,7 @@ FILES=(
   Configure-WoW-BRoll-OBS.ps1
   Move-TodayMastersToDayRoot.ps1
   Session-End-Ship.ps1
+  Auto-Session-End-If-Masters.ps1
   Windows-Preflight.ps1
   Run-NightlyInboxes.ps1
   Run-CaptureInbox.ps1

@@ -228,7 +228,7 @@ def main() -> int:
         "## Next",
         "",
         "- Phase A play night: Deck multi-act + AUDIO_GREEN + export → `post_play_harvest.sh`.",
-        "- Idle daytime LaunchAgent quiet hours are intentional. Agents: no invent FOOTAGE.",
+        "- LaunchAgent quiet morning 03–11; active 12:00–02:59 so afternoon export is harvested. No invent FOOTAGE.",
         "",
         f"Spec: `04-Story-and-Capture/PRODUCT_SYSTEM_SPEC.md`",
         "",

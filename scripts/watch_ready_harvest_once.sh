@@ -15,6 +15,9 @@ while [[ $(date +%s) -lt $END ]]; do
   {
     echo "---- $(date -u +%Y-%m-%dT%H:%M:%SZ) ----"
     bash "$SCRIPTS/soft_poll_windows.sh" || true
+    # If masters landed but Kyle forgot Session-End, do it for him
+    bash "$SCRIPTS/windows_auto_session_end.sh" "$DAY" || true
+    bash "$SCRIPTS/soft_poll_windows.sh" || true
   } >>"$DETAIL" 2>&1
 
   python3 - "$HOME/Movies/WoW-Broll-Workflow/Returns/SOFT_POLL_LATEST.json" "$DAY" <<'PY' >>"$DETAIL" 2>&1
