@@ -72,9 +72,10 @@ Moments is the **durable player library**. Day `returner-daily-*` can be slimmed
 ## Done when (ops)
 
 - [x] Doctrine on disk (this file)  
-- [ ] `archive_keep_to_moments.py` run after KEEP nights  
-- [ ] Drive `archive-broll/` has latest KEEP set  
-- [ ] GitHub has scripts/docs (not media)  
+- [x] `archive_keep_to_moments.py` run after KEEP nights (2026-08-09)  
+- [x] Drive `archive-broll/` has latest KEEP set  
+- [x] GitHub has scripts/docs (not media)  
+- [x] `catalog_query.py` rebuild/query + restore drill 2026-08-10  
 
 ---
 
