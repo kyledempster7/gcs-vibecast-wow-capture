@@ -19,6 +19,7 @@ $need = @(
   'Move-TodayMastersToDayRoot.ps1',
   'Session-End-Ship.ps1',
   'Configure-WoW-BRoll-OBS.ps1',
+  'Configure-VibeCast-AutoHideUI.ps1',
   'DECK_OPEN_COMMANDS.txt',
   'DECK_BUTTON_MAP.md',
   'TODAY_SESSION.md'

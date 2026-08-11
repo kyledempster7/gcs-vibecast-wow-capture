@@ -38,6 +38,23 @@ foreach ($root in $addonRoots) {
   }
 }
 
+$autoHideSaved = 'C:\Program Files (x86)\World of Warcraft\_retail_\WTF\Account\CERBERUS321\SavedVariables\AutoHideUI.lua'
+$autoHideBackup = $autoHideSaved + '.pre-vibecast-20260811.bak'
+$autoHideConfigured = $false
+$autoHideActiveGather = $false
+$autoHideSha = $null
+if (Test-Path -LiteralPath $autoHideSaved) {
+  $autoHideText = Get-Content -LiteralPath $autoHideSaved -Raw
+  $autoHideConfigured = (
+    $autoHideText.Contains('["VibeCast Gather"] = {') -and
+    $autoHideText.Contains('["VibeCast Cinematic"] = {') -and
+    $autoHideText.Contains('["ObjectiveTrackerFrame"] = true') -and
+    $autoHideText.Contains('["MinimapCluster"] = false')
+  )
+  $autoHideActiveGather = $autoHideText.Contains('= "VibeCast Gather"')
+  $autoHideSha = (Get-FileHash -Algorithm SHA256 -LiteralPath $autoHideSaved).Hash.ToLowerInvariant()
+}
+
 $rawCount = 0
 $candidateCount = 0
 if (Test-Path -LiteralPath (Join-Path $dayRoot 'raw')) {
@@ -74,6 +91,14 @@ $body = [ordered]@{
   auto_hide_ui = [ordered]@{
     installed = ($autoHide.Count -gt 0)
     matches = $autoHide
+    saved_variables_path = $autoHideSaved
+    saved_variables_exists = (Test-Path -LiteralPath $autoHideSaved)
+    configured = $autoHideConfigured
+    active_profile_is_gather = $autoHideActiveGather
+    gather_profile = 'VibeCast Gather'
+    cinematic_profile = 'VibeCast Cinematic'
+    original_backup_exists = (Test-Path -LiteralPath $autoHideBackup)
+    sha256 = $autoHideSha
   }
   today_media = [ordered]@{
     day_root_exists = (Test-Path -LiteralPath $dayRoot)
@@ -83,6 +108,10 @@ $body = [ordered]@{
   resume_card = [ordered]@{
     path = (Join-Path $scripts 'WINDOWS_RESUME_TODAY.md')
     exists = (Test-Path -LiteralPath (Join-Path $scripts 'WINDOWS_RESUME_TODAY.md'))
+  }
+  stream_deck = [ordered]@{
+    running = [bool](Get-Process -Name 'StreamDeck' -ErrorAction SilentlyContinue)
+    command_sheet_exists = (Test-Path -LiteralPath (Join-Path $scripts 'DECK_OPEN_COMMANDS.txt'))
   }
   may_publish = $false
   mutation = 'none_read_only'

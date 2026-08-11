@@ -501,7 +501,7 @@ def main() -> int:
     parity_ok = (
         parity.get("status") == "PASS"
         and parity.get("all_match") is True
-        and int(parity.get("file_count") or 0) >= 21
+        and int(parity.get("file_count") or 0) >= 24
     )
     checks.append(
         Check(
@@ -548,6 +548,7 @@ def main() -> int:
         extension.get("status") == "PASS"
         and extension.get("may_publish") is False
         and {"tde-default", "tfe-default"}.issubset(set(extension.get("brand_packs") or []))
+        and "TDE_TFE_PORTABLE_PLAN" in set(extension.get("checks") or [])
     )
     checks.append(
         Check(
@@ -590,6 +591,9 @@ def main() -> int:
     resume_ok = (
         resume.get("status") == "READY_FOR_HUMAN_CAPTURE"
         and (resume.get("profile") or {}).get("product_path_ok") is True
+        and (resume.get("auto_hide_ui") or {}).get("configured") is True
+        and (resume.get("auto_hide_ui") or {}).get("active_profile_is_gather") is True
+        and (resume.get("stream_deck") or {}).get("command_sheet_exists") is True
         and (resume.get("resume_card") or {}).get("exists") is True
     )
     checks.append(
@@ -693,6 +697,75 @@ def main() -> int:
             "pre-commit Windows parity admission installed",
             "PASS" if "BEGIN GCS_VIBECAST_WINDOWS_PARITY_V1" in hook_text else "FAIL",
             str(hook),
+        )
+    )
+
+    windows_behavior = read_json(GCS_RECEIPTS / "WINDOWS_BEHAVIOR_REGRESSION_LATEST.json")
+    behavior_checks = windows_behavior.get("checks") or {}
+    behavior_ok = (
+        windows_behavior.get("status") == "PASS"
+        and all(behavior_checks.get(name) is True for name in (
+            "AUTOHIDE_TRANSFORM_SELFTEST",
+            "AUTO_SESSION_END_DISPATCH_ON_TODAY_MASTER",
+            "AUTO_SESSION_END_SKIP_WITHOUT_MASTER",
+        ))
+        and windows_behavior.get("fixture_only") is True
+        and windows_behavior.get("real_media_touched") is False
+    )
+    checks.append(
+        Check(
+            "G124",
+            "AUTO",
+            "Windows AutoHide transform and Session-End fixture behavior",
+            "PASS" if behavior_ok else "FAIL",
+            f"checks={behavior_checks}",
+        )
+    )
+
+    autohide = read_json(GCS_RECEIPTS / "AUTOHIDEUI_CONFIG_LATEST.json")
+    autohide_checks = autohide.get("checks") or {}
+    autohide_ok = (
+        autohide.get("status") == "PASS"
+        and autohide.get("state") in {"CONFIGURED", "ALREADY_CONFIGURED"}
+        and all(autohide_checks.values())
+        and autohide.get("original_preserved") is True
+        and autohide.get("wow_running") is False
+    )
+    checks.append(
+        Check(
+            "G125",
+            "SOT",
+            "Windows AutoHideUI named profiles and original backup readback",
+            "PASS" if autohide_ok else "FAIL",
+            f"state={autohide.get('state')} backup={autohide.get('original_preserved')}",
+        )
+    )
+
+    marker = read_json(GCS_RECEIPTS / "MANIFEST_MARKER_WINDOWS_LATEST.json")
+    marker_ok = (
+        marker.get("status") == "PASS"
+        and int(marker.get("files_with_windows") or 0) >= 2
+        and int(marker.get("matched_windows") or 0) >= 3
+        and marker.get("invention") == "none"
+    )
+    checks.append(
+        Check(
+            "G126",
+            "EXPORT",
+            "real manifest has source-bound marker windows",
+            "PASS" if marker_ok else "FAIL",
+            f"files={marker.get('files_annotated')} windows={marker.get('matched_windows')}",
+        )
+    )
+
+    rc, out = run([sys.executable, str(SCRIPTS / "test_no_candidate_enhance.py")], 30)
+    checks.append(
+        Check(
+            "G127",
+            "HARVEST",
+            "empty staged candidates cannot invoke enhancement",
+            "PASS" if rc == 0 else "FAIL",
+            out.strip()[-160:],
         )
     )
 

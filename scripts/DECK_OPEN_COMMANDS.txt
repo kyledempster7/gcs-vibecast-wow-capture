@@ -1,0 +1,36 @@
+# Stream Deck multi-action Open commands — VibeCast Layer C
+# In Stream Deck: add System -> Open, then paste the matching command.
+# These commands append markers only. They do not start OBS, arm, or publish.
+
+## layer_c.record_start (begin)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.record_start -Label "Record start" -State begin
+
+## layer_c.broll_enter (begin)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.broll_enter -Label "Enter b-roll" -State begin
+
+## layer_c.rotate_begin (begin)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.rotate_begin -Label "Begin rotate" -State begin
+
+## layer_c.rotate_end (end)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.rotate_end -Label "End rotate" -State end
+
+## layer_c.broll_exit (end)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.broll_exit -Label "Exit b-roll" -State end
+
+## layer_c.talk_peak (pulse)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.talk_peak -Label "Talk peak" -State pulse
+
+## layer_c.funny_moment (pulse)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.funny_moment -Label "Funny moment" -State pulse
+
+## layer_c.gather_ui_on (begin)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.gather_ui_on -Label "Gather UI ON" -State begin
+
+## layer_c.gather_ui_off (end)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.gather_ui_off -Label "Gather UI OFF" -State end
+
+## layer_c.skip_zone (pulse)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.skip_zone -Label "Skip / bad" -State pulse
+
+## layer_c.record_mark (pulse)
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Append-StreamDeckMarker.ps1" -ButtonId layer_c.record_mark -Label "Chapter mark" -State pulse

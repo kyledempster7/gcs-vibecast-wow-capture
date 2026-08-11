@@ -30,6 +30,9 @@ FILES=(
   Run-EngineHealth.ps1
   check_disk_headroom.ps1
   Windows-Agent-Boot.ps1
+  Configure-VibeCast-AutoHideUI.ps1
+  Test-VibeCast-Windows-Behavior.ps1
+  DECK_OPEN_COMMANDS.txt
 )
 
 echo "== deploy_windows_scripts host=$HOST =="

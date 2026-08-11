@@ -13,11 +13,16 @@ an agent a proceed message or manually move files.
 ## Then play
 
 1. Press **Record**.
-2. If the Stream Deck capture page is ready, press record_start once. Other
+2. Auto Hide UI is preconfigured: **VibeCast Gather** is active and keeps the
+   minimap while hiding chat and the objective tracker. For a clean orbit, use
+   `/autohide setProfile VibeCast Cinematic`; switch back with
+   `/autohide setProfile VibeCast Gather`.
+3. If the Stream Deck capture page is ready, press record_start once. Other
    markers such as talk_peak, funny_moment, and skip_zone are optional.
-3. Play normally. For one clean orbit, use **Alt+Z** for about 15 seconds.
-4. Press **Stop** when the fun ends.
-5. After the file has stopped growing, run:
+4. Play normally. For one clean orbit, use the Cinematic profile or **Alt+Z**
+   for about 15 seconds.
+5. Press **Stop** when the fun ends.
+6. After the file has stopped growing, run:
 
     powershell -NoProfile -ExecutionPolicy Bypass -File "D:\WoW B-Roll Storage\_scripts\Session-End-Ship.ps1"
 
@@ -26,11 +31,10 @@ the review-pack update. Packages remain **NOT_ARMED**.
 
 ## Optional: do not delay the play session
 
-- If WoW is closed and **Auto Hide UI** is already installed, make or confirm a
-  layout named VibeCast Gather: keep the minimap and gathering nodes; hide
-  chat, quest tracker, unit frames, bags, and bars.
-- If it is not installed or the layout is not ready, skip this today. Alt+Z is
-  enough for the clean-orbit proof.
+- The original Auto Hide UI SavedVariables file is backed up beside the live
+  file as `AutoHideUI.lua.pre-vibecast-20260811.bak`.
+- If the named profiles do not appear after login, Alt+Z is enough for today's
+  clean-orbit proof; do not delay play to troubleshoot UI.
 - Later, spend one minute choosing the best League clips and framing **A or B**
   in the local review board.
 

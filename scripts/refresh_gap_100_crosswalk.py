@@ -102,7 +102,7 @@ def validate_proofs() -> dict:
     require(
         parity.get("status") == "PASS"
         and parity.get("all_match") is True
-        and int(parity.get("file_count") or 0) >= 21
+        and int(parity.get("file_count") or 0) >= 24
         and parity.get("remote_root") == r"D:\WoW B-Roll Storage\_scripts",
         "Windows deployed-script parity is not complete",
     )
@@ -117,9 +117,50 @@ def validate_proofs() -> dict:
         and settings.get("Mode") == "Advanced"
         and settings.get("RecTracks") == "7"
         and (readiness.get("auto_hide_ui") or {}).get("installed") is True
+        and (readiness.get("auto_hide_ui") or {}).get("configured") is True
+        and (readiness.get("auto_hide_ui") or {}).get("active_profile_is_gather") is True
+        and (readiness.get("auto_hide_ui") or {}).get("original_backup_exists") is True
+        and (readiness.get("stream_deck") or {}).get("command_sheet_exists") is True
         and (readiness.get("resume_card") or {}).get("exists") is True
         and readiness.get("first_bad_boundary") == "HUMAN_AUDIO_AND_REAL_CAPTURE_REQUIRED",
         "Windows resume readback is incomplete",
+    )
+
+    autohide_path, autohide = receipt("AUTOHIDEUI_CONFIG_LATEST.json")
+    required_autohide = {
+        "profile_keys_bound_to_gather",
+        "gather_custom_chat_hidden",
+        "gather_objective_tracker_hidden",
+        "gather_minimap_preserved",
+        "cinematic_custom_chat_hidden",
+        "cinematic_all_listed_frames_hidden",
+    }
+    autohide_checks = autohide.get("checks") or {}
+    require(
+        autohide.get("status") == "PASS"
+        and autohide.get("state") in {"CONFIGURED", "ALREADY_CONFIGURED"}
+        and required_autohide.issubset(autohide_checks)
+        and all(autohide_checks.get(name) is True for name in required_autohide)
+        and autohide.get("original_preserved") is True
+        and autohide.get("backup_sha256")
+        == "e9b75978022d496c99c4c2ce3fd1040a84e6983c07f8eb2af2e865688fc11d07"
+        and autohide.get("wow_running") is False,
+        "guarded AutoHideUI configuration readback is incomplete",
+    )
+
+    behavior_path, behavior = receipt("WINDOWS_BEHAVIOR_REGRESSION_LATEST.json")
+    required_behavior = {
+        "AUTOHIDE_TRANSFORM_SELFTEST",
+        "AUTO_SESSION_END_DISPATCH_ON_TODAY_MASTER",
+        "AUTO_SESSION_END_SKIP_WITHOUT_MASTER",
+    }
+    behavior_checks = behavior.get("checks") or {}
+    require(
+        behavior.get("status") == "PASS"
+        and all(behavior_checks.get(name) is True for name in required_behavior)
+        and behavior.get("fixture_only") is True
+        and behavior.get("real_media_touched") is False,
+        "Windows fixture-only behavior regression is incomplete",
     )
 
     feedback_path, feedback = receipt("REVIEW_FEEDBACK_SERVER_TEST_LATEST.json")
@@ -178,6 +219,7 @@ def validate_proofs() -> dict:
         extensions.get("status") == "PASS"
         and {"tde-default", "tfe-default", "twe-wow"}.issubset(set(extensions.get("brand_packs") or []))
         and "local-ai-advisor" in set(extensions.get("plugins") or [])
+        and "TDE_TFE_PORTABLE_PLAN" in set(extensions.get("checks") or [])
         and extensions.get("may_publish") is False
         and extensions.get("provider_effects") is False,
         "extension surface proof is incomplete",
@@ -222,15 +264,16 @@ def validate_proofs() -> dict:
     required_gauntlet = {
         "G109", "G110", "G111", "G112", "G113", "G114", "G115", "G116",
         "G117", "G118", "G119", "G120", "G121", "G122", "G123",
+        "G124", "G125", "G126", "G127",
     }
     require(
         gauntlet.get("schema") == "gcs_vibecast_gauntlet/v2"
-        and int(gauntlet.get("n_executable_checks") or 0) >= 53
+        and int(gauntlet.get("n_executable_checks") or 0) >= 57
         and int((gauntlet.get("counts") or {}).get("FAIL") or 0) == 0
         and required_gauntlet.issubset(checks)
         and all(checks[gid].get("status") == "PASS" for gid in required_gauntlet)
         and checks.get("G080", {}).get("status") == "OPEN",
-        "final executable gauntlet is not 52 PASS / 1 human OPEN",
+        "final executable gauntlet is missing current closure checks or has a failure",
     )
 
     status_text = (LIVE_WOW / "00-Index/VIBECAST_STATUS.md").read_text(encoding="utf-8")
@@ -264,6 +307,8 @@ def validate_proofs() -> dict:
         "parity": parity,
         "readiness_path": str(readiness_path),
         "readiness": readiness,
+        "autohide_path": str(autohide_path),
+        "behavior_path": str(behavior_path),
         "feedback_path": str(feedback_path),
         "chat_path": str(chat_path),
         "marker_path": str(marker_path),
@@ -287,14 +332,22 @@ def update_rows(doc: dict, proof: dict) -> None:
     working_set_n = int(proof["backup"].get("returns_working_set_files") or 0)
     updates: dict[int, tuple[str, str, str]] = {
         15: ("CLOSED", "Current VIBECAST_STATUS states RUNTIME_PARTIAL_E2E_UNPROVEN and labels structural surfaces structural only.", "Empty-night health cannot be presented as PRODUCT_GREEN."),
-        19: ("CLOSED", "WINDOWS_SCRIPT_HASH_PARITY_LATEST PASS: 21 deployed PowerShell files match; G123 proves the staged-PS1 pre-commit admission hook.", "Closure is deployed byte parity plus admission control, not live capture."),
+        16: ("CLOSED", r"Fresh Windows readback proves the WoW_BRoll_1440p60 OBS profile writes to D:\WoW B-Roll Storage, not the historical Fable/Videos folder.", "Profile-path closure does not claim a recording occurred."),
+        17: ("CLOSED", r"The trusted masters SoR is D:\WoW B-Roll Storage; historical C:\Users\kyled\Videos\Fable Anniversary B-Roll media remains explicitly excluded rather than relabeled.", "No historical Fable file was moved or reclassified."),
+        19: ("CLOSED", "WINDOWS_SCRIPT_HASH_PARITY_LATEST PASS: 24 deployed Windows-facing files match; G123 proves the staged-PS1 pre-commit admission hook.", "Closure is deployed byte parity plus admission control, not live capture."),
         21: ("CLOSED", "Fresh read-only Windows readiness reached host 3900X and returned the OBS profile, storage path, addon, and resume-card state.", "Reachability is current-session proof; future loss must fail closed."),
-        23: ("CLOSED", r"The deploy used D:\WoW B-Roll Storage\_scripts and remote SHA-256 readback matched all 21 files.", "Spaced-path transport is proven for this deployed surface; real gameplay is separate."),
+        23: ("CLOSED", r"The deploy used D:\WoW B-Roll Storage\_scripts and remote SHA-256 readback matched all 24 files.", "Spaced-path transport is proven for this deployed surface; real gameplay is separate."),
         24: ("CLOSED", f"Backup v4 verified the exact authority branch bundle and public sample remote main {sample12}.", "The authority bundle and sample are recovery custody; neither is PRODUCT_GREEN."),
         25: ("CLOSED", "media_roots.json is schema gcs_media_roots/v2, version 2, with current Windows, Mac, branch, worktree, sample, and Drive roots.", "Future path changes still require a version bump and fresh readback."),
+        34: ("CLOSED", "G124 PASS: the deployed Auto Session-End script dispatched its ship action for a same-day fixture master and returned NO_MASTERS without one; the real scheduler remains wired.", "The regression used disposable fixture bytes and touched no real media."),
         39: ("CLOSED", "MANIFEST_MARKER_WINDOWS_LATEST PASS: five real 08-09 candidates explicitly annotated, two source-master matches, three windows, no cross-master inference.", "Historical real-media annotation does not prove the next same-day Branch A run."),
+        41: ("CLOSED", "G127 PASS: a sandboxed empty candidate stage cannot invoke enhance_returner_day; harvest gating exits before enhancement.", "This closes the no-candidate safety bug, not same-day Branch-A E2E."),
         45: ("CLOSED", "G119 PASS: READY bypasses the poll cache; only fresh not-ready state may be reused; missing/stale state polls.", "This closes cache masking, not media readiness."),
-        53: ("PARTIAL", "Windows readiness proves Auto Hide UI installed in the retail addon path; the VibeCast Gather in-game layout is not configured/read back.", "Kyle may skip layout setup and use Alt+Z; no in-game state is invented."),
+        49: ("CLOSED", "Fresh OBS readback proves Advanced mode and RecTracks=7, enabling recording tracks 1, 2, and 3; the configured dual-source route is separate from playback truth.", "Rows 50 and 51 remain OPEN until the real mic and game audio are heard."),
+        53: ("CLOSED", "AUTOHIDEUI_CONFIG_LATEST PASS: VibeCast Gather is active, chat/objectives are hidden, the minimap is preserved, and the original file is hash-backed up.", "Offline SavedVariables configuration is proven; no in-game screenshot is invented."),
+        54: ("PARTIAL", "AUTOHIDEUI_CONFIG_LATEST PASS created and validated VibeCast Cinematic with all listed frames and chat hidden.", "A real in-game visual/orbit still must prove the cinematic result."),
+        57: ("PARTIAL", "DECK_OPEN_COMMANDS.txt is now a tracked, deployed, hash-matched 11-command sheet and Windows readiness proves it present.", "The running Stream Deck application's button bindings and a real human press remain unproven."),
+        58: ("CLOSED", "G126 and MANIFEST_MARKER_WINDOWS_LATEST PASS on real 08-09 media: two candidates carry three source-bound marker windows; all five candidates carry explicit marker_window schema.", "Historical proof closes the empty-window join bug; the next play-night E2E remains row 11/44."),
         62: ("CLOSED", "G109 and G118 PASS: launchd-owned loopback feedback service is healthy and the eight-check atomic/concurrent regression passes.", "Feedback writes verdicts only; it cannot arm or publish."),
         63: ("CLOSED", "G109 proves the loopback service health; the launcher resolves the real 08-09 review pack and prints its local URL without foreground control.", "No browser focus or foreground-control claim is made."),
         67: ("CLOSED", "CHAT_DETECTOR_REGRESSION_LATEST PASS on two real clips: clean orbit false, visible chat true, and clean passthrough hash preserved.", "Closure is bounded to the cited real-media regression."),
@@ -302,7 +355,7 @@ def update_rows(doc: dict, proof: dict) -> None:
         75: ("CLOSED", "G122 PASS: the real 08-09 NEXT_NIGHT_BRIEF carries human KEEP identifiers c and c-pride-15s-start.", "KEEP identifiers guide capture; they do not arm a package."),
         79: ("CLOSED", "G120 PASS: a second watcher is refused, the lock releases safely, and unknown lock content is preserved.", "Single-owner enforcement is code/fixture proof plus current one-watch state."),
         81: ("CLOSED", "VIBECAST_STATUS is refreshed on 2026-08-11 and reads the owner crosswalk rather than a fossil date or generic product-green label.", "Status remains RUNTIME_PARTIAL_E2E_UNPROVEN."),
-        82: ("CLOSED", "G123 proves the pre-commit PS1 parity admission hook; the deployed parity receipt matches all 21 current files.", "Later PS1 changes must pass the same admission again."),
+        82: ("CLOSED", "G123 proves the pre-commit PS1 parity admission hook; the deployed parity receipt matches all 24 current files.", "Later PS1 changes must pass the same admission again."),
         84: ("CLOSED", "MAC_BACKUP_VIBECAST_LATEST v4 PASS with public-sample push rc 0, verified authority bundle, extensions, receipts, and Returns working set.", "Backup success is custody, not scheduled/product green."),
         85: ("CLOSED", "LOG_ROTATION_LATEST PASS: 2 MB cap, eight compressed generations, cadence owned by com.kyle.gcs.wow-soft-poll-harvest.", "Retention is scoped to VibeCast logs."),
         86: ("CLOSED", f"The exact authority bundle verifies at HEAD {head12}; restore docs and the remote public sample at {sample12} are in the backup surface.", "This is scoped disaster-recovery custody, not a full-vault backup claim."),
@@ -312,7 +365,7 @@ def update_rows(doc: dict, proof: dict) -> None:
         96: ("CLOSED", "SCHEMA_AUDIT_LATEST PASS: at least 80 JSON files scanned and missing_n=0, with explicit bounded exemptions.", "External/legacy exemptions remain explicit rather than inferred green."),
         97: ("CLOSED", "All Windows-touching Mac scripts resolve the host through schema gcs_media_roots/v2 with an environment override; no script embeds the host IP.", "The configured IP may change only through the versioned config/readback path."),
         98: ("CLOSED", "EXTENSION_SURFACE_LATEST PASS proves an executable registry with three brand packs and the local-ai-advisor plugin.", "Extensions are fail-closed and cannot create media, arm, publish, or write providers."),
-        99: ("PARTIAL", "TDE and TFE brand packs validate through the executable extension registry; tde_tfe_runtime_media_e2e remains false.", "Portable implementation exists; real twin-game media runtime remains unexercised."),
+        99: ("CLOSED", "EXTENSION_SURFACE_LATEST and G113 PASS: TDE and TFE execute distinct fail-closed brand plans over the shared stage spine with NOT_ARMED and may_publish=false.", "Portability is proven at the implementation/contract layer; no TDE/TFE media or product-green claim is made."),
         100: ("CLOSED", "The local-ai-advisor executable plugin validates suggestion-only output with may_publish=false and provider_effects=false.", "AI advice cannot create evidence, media, ARM state, or provider effects."),
     }
     by_gap = {row["gap"]: row for row in doc["rows"]}
@@ -339,7 +392,7 @@ def render_markdown(doc: dict) -> str:
         "",
         f"`{doc['remaining_first_bad_boundary']}`",
         "",
-        "All safe agent-actionable rows in this closure wave are complete. Remaining rows require real capture, audio playback, in-game layout/framing, Stream Deck setup, or human semantic selection. The system remains NOT_ARMED and not PRODUCT_GREEN.",
+        "All safe agent-actionable rows in this closure wave are complete. Remaining rows require real capture, audio playback, in-game visual/framing proof, Stream Deck UI binding, or human semantic selection. The system remains NOT_ARMED and not PRODUCT_GREEN.",
         "",
         "## Evidence index",
         "",
@@ -403,7 +456,9 @@ def main() -> int:
             dict.fromkeys(
                 list(doc.get("closure_actions") or [])
                 + [
-                    "Deployed and hash-read-back all 21 Windows PowerShell scripts through the spaced product path",
+                    "Deployed and hash-read-back all 24 Windows-facing scripts/cards through the spaced product path",
+                    "Configured guarded AutoHideUI Gather/Cinematic profiles offline with original-file backup and exact readback",
+                    "Proved Auto Session-End dispatch and no-candidate enhancement refusal with isolated fixtures",
                     "Installed and proved the durable loopback review-feedback LaunchAgent and atomic concurrency contract",
                     "Annotated the real 08-09 manifest with source-master marker windows without cross-master inference",
                     "Backed up the exact authority branch, executable extensions, receipts, and non-video Returns working set",
@@ -416,6 +471,8 @@ def main() -> int:
             {
                 "windows_script_parity": proof["parity_path"],
                 "windows_resume_readiness": proof["readiness_path"],
+                "windows_autohideui_config": proof["autohide_path"],
+                "windows_behavior_regression": proof["behavior_path"],
                 "feedback_server": proof["feedback_path"],
                 "chat_detector": proof["chat_path"],
                 "manifest_marker_windows": proof["marker_path"],
@@ -437,6 +494,9 @@ def main() -> int:
             "profile": (proof["readiness"].get("profile") or {}).get("folder"),
             "product_path_ok": (proof["readiness"].get("profile") or {}).get("product_path_ok"),
             "auto_hide_ui_installed": (proof["readiness"].get("auto_hide_ui") or {}).get("installed"),
+            "auto_hide_ui_configured": (proof["readiness"].get("auto_hide_ui") or {}).get("configured"),
+            "auto_hide_ui_active_profile_is_gather": (proof["readiness"].get("auto_hide_ui") or {}).get("active_profile_is_gather"),
+            "stream_deck_command_sheet_exists": (proof["readiness"].get("stream_deck") or {}).get("command_sheet_exists"),
             "today_media": proof["readiness"].get("today_media"),
             "first_bad_boundary": proof["readiness"].get("first_bad_boundary"),
         }
@@ -453,7 +513,7 @@ def main() -> int:
         }
 
         require(sum(doc["counts"].values()) == 100, "status counts do not sum to 100")
-        require(doc["counts"] == {"CLOSED": 81, "PARTIAL": 13, "OPEN": 6}, "unexpected final counts")
+        require(doc["counts"] == {"CLOSED": 89, "PARTIAL": 7, "OPEN": 4}, "unexpected final counts")
         validate_owner(doc)
 
         json_text = json.dumps(doc, indent=2) + "\n"
@@ -464,7 +524,7 @@ def main() -> int:
         atomic_text(LATEST_JSON, json_text)
         atomic_text(LATEST_MD, md_text)
 
-    print("PASS rows=100 CLOSED=81 PARTIAL=13 OPEN=6")
+    print("PASS rows=100 CLOSED=89 PARTIAL=7 OPEN=4")
     print("VERDICT RUNTIME_PARTIAL_E2E_UNPROVEN")
     print("BOUNDARY HUMAN_AUDIO_AND_REAL_CAPTURE_REQUIRED")
     print(f"JSON {LATEST_JSON}")

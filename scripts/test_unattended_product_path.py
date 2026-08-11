@@ -7,6 +7,8 @@ from __future__ import annotations
 
 import inspect
 import json
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -122,6 +124,56 @@ def test_branch_a_no_duplicate_enhance_in_source() -> None:
     print("PASS branch A structural no-dupe enhance")
 
 
+def test_harvest_mac_never_enhances_without_candidates() -> None:
+    """Behavioral: an empty staged candidate set cannot reach enhancement."""
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        fixture_scripts = root / "scripts"
+        fake_bin = root / "bin"
+        fixture_home = root / "home"
+        fixture_scripts.mkdir()
+        fake_bin.mkdir()
+        fixture_home.mkdir()
+        shutil.copy2(SCRIPTS / "harvest_mac.sh", fixture_scripts / "harvest_mac.sh")
+
+        sentinel = root / "enhance-called"
+        (fixture_scripts / "deploy_windows_scripts.sh").write_text(
+            "#!/usr/bin/env bash\nexit 0\n", encoding="utf-8"
+        )
+        (fixture_scripts / "resolve_windows_host.py").write_text(
+            "#!/usr/bin/env python3\nprint('D:/fixture')\n", encoding="utf-8"
+        )
+        (fixture_scripts / "enhance_returner_day.sh").write_text(
+            f"#!/usr/bin/env bash\nprintf called > {sentinel!s}\nexit 0\n",
+            encoding="utf-8",
+        )
+        for name in ("ssh", "scp"):
+            (fake_bin / name).write_text("#!/usr/bin/env bash\nexit 0\n", encoding="utf-8")
+        for path in fixture_scripts.iterdir():
+            if path.suffix in {".sh", ".py"}:
+                path.chmod(0o755)
+        for path in fake_bin.iterdir():
+            path.chmod(0o755)
+
+        env = os.environ.copy()
+        env["HOME"] = str(fixture_home)
+        env["WINDOWS_SSH_HOST"] = "fixture@127.0.0.1"
+        env["PATH"] = str(fake_bin) + os.pathsep + env.get("PATH", "")
+        result = subprocess.run(
+            ["bash", str(fixture_scripts / "harvest_mac.sh"), "2026-08-11"],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=30,
+            env=env,
+        )
+        output = result.stdout + result.stderr
+        assert result.returncode != 0, output
+        assert not sentinel.exists(), output
+        assert "== enhance ==" not in output, output
+    print("PASS harvest_mac empty candidates cannot enhance")
+
+
 def test_live_driver_branch_b_or_a() -> None:
     """Run shipped entry once. If not ready_today, expect exit 0 + BLOCKED receipt."""
     day = datetime.now().strftime("%Y-%m-%d")
@@ -164,6 +216,7 @@ def main() -> int:
     test_missing_day_row_denied()
     test_freshness_gate()
     test_branch_a_no_duplicate_enhance_in_source()
+    test_harvest_mac_never_enhances_without_candidates()
     test_live_driver_branch_b_or_a()
     print("ALL_PASS test_unattended_product_path")
     return 0
