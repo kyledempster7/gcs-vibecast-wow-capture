@@ -50,14 +50,28 @@ PLAY (Windows) → soft_poll → harvest → enhance → review → archive → 
 | Health | `gcs_pipeline_health.py` | new row |
 | Gauntlet | `gcs_vibecast_gauntlet.py` | new G-id |
 
+## Executable extension contract
+
+```bash
+python3 wow-roster-tracker/scripts/vibecast_extensions.py validate
+python3 wow-roster-tracker/scripts/vibecast_extensions.py plan --brand tde-default
+python3 wow-roster-tracker/scripts/vibecast_extensions.py plan --brand tfe-default
+```
+
+- Brand packs live under `wow-roster-tracker/extensions/brand-packs/` and must emit `NOT_ARMED` plans.
+- Plugins live under `wow-roster-tracker/extensions/plugins/`; only contained Python entrypoints and suggestion-only hooks are admitted.
+- Plugin output must be versioned, must set `may_publish=false`, and cannot invent media, arm a package, or write a provider.
+- `test_vibecast_extensions.py` proves the TDE/TFE plan shape and the bundled AI-advisor no-write contract.
+
 ## Twin brands / new games later
 
-Same spine; different brand pack + media root entry in `media_roots.json`.  
+Same spine; different brand pack + media root entry in `media_roots.json`.
+The executable TDE/TFE plan fixtures prove contract portability; real media E2E remains game-specific.
 Do **not** clone the whole vault wing until one game dogfoods Phase A.
 
 ## AI upgrades
 
-Phase A (real capture e2e) before cloud kill-AI. Intel stack: [[INTELLIGENCE_STACK_AND_COST]].
+Phase A (real capture e2e) before cloud kill-AI. The implemented advisor hook is suggestion-only and provider-dark. Intel stack: [[INTELLIGENCE_STACK_AND_COST]].
 
 ## Related
 

@@ -5,7 +5,7 @@
 set -euo pipefail
 DAY="${1:-$(date +%F)}"
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
-HOST="${WINDOWS_SSH_HOST:-kyled@100.92.159.73}"
+HOST="${WINDOWS_SSH_HOST:-$(python3 "$SCRIPTS/resolve_windows_host.py" --ssh)}"
 
 if [[ -d "${HOME}/Movies/WoW-Broll-Workflow/Returns/returner-daily-${DAY}" ]]; then
   ROOT="${HOME}/Movies/WoW-Broll-Workflow/Returns/returner-daily-${DAY}"
@@ -16,7 +16,7 @@ fi
 CAND="${ROOT}/candidates"
 ANALYSIS="${ROOT}/analysis"
 WIN_STAGE="C:/Users/kyled/AppData/Local/Temp/gcs_cand_${DAY}"
-DRIVE="${HOME}/Library/CloudStorage/GoogleDrive-kyledempster7@gmail.com/My Drive/GCS-VibeCast-Offload/${DAY}"
+DRIVE="$(python3 "$SCRIPTS/resolve_windows_host.py" --drive-offload)/${DAY}"
 REMOTE_SCRIPTS="D:/WoW B-Roll Storage/_scripts"
 
 mkdir -p "$CAND" "$ANALYSIS" "${ROOT}/markers"

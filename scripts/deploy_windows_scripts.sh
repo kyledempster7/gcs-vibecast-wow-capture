@@ -3,7 +3,7 @@
 # No invent. No publish. Idempotent scp.
 set -euo pipefail
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
-HOST="${WINDOWS_SSH_HOST:-kyled@100.92.159.73}"
+HOST="${WINDOWS_SSH_HOST:-$(python3 "$SCRIPTS/resolve_windows_host.py" --ssh)}"
 REMOTE="D:/WoW B-Roll Storage/_scripts"
 RECEIPTS="${HOME}/Library/Application Support/UAH/butler/control-plane/receipts/wow"
 mkdir -p "$RECEIPTS"
@@ -95,4 +95,9 @@ cat > "${RECEIPTS}/DEPLOY_WINDOWS_SCRIPTS_LATEST.md" <<EOF
 **Law:** dual SoT — Mac vault is source; scp after every Windows-facing edit
 EOF
 echo "DEPLOY_OK ok=$ok miss=$miss"
+if [[ "$miss" -ne 0 ]]; then
+  echo "DEPLOY_INCOMPLETE missing_local=$miss" >&2
+  exit 2
+fi
+WINDOWS_SSH_HOST="$HOST" python3 "$SCRIPTS/verify_windows_script_hash_parity.py"
 exit 0

@@ -160,7 +160,10 @@ if [[ -d "$LOCKDIR" ]]; then
     exit 0
   fi
   rm -f "$PIDFILE" "$DAYFILE" "$LOCKDIR/heartbeat" "${PIDFILE}.tmp" "${DAYFILE}.tmp" 2>/dev/null || true
-  rmdir "$LOCKDIR" 2>/dev/null || rm -rf "$LOCKDIR"
+  if ! rmdir "$LOCKDIR" 2>/dev/null; then
+    report "FAILED stale lockdir contains unknown files — preserve and inspect"
+    exit 1
+  fi
 fi
 rm -f "$CLASSIC"
 

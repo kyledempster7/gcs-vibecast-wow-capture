@@ -3,8 +3,8 @@
 # No invent. Exit 0 ok/exported, 1 nothing to do, 2 fail.
 set -uo pipefail
 DAY="${1:-$(date +%F)}"
-HOST="${WINDOWS_SSH_HOST:-kyled@100.92.159.73}"
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
+HOST="${WINDOWS_SSH_HOST:-$(python3 "$SCRIPTS/resolve_windows_host.py" --ssh)}"
 
 # Ensure resident script
 scp -o BatchMode=yes -o ConnectTimeout=15 \

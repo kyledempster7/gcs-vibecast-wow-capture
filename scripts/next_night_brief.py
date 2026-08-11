@@ -31,7 +31,12 @@ def main() -> int:
     keeps = []
     if hv_p.is_file():
         hv = json.loads(hv_p.read_text(encoding="utf-8"))
-        for k, v in hv.items():
+        verdicts = hv.get("verdicts") if hv.get("schema") == "gcs_human_verdicts/v1" else hv
+        if not isinstance(verdicts, dict):
+            verdicts = {}
+        for k, v in verdicts.items():
+            if not isinstance(v, dict):
+                continue
             if str(v.get("verdict", "")).upper() == "KEEP":
                 keeps.append(k)
 

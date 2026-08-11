@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -37,7 +38,6 @@ DI = (
     / "delivery-independence"
 )
 OUTBOX_DB = DI / "data" / "outbox.sqlite"
-SSH_HOST = "kyled@100.92.159.73"
 TASKS = [
     "WoW CareSix Live Roster Nightly",
     "WoW Capture Inbox Daily",
@@ -46,6 +46,10 @@ TASKS = [
     "WoW Engine Health Weekly",
 ]
 SCRIPTS = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPTS))
+from resolve_windows_host import ssh_host  # noqa: E402
+
+SSH_HOST = ssh_host()
 
 
 def package_product_line() -> str:
@@ -264,4 +268,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

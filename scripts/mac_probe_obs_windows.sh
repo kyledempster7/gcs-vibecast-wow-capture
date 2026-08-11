@@ -2,8 +2,8 @@
 # Mac → Windows: read-only OBS product path probe. No invent. No thrash live OBS.
 set -uo pipefail
 DAY="${1:-$(date +%F)}"
-HOST="${WINDOWS_SSH_HOST:-kyled@100.92.159.73}"
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
+HOST="${WINDOWS_SSH_HOST:-$(python3 "$SCRIPTS/resolve_windows_host.py" --ssh)}"
 RECEIPTS="${HOME}/Library/Application Support/UAH/butler/control-plane/receipts/wow"
 OUT="${HOME}/Movies/WoW-Broll-Workflow/Returns"
 mkdir -p "$RECEIPTS" "$OUT"

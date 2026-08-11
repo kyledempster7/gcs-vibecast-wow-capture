@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -20,17 +21,40 @@ SCRIPTS = Path(__file__).resolve().parent
 class Handler(SimpleHTTPRequestHandler):
     day_dir: Path = Path(".")
     pack_dir: Path = Path(".")
+    returns_root: Path | None = None
+
+    @classmethod
+    def current_day_dir(cls) -> Path:
+        if cls.returns_root is None:
+            return cls.day_dir.resolve()
+        candidates = sorted(
+            path
+            for path in cls.returns_root.glob("returner-daily-*")
+            if (path / "review-pack" / "index.html").is_file()
+        )
+        if not candidates:
+            raise FileNotFoundError(f"no review-pack under {cls.returns_root}")
+        return candidates[-1].resolve()
+
+    @classmethod
+    def current_pack_dir(cls) -> Path:
+        return cls.current_day_dir() / "review-pack"
 
     def translate_path(self, path: str) -> str:  # noqa: A003
         # serve from pack_dir
         from urllib.parse import unquote
-        import os
         path = unquote(urlparse(path).path)
         if path.startswith("/"):
             path = path[1:]
-        full = (self.pack_dir / path).resolve()
-        if not str(full).startswith(str(self.pack_dir.resolve())):
-            return str(self.pack_dir / "index.html")
+        try:
+            root = self.current_pack_dir().resolve()
+        except FileNotFoundError:
+            root = self.pack_dir.resolve()
+        full = (root / path).resolve()
+        try:
+            full.relative_to(root)
+        except ValueError:
+            return str(root / "index.html")
         if full.is_dir():
             return str(full / "index.html") if (full / "index.html").is_file() else str(full)
         return str(full)
@@ -63,7 +87,7 @@ class Handler(SimpleHTTPRequestHandler):
                 sys.executable,
                 str(SCRIPTS / "record_feedback.py"),
                 "--day-dir",
-                str(self.day_dir),
+                str(self.current_day_dir()),
                 "--id",
                 cid,
                 "--verdict",
@@ -88,6 +112,46 @@ class Handler(SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(raw)))
         self.end_headers()
         self.wfile.write(raw)
+
+    def do_GET(self) -> None:  # noqa: N802
+        if urlparse(self.path).path.rstrip("/") == "/healthz":
+            try:
+                day = self.current_day_dir()
+                pack = day / "review-pack"
+                inject_buttons(pack / "index.html")
+                payload = {
+                    "schema": "gcs_review_feedback_health/v1",
+                    "ok": True,
+                    "day": day.name.removeprefix("returner-daily-"),
+                    "review_pack": str(pack),
+                    "pid": os.getpid(),
+                    "may_publish": False,
+                    "provider_effects": False,
+                }
+                status = 200
+            except FileNotFoundError as exc:
+                payload = {
+                    "schema": "gcs_review_feedback_health/v1",
+                    "ok": False,
+                    "error": str(exc),
+                    "may_publish": False,
+                    "provider_effects": False,
+                }
+                status = 503
+            raw = json.dumps(payload).encode("utf-8")
+            self.send_response(status)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Length", str(len(raw)))
+            self.end_headers()
+            self.wfile.write(raw)
+            return
+        try:
+            inject_buttons(self.current_pack_dir() / "index.html")
+        except FileNotFoundError:
+            self.send_response(503)
+            self.end_headers()
+            return
+        return super().do_GET()
 
     def log_message(self, fmt: str, *args) -> None:
         sys.stderr.write("%s - %s\n" % (self.address_string(), fmt % args))
@@ -149,11 +213,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--day-dir", type=Path, required=True)
+    source = ap.add_mutually_exclusive_group(required=True)
+    source.add_argument("--day-dir", type=Path)
+    source.add_argument("--returns-root", type=Path)
     ap.add_argument("--port", type=int, default=8765)
     ap.add_argument("--inject-only", action="store_true")
     args = ap.parse_args()
-    day = args.day_dir.expanduser().resolve()
+    if args.returns_root is not None:
+        returns_root = args.returns_root.expanduser().resolve()
+        Handler.returns_root = returns_root
+        try:
+            day = Handler.current_day_dir()
+        except FileNotFoundError as exc:
+            print(str(exc), file=sys.stderr)
+            return 2
+    else:
+        Handler.returns_root = None
+        day = args.day_dir.expanduser().resolve()
     pack = day / "review-pack"
     if not pack.is_dir():
         print(f"missing review-pack: {pack}", file=sys.stderr)
@@ -173,7 +249,9 @@ def main() -> int:
             self.end_headers()
 
     server = ThreadingHTTPServer(("127.0.0.1", args.port), H)
-    print(f"REVIEW_BOARD http://127.0.0.1:{args.port}/index.html day={day}")
+    server.daemon_threads = True
+    mode = f"returns_root={Handler.returns_root}" if Handler.returns_root else f"day={day}"
+    print(f"REVIEW_BOARD http://127.0.0.1:{args.port}/index.html {mode}")
     print("Ctrl-C to stop. No publish.")
     try:
         server.serve_forever()

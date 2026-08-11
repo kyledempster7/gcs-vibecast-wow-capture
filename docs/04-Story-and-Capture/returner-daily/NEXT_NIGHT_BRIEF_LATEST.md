@@ -1,6 +1,6 @@
 # Next night brief — from `returner-daily-2026-08-09`
 
-Generated: 2026-08-10 11:30
+Generated: 2026-08-11 01:06
 
 ## Shot mix last harvest
 

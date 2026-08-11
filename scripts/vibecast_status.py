@@ -23,6 +23,11 @@ DI = (
     / "control-plane"
     / "delivery-independence"
 )
+CROSSWALK = (
+    Path.home()
+    / "Library/Application Support/UAH/butler/control-plane/receipts/gcs-vibecast"
+    / "GAP_100_CROSSWALK_LATEST.json"
+)
 
 
 def latest(dirpath: Path) -> str:
@@ -43,6 +48,23 @@ def audio_status() -> str:
     return "GREEN" if "status: GREEN" in fm else "OPEN"
 
 
+def product_truth() -> tuple[str, str]:
+    if not CROSSWALK.is_file():
+        return "UNKNOWN", "crosswalk missing"
+    try:
+        data = json.loads(CROSSWALK.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return "UNKNOWN", "crosswalk unreadable"
+    counts = data.get("counts") or {}
+    verdict = str(data.get("verdict") or "UNKNOWN")
+    if data.get("product_green") is True:
+        verdict = "PRODUCT_GREEN"
+    return verdict, (
+        f"closed={counts.get('CLOSED', '?')} partial={counts.get('PARTIAL', '?')} "
+        f"open={counts.get('OPEN', '?')}"
+    )
+
+
 def main() -> int:
     ep_rec = 0
     ep_n = 0
@@ -52,6 +74,7 @@ def main() -> int:
         ep_rec = sum(1 for e in eps if e.get("recorded"))
 
     pkgs = list((DI / "packages").glob("*.NOT_ARMED.json")) if (DI / "packages").is_dir() else []
+    verdict, counts = product_truth()
     lines = [
         f"# VibeCast status — {datetime.now().strftime('%Y-%m-%d %H:%M')}",
         "",
@@ -61,16 +84,17 @@ def main() -> int:
         "",
         "| Piece | Status |",
         "|-------|--------|",
-        f"| VibeCast OS | {'🟢' if (INDEX / 'VIBECAST_OS.md').is_file() else '🔴'} |",
-        f"| Pipeline map | {'🟢' if (INDEX / 'VIBECAST_PIPELINE.md').is_file() else '🔴'} |",
+        f"| Product truth | **{verdict}** · {counts} |",
+        f"| VibeCast OS document | {'PRESENT (structural only)' if (INDEX / 'VIBECAST_OS.md').is_file() else 'MISSING'} |",
+        f"| Pipeline map document | {'PRESENT (structural only)' if (INDEX / 'VIBECAST_PIPELINE.md').is_file() else 'MISSING'} |",
         f"| Latest vibe session | `{latest(SESS)}` |",
         f"| Latest Returner Daily | `{latest(DAILY)}` |",
         f"| Audio stamp | **{audio_status()}** |",
-        f"| Essay drop folder | {'🟢' if ESSAY.is_dir() else '🔴'} `~/Movies/WoW-Essays` |",
+        f"| Essay drop folder | {'PRESENT (structural only)' if ESSAY.is_dir() else 'MISSING'} `~/Movies/WoW-Essays` |",
         f"| NOT_ARMED packages | {len(pkgs)} |",
         f"| EP recorded | {ep_rec}/{ep_n} |",
-        f"| Muddy card | {'🟢' if (STORY / 'YouTube' / 'STREAM_MUDDY_TALK_CARD.md').is_file() else '🔴'} |",
-        f"| Podcast scaffold | {'🟢' if (STORY / 'YouTube' / 'podcast' / 'README.md').is_file() else '🔴'} |",
+        f"| Muddy card | {'PRESENT (structural only)' if (STORY / 'YouTube' / 'STREAM_MUDDY_TALK_CARD.md').is_file() else 'MISSING'} |",
+        f"| Podcast scaffold | {'PRESENT (structural only)' if (STORY / 'YouTube' / 'podcast' / 'README.md').is_file() else 'MISSING'} |",
         "",
         "## Vibe night recipe (Kyle)",
         "",

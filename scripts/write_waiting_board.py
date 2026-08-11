@@ -192,9 +192,9 @@ day: {today}
 
 ## What unblocks (honest)
 
-1. **Kyle next play:** OBS **Record** (red) → play → **Stop** — Deck markers alone do not create masters  
-2. **Agents:** Auto-Session-End / Session-End-Ship when masters stable → soft_poll `ready_today` → harvest  
-3. **Later:** KEEP ≤60s → draft NOT_ARMED → go only if proud  
+1. **Kyle next play:** OBS **Record** (red) → play → **Stop** — Deck markers alone do not create masters
+2. **Agents:** Auto-Session-End / Session-End-Ship when masters stable → soft_poll `ready_today` → harvest
+3. **Later:** KEEP ≤60s → draft NOT_ARMED → go only if proud
 
 Reliability residual is landed — see [[RELIABILITY_RESIDUAL_SERIALIZE_20260810]]. Wall is empty masters, not broken pipeline.
 

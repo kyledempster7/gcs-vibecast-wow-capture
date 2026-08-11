@@ -4,8 +4,8 @@
 # Default: DAY1=today + DAY2=yesterday (multi-day SOFT_POLL_LATEST).
 # Right-size: prefer resident D:\_scripts (no scp thrash). Set SOFT_POLL_FORCE_SCP=1 to redeploy.
 set -uo pipefail
-HOST="${WINDOWS_SSH_HOST:-kyled@100.92.159.73}"
 SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
+HOST="${WINDOWS_SSH_HOST:-$(python3 "$SCRIPTS/resolve_windows_host.py" --ssh)}"
 DAY1="${1:-$(date +%F)}"
 if [[ -n "${2:-}" ]]; then
   DAY2="$2"

@@ -84,6 +84,10 @@ fi
 write_meta
 trap 'rm -f "$LOGDIR/watch_ready_harvest.lock"; release_lock' EXIT
 
+if [[ "${WATCH_TEST_HOLD_SEC:-0}" -gt 0 ]]; then
+  sleep "$WATCH_TEST_HOLD_SEC"
+fi
+
 while [[ $(date +%s) -lt $END ]]; do
   {
     echo "---- $(date -u +%Y-%m-%dT%H:%M:%SZ) pid=$SELF_PID day=$DAY ----"

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.kyle.gcs.vibecast-review-feedback</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/wow-roster-tracker/scripts/review_pack_feedback_server.py</string>
+    <string>--returns-root</string>
+    <string>/Users/kyle/Movies/WoW-Broll-Workflow/Returns</string>
+    <string>--port</string>
+    <string>8765</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StandardOutPath</key>
+  <string>/Users/kyle/Library/Logs/gcs-vibecast-wow/review_server.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/kyle/Library/Logs/gcs-vibecast-wow/review_server.stderr.log</string>
+</dict>
+</plist>

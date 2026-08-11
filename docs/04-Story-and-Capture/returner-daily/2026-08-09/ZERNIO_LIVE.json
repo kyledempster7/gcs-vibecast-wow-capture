@@ -1,4 +1,5 @@
 {
+  "schema": "gcs_zernio_delivery_readback/v1",
   "status": "SCHEDULED",
   "provider_post_id": "6a791655ee8109217144f312",
   "scheduledFor": "2026-08-10T14:30:00.000Z",

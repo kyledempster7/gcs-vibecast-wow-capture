@@ -1,10 +1,14 @@
 {
-  "version": 1,
-  "updated": "2026-08-09",
+  "schema": "gcs_media_roots/v2",
+  "version": 2,
+  "updated_at_utc": "2026-08-11T04:55:00Z",
   "sole_vault_home": "Games/WoW",
   "windows": {
     "host": "3900x",
     "ssh": "kyled@100.92.159.73",
+    "ssh_user": "kyled",
+    "tailscale_ip": "100.92.159.73",
+    "host_hints": ["3900x", "3900"],
     "vault": "D:\\\\KyleData\\\\KnownFolders\\\\Documents\\\\kyles_corner",
     "broll_trusted": "D:\\\\WoW B-Roll Storage",
     "broll_videos_untrusted": "C:\\\\Users\\\\kyled\\\\Videos\\\\WoW B-Roll",
@@ -16,7 +20,8 @@
   "mac": {
     "vault": "/Users/kyle/Kyles_Vault/kyles_corner",
     "essay_drop": "/Users/kyle/Movies/WoW-Essays",
-    "hyperframes_kit": "Games/WoW/04-Story-and-Capture/hyperframes-brand-kit"
+    "hyperframes_kit": "Games/WoW/04-Story-and-Capture/hyperframes-brand-kit",
+    "google_drive_offload": "/Users/kyle/Library/CloudStorage/GoogleDrive-kyledempster7@gmail.com/My Drive/GCS-VibeCast-Offload"
   },
   "vault_lists": {
     "capture_inbox": "Games/WoW/04-Story-and-Capture/capture-inbox",
@@ -65,5 +70,4 @@
     "If AIOS named-role fails: ROLE_PATH_MAP.json + resolve_wow_door.py — disk beats registry"
   ]
 }
-
 

@@ -14,10 +14,15 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-WIN_IP = "100.92.159.73"
-WIN_HOSTHINTS = ("3900x", "3900")
-SSH_HOST = f"kyled@{WIN_IP}"
 WOW = Path(__file__).resolve().parents[2]
+SCRIPTS = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPTS))
+from resolve_windows_host import load_config, ssh_host  # noqa: E402
+
+_CONFIG = load_config()
+WIN_IP = str(_CONFIG["windows"]["tailscale_ip"])
+WIN_HOSTHINTS = tuple(_CONFIG["windows"].get("host_hints") or ())
+SSH_HOST = ssh_host()
 RECEIPTS = (
     Path.home()
     / "Library"

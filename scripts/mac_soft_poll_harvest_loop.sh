@@ -12,6 +12,11 @@ DAY="$(date +%F)"
 HOUR="$(date +%H)"
 HOUR=$((10#$HOUR))
 
+# Retention and status refresh run on every admitted launchd tick, including quiet hours.
+bash "$SCRIPTS/rotate_gcs_logs.sh" >>"$LOGDIR/log_rotation.log" 2>&1 || true
+python3 "$SCRIPTS/vibecast_status.py" >/dev/null 2>&1 || true
+python3 "$SCRIPTS/gcs_citadel_status.py" >/dev/null 2>&1 || true
+
 # Command-validated golden owner (Codex P0: do not third-write soft_poll while golden owns cadence)
 golden_alive() {
   python3 <<'PY'

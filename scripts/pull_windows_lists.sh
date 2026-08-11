@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Pull path-list markdown from Windows vault after nightly jobs (Mac Sync lag fix)
 set -euo pipefail
-HOST="${WOW_SSH_HOST:-kyled@100.92.159.73}"
+SCRIPTS="$(cd "$(dirname "$0")" && pwd)"
+HOST="${WOW_SSH_HOST:-${WINDOWS_SSH_HOST:-$(python3 "$SCRIPTS/resolve_windows_host.py" --ssh)}}"
 WIN="D:/KyleData/KnownFolders/Documents/kyles_corner/Games/WoW"
 MAC="${WOW_VAULT:-/Users/kyle/Kyles_Vault/kyles_corner}/Games/WoW"
 
