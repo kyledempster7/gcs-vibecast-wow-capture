@@ -1,0 +1,16 @@
+{
+  "schema": "gcs_vibecast_plugin/v1",
+  "id": "local-ai-advisor",
+  "version": 1,
+  "enabled": true,
+  "capabilities": ["suggestion_only"],
+  "forbidden_capabilities": ["invent_media", "publish", "arm", "provider_write"],
+  "hooks": {
+    "after_score": {
+      "entrypoint": "local_ai_advisor.py",
+      "input_schema": "gcs_extension_context/v1",
+      "output_schema": "gcs_ai_suggestions/v1",
+      "timeout_s": 10
+    }
+  }
+}

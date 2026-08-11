@@ -43,7 +43,7 @@ fi
 if [[ -d "$REPO/.git" ]]; then
   rsync -a --delete --exclude '__pycache__' --exclude '*.pyc' --exclude '.DS_Store' \
     "$SCRIPTS/" "$REPO/scripts/"
-  mkdir -p "$REPO/docs/04-Story-and-Capture" "$REPO/docs/00-Index" "$REPO/launchagents"
+  mkdir -p "$REPO/docs/04-Story-and-Capture" "$REPO/docs/00-Index" "$REPO/launchagents" "$REPO/extensions"
   # Product doctrine (markdown/json/html only — skip heavy binaries if any)
   rsync -a --delete \
     --include '*/' \
@@ -54,6 +54,9 @@ if [[ -d "$REPO/.git" ]]; then
     "$REPO/docs/04-Story-and-Capture/hyperframes-brand-kit/" || true
   if [[ -d "$WOW/wow-roster-tracker/launchagents" ]]; then
     rsync -a --delete "$WOW/wow-roster-tracker/launchagents/" "$REPO/launchagents/"
+  fi
+  if [[ -d "$WOW/wow-roster-tracker/extensions" ]]; then
+    rsync -a --delete --exclude '__pycache__' --exclude '*.pyc' "$WOW/wow-roster-tracker/extensions/" "$REPO/extensions/"
   fi
   for f in GCS_CITADEL.md VIBECAST_OS.md MEDIA_SOR_DUAL_MACHINE.md KYLE_OS.md \
            TODAY_WINDOWS_SESSION.md media_roots.json GITHUB_PORTABLE.md GCS_STATUS.md \
@@ -90,7 +93,7 @@ if [[ -d "$REPO/.git" ]]; then
   set +e
   (
     cd "$REPO"
-    git add -- scripts docs launchagents
+    git add -- scripts docs launchagents extensions
     if git diff --cached --quiet; then
       echo "GIT clean no commit"
     else
@@ -118,10 +121,12 @@ fi
 
 COUNT_R=$( { rg --files "$BC/receipts-wow" 2>/dev/null || true; } | wc -l | tr -d ' ')
 COUNT_S=$( { rg --files "$BC/gcs-vibecast-wow-capture/scripts" 2>/dev/null || true; } | wc -l | tr -d ' ')
+COUNT_E=$( { rg --files "$BC/gcs-vibecast-wow-capture/extensions" 2>/dev/null || true; } | wc -l | tr -d ' ')
 cat > "$RECEIPTS/MAC_BACKUP_VIBECAST_${TS}.md" <<EOF
 # Mac backup VibeCast — $TS
 **Drive:** $BC
 **scripts_files:** $COUNT_S
+**extension_files:** $COUNT_E
 **receipts_files:** $COUNT_R
 **git_push_rc:** $PUSH_RC
 **authority_branch:** $AUTH_BRANCH
@@ -130,17 +135,18 @@ cat > "$RECEIPTS/MAC_BACKUP_VIBECAST_${TS}.md" <<EOF
 **law:** no_masters_in_github; no_factory_paths; no_secrets
 EOF
 cp "$RECEIPTS/MAC_BACKUP_VIBECAST_${TS}.md" "$RECEIPTS/MAC_BACKUP_VIBECAST_LATEST.md"
-python3 - "$RECEIPTS/MAC_BACKUP_VIBECAST_LATEST.json" "$TS" "$BC" "$COUNT_S" "$COUNT_R" "$PUSH_RC" "$AUTH_BRANCH" "$BUNDLE" "$BUNDLE_OK" <<'PY'
+python3 - "$RECEIPTS/MAC_BACKUP_VIBECAST_LATEST.json" "$TS" "$BC" "$COUNT_S" "$COUNT_E" "$COUNT_R" "$PUSH_RC" "$AUTH_BRANCH" "$BUNDLE" "$BUNDLE_OK" <<'PY'
 import json, sys
 from pathlib import Path
 
-out, ts, drive, scripts, receipts, push_rc, branch, bundle, bundle_ok = sys.argv[1:]
+out, ts, drive, scripts, extensions, receipts, push_rc, branch, bundle, bundle_ok = sys.argv[1:]
 body = {
-    "schema": "gcs_vibecast_backup/v2",
+    "schema": "gcs_vibecast_backup/v3",
     "utc_stamp": ts,
     "status": "PASS" if int(push_rc) == 0 and bundle_ok == "true" else "PARTIAL",
     "drive_backup_code": drive,
     "script_files": int(scripts),
+    "extension_files": int(extensions),
     "receipt_files": int(receipts),
     "public_sample_push_rc": int(push_rc),
     "authority_branch": branch,
@@ -152,7 +158,7 @@ body = {
 }
 Path(out).write_text(json.dumps(body, indent=2) + "\n", encoding="utf-8")
 PY
-echo "BACKUP_OK drive=$BC scripts=$COUNT_S receipts=$COUNT_R git_push_rc=$PUSH_RC bundle_ok=$BUNDLE_OK"
+echo "BACKUP_OK drive=$BC scripts=$COUNT_S extensions=$COUNT_E receipts=$COUNT_R git_push_rc=$PUSH_RC bundle_ok=$BUNDLE_OK"
 if [[ "$PUSH_RC" -ne 0 || "$BUNDLE_OK" != "true" ]]; then
   exit 2
 fi

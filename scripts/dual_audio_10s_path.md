@@ -1,7 +1,7 @@
 # Controlled 10s dual-audio path (T3)
 
-**Law:** never invent AUDIO_GREEN · no publish  
-**Stamp:** `04-Story-and-Capture/AUDIO_GREEN_STAMP.md`  
+**Law:** never invent AUDIO_GREEN · no publish
+**Stamp:** `04-Story-and-Capture/AUDIO_GREEN_STAMP.md`
 **Probe:** `audio_green_probe.py`
 
 ## Purpose
@@ -10,10 +10,10 @@ Prove mic + game stems on a short recording **before** a full play night is trea
 
 ## Windows (human, ~60s)
 
-1. OBS profile **WoW B-Roll** · path `D:\WoW B-Roll Storage` · RecTracks=3  
-2. Press **Record**  
-3. Talk for ~5s while game audio is present  
-4. **Stop** Record  
+1. OBS profile **WoW B-Roll** · path `D:\WoW B-Roll Storage` · RecTracks=3
+2. Press **Record**
+3. Talk for ~5s while game audio is present
+4. **Stop** Record
 5. Confirm a new mp4 on `D:\WoW B-Roll Storage` (or day `\raw` after Session-End)
 
 Optional Session-End (after stop, masters stable):
@@ -56,6 +56,6 @@ bash wow-roster-tracker/scripts/run_dual_audio_10s_probe.sh /abs/path/to/test.mp
 
 ## Not green
 
-- RecTracks=3 alone  
-- Soft_poll ready  
-- League dry montage  
+- RecTracks=3 alone
+- Soft_poll ready
+- League dry montage

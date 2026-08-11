@@ -64,9 +64,7 @@
       "captured": true,
       "media_path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/c-pride-15s-start.mp4",
       "keep_id": "c-pride-15s-start",
-      "map_mode": "explicit",
-      "evidence_class": "agent_assigned",
-      "evidence_note": "real file path; shot meaning not detector-proven (Codex T2 relabel)"
+      "map_mode": "explicit"
     },
     {
       "shot_id": "pitch.cast_lineup",
@@ -82,9 +80,7 @@
       "captured": true,
       "media_path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/pride/c-pride-30s-best.mp4",
       "keep_id": "c-pride-30s-best",
-      "map_mode": "explicit",
-      "evidence_class": "agent_assigned",
-      "evidence_note": "real file path; shot meaning not detector-proven (Codex T2 relabel)"
+      "map_mode": "explicit"
     },
     {
       "shot_id": "pitch.prof_panel",
@@ -156,9 +152,7 @@
       "captured": true,
       "media_path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-09/candidates/db-20260809-c-full-170544.mp4",
       "keep_id": "c",
-      "map_mode": "explicit",
-      "evidence_class": "agent_assigned",
-      "evidence_note": "real file path; shot meaning not detector-proven (Codex T2 relabel)"
+      "map_mode": "explicit"
     }
   ],
   "sequence": [
@@ -215,8 +209,5 @@
   "pack": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/social/EXPLORERS_LEAGUE_PITCH_BROLL_PACK.md",
   "ready_to_edit": true,
   "last_map_utc": "2026-08-10T22:20:20.993700+00:00",
-  "last_map_day": "returner-daily-2026-08-09",
-  "evidence_default": "agent_assigned",
-  "evidence_law": "path real when captured; semantic shot_id is agent_assigned until human_confirmed or detector",
-  "evidence_relabel_utc": "2026-08-10T23:51:23.072964+00:00"
+  "last_map_day": "returner-daily-2026-08-09"
 }

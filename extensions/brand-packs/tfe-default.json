@@ -1,0 +1,12 @@
+{
+  "schema": "gcs_vibecast_brand_pack/v1",
+  "id": "tfe-default",
+  "brand_key": "tfe",
+  "game_key": "tfe",
+  "display_name": "TFE",
+  "media_root_key": "extension.tfe_media_root",
+  "product": "returner_daily",
+  "package_state": "NOT_ARMED",
+  "allowed_hooks": ["after_score"],
+  "may_publish": false
+}

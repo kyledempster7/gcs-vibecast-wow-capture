@@ -85,8 +85,7 @@ Agents will not pretend muddy VO is a finished EP until you say so (or tick seri
 |------|-----------|
 | Talk / main fantasy | **Crimsonpain** |
 | Duo / default play | **Crimsonagony** (+ Mac Goat) |
-| Gather | **Crimsonhavoc** (or **Crimsonrage** low band) |
-| Fresh DH | **Crimsonrage** |
+| Gather | **Crimsonhavoc** |
 | Deck proof | **Crimsonagony** |
 | Heal duo | **Crimsonrot** |
 

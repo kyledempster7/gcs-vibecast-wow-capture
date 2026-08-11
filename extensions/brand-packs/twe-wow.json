@@ -1,0 +1,12 @@
+{
+  "schema": "gcs_vibecast_brand_pack/v1",
+  "id": "twe-wow",
+  "brand_key": "twe",
+  "game_key": "wow",
+  "display_name": "The WoW Explorer",
+  "media_root_key": "windows.broll_trusted",
+  "product": "returner_daily",
+  "package_state": "NOT_ARMED",
+  "allowed_hooks": ["after_score"],
+  "may_publish": false
+}
