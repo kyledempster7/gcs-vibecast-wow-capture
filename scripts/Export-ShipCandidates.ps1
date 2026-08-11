@@ -2,7 +2,7 @@
 .SYNOPSIS
   Export short ship candidates from WoW OBS masters (Windows).
 .DESCRIPTION
-  Law: approved candidates only — not raw OBS dump.
+  Law: approved candidates only -- not raw OBS dump.
   Default: first N seconds (-t) via ffmpeg stream copy into
   D:\WoW B-Roll Storage\<day>\candidates\ + MANIFEST.json
   Optional: -ToDrive stages under G:\My Drive\GCS-VibeCast-Offload\<day>\
@@ -187,19 +187,19 @@ foreach ($src in $MasterPaths) {
   if ($clips.Count -eq 0) {
     # Codex W0-4: silent t=0 after skip-zone rejection is banned.
     # Product still allows first-N-seconds when markers exist but define no windows
-    # (RECORD_START_ONLY / NO_MARKERS) — that is intentional ship policy, not a reject fallback.
+    # (RECORD_START_ONLY / NO_MARKERS) -- that is intentional ship policy, not a reject fallback.
     if ($UseMarkers -or $MarkersJsonl) {
       if ($markerInfo.status -eq 'NO_RECORD_START' -and -not $AllowFallbackT0) {
-        Write-Error 'EXPORT_FAIL NO_RECORD_START — press record_start or -AllowWeakRecordStart / -AllowFallbackT0'
+        Write-Error 'EXPORT_FAIL NO_RECORD_START -- press record_start or -AllowWeakRecordStart / -AllowFallbackT0'
         exit 6
       }
       if ($rejectedSkip -gt 0 -and -not $AllowFallbackT0) {
-        Write-Error ("EXPORT_FAIL NO_USABLE_WINDOWS all marker windows hit skip_zone (n={0}) — no silent t=0" -f $rejectedSkip)
+        Write-Error ("EXPORT_FAIL NO_USABLE_WINDOWS all marker windows hit skip_zone (n={0}) -- no silent t=0" -f $rejectedSkip)
         exit 5
       }
       if ($markerInfo.status -eq 'MARKER_WINDOWS' -and $rejectedSkip -eq 0 -and -not $AllowFallbackT0) {
         # Windows listed but none produced clips (bad intervals)
-        Write-Error 'EXPORT_FAIL MARKER_WINDOWS empty after parse — no silent t=0'
+        Write-Error 'EXPORT_FAIL MARKER_WINDOWS empty after parse -- no silent t=0'
         exit 5
       }
     }
@@ -258,7 +258,7 @@ $manifest = [ordered]@{
   day              = $Day
   generated_at_utc = (Get-Date).ToUniversalTime().ToString('o')
   host             = $env:COMPUTERNAME
-  law              = 'approved candidates only — not raw OBS dump'
+  law              = 'approved candidates only -- not raw OBS dump'
   transfer         = @{ preferred = 'tailscale_scp'; fallback = 'google_drive_GCS-VibeCast-Offload' }
   markers          = @{
     path     = $MarkersJsonl
