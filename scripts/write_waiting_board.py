@@ -192,13 +192,15 @@ day: {today}
 
 ## What unblocks (honest)
 
-1. Agent P0 residual: serialize export/harvest gates (not “play alone”) — [[RELIABILITY_RESIDUAL_SERIALIZE_20260810]]  
-2. Windows: OBS Record → stop → Session-End with recording-stopped/stable-size  
-3. Mac harvest → KEEP → draft NOT_ARMED  
+1. **Kyle next play:** OBS **Record** (red) → play → **Stop** — Deck markers alone do not create masters  
+2. **Agents:** Auto-Session-End / Session-End-Ship when masters stable → soft_poll `ready_today` → harvest  
+3. **Later:** KEEP ≤60s → draft NOT_ARMED → go only if proud  
+
+Reliability residual is landed — see [[RELIABILITY_RESIDUAL_SERIALIZE_20260810]]. Wall is empty masters, not broken pipeline.
 
 ## Agent rule
 
-If `WAITING_WINDOWS_MASTERS`: do **not** invent candidates. agent-green waiting ≠ PRODUCT_GREEN. Prefer reliability residual, fence, backup — not dual thrash.
+If `WAITING_WINDOWS_MASTERS`: do **not** invent candidates. agent-green waiting ≠ PRODUCT_GREEN. Pulse soft_poll; harvest only when ready_today.
 
 Generated UTC: {datetime.now(timezone.utc).isoformat()}
 """
