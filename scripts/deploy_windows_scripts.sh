@@ -23,6 +23,7 @@ FILES=(
   Auto-Session-End-If-Masters.ps1
   Gcs-SessionEnd-Guards.ps1
   Windows-Preflight.ps1
+  Windows-Resume-Readiness.ps1
   Run-NightlyInboxes.ps1
   Run-CaptureInbox.ps1
   Run-MementoInbox.ps1
@@ -71,6 +72,7 @@ for f in \
   WINDOWS_FUTURE_GOALS_PACKET.md \
   CAPTURE_LEAGUE_PITCH_TONIGHT.md \
   WINDOWS_TODAY_MARKERS_ONLY_NOTE.md \
+  WINDOWS_RESUME_TODAY.md \
   Probe-OBS-ProductPath.ps1 \
   MINIMAP_ONLY_GATHER_BROLL.md \
   GATHERING_BROLL_MODE.md \

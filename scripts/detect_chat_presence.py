@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Chat presence in bottom-left ROI (v1.1 majority). Blur only if chat_present or --force.
 
-v1.1: decision=majority default (max alone caused 223313 FP cluster).
-Fixture: clean orbit (no chat) must score false; pride must stay false.
+Fixture contract: clean orbit scores false; footage with a visible bottom-left
+chat/log panel scores true. Detector scratch frames are always removed.
 """
 from __future__ import annotations
 
@@ -40,9 +40,9 @@ def duration(p: Path) -> float:
     )
 
 
-def sample_frames(src: Path, n: int = 6) -> list[Path]:
+def sample_frames(src: Path, outdir: Path, n: int = 6) -> list[Path]:
     dur = duration(src)
-    outdir = Path(tempfile.mkdtemp(prefix="chatdet_"))
+    outdir.mkdir(parents=True, exist_ok=True)
     paths = []
     for i in range(n):
         t = (dur * (i + 0.5) / n) if dur > 0 else float(i)
@@ -143,11 +143,12 @@ def detect(
     decision: str = "majority",
 ) -> dict:
     scores = []
-    for f in sample_frames(src, 6):
-        try:
-            scores.append(score_frame(f))
-        except Exception as e:
-            scores.append({"error": str(e), "chat_score": 0.0})
+    with tempfile.TemporaryDirectory(prefix="chatdet_") as tmp:
+        for f in sample_frames(src, Path(tmp), 6):
+            try:
+                scores.append(score_frame(f))
+            except Exception as e:
+                scores.append({"error": str(e), "chat_score": 0.0})
     vals = [float(s.get("chat_score", 0.0)) for s in scores]
     avg = sum(vals) / len(vals) if vals else 0.0
     mx = max(vals) if vals else 0.0

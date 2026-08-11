@@ -40,6 +40,16 @@ def drive_offload(path: Path = CONFIG) -> str:
     return str(load_config(path)["mac"]["google_drive_offload"])
 
 
+def authority_branch(path: Path = CONFIG) -> str:
+    override = os.environ.get("GCS_VIBECAST_AUTHORITY_BRANCH", "").strip()
+    if override:
+        return override
+    value = str((load_config(path).get("custody") or {}).get("authority_branch") or "")
+    if not value:
+        raise ValueError("custody.authority_branch is required")
+    return value
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     group = ap.add_mutually_exclusive_group(required=True)
@@ -47,6 +57,7 @@ def main() -> int:
     group.add_argument("--tailscale-ip", action="store_true")
     group.add_argument("--host-hints", action="store_true")
     group.add_argument("--drive-offload", action="store_true")
+    group.add_argument("--authority-branch", action="store_true")
     group.add_argument("--validate", action="store_true")
     args = ap.parse_args()
     data = load_config()
@@ -58,6 +69,8 @@ def main() -> int:
         print("\n".join(data["windows"].get("host_hints") or []))
     elif args.drive_offload:
         print(drive_offload())
+    elif args.authority_branch:
+        print(authority_branch())
     else:
         print(f"CONFIG_OK schema={data['schema']} version={data['version']}")
     return 0

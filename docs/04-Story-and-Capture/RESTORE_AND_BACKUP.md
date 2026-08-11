@@ -2,7 +2,7 @@
 type: ops
 status: active
 created: 2026-08-10
-updated: 2026-08-10
+updated: 2026-08-11
 area: Games/WoW
 role: DISK_LOSS_RESILIENCE
 wing: VibeCast · GCS
@@ -22,7 +22,7 @@ wing: VibeCast · GCS
 | LaunchAgent | `~/Library/LaunchAgents/com.kyle.gcs.wow-soft-poll-harvest.plist` | Drive `backup-code/launchagents/` + repo `launchagents/` |
 | KEEP media | `Movies/…/Moments-Library/` | Drive `archive-broll/<day>/` |
 | Moments indexes | CATALOG + KEEP_ONLY | Drive `backup-code/moments-index/` |
-| Day working Returns | `Movies/…/Returns/returner-daily-*` | Optional — **not required** to harvest again |
+| Day working Returns | `Movies/…/Returns/returner-daily-*` | Drive `backup-code/returns-working-set/` metadata/review mirror; video re-harvests from masters |
 | Masters | `D:\WoW B-Roll Storage\` (Windows) | Windows PC / separate backup |
 
 **Never in GitHub:** multi‑GB masters, full Returns trees, secrets.
@@ -33,7 +33,8 @@ wing: VibeCast · GCS
 bash ~/Kyles_Vault/kyles_corner/Games/WoW/wow-roster-tracker/scripts/mac_backup_vibecast.sh
 ```
 
-Pushes GitHub + rsyncs Drive backup-code (scripts, docs pins, receipts, plist, moments-index).
+Pushes GitHub + rsyncs Drive backup-code (scripts, extensions, docs pins,
+receipts, plist, moments-index, and the non-video Returns working set).
 
 ## ASAP restore (stolen / dead Mac) — target ≤30 min to harvest-capable
 
@@ -86,6 +87,7 @@ Root: `My Drive/GCS-VibeCast-Offload/`
 | `backup-code/moments-index/` | CATALOG / KEEP_ONLY |
 | `backup-code/launchagents/` | soft-poll plist |
 | `backup-code/00-Index-pins/` | citadel doors |
+| `backup-code/returns-working-set/` | Returns JSON/MD/HTML and review thumbnails; no masters |
 | `archive-broll/<day>/` | KEEP clips + ARCHIVE.json |
 
 ## GitHub

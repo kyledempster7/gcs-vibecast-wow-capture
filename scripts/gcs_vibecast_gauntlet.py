@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """GCS·VibeCast gauntlet — re-runnable systems checks (honest N, not '100 bugs').
 
-This is an executable check suite (~30–40 checks). The GAUNTLET_100 ledger is a
+This is an executable check suite (~40–60 checks). The GAUNTLET_100 ledger is a
 separate wishlist of risk themes — do not claim 100 behavioral checks ran.
 
 Exit 0 if no FAIL in critical classes; 1 if any critical FAIL; 2 tool error.
@@ -33,6 +33,7 @@ RECEIPTS = (
 )
 REPO = Path.home() / "src" / "gcs-vibecast-wow-capture"
 STORY = WOW / "04-Story-and-Capture"
+GCS_RECEIPTS = RECEIPTS.parent / "gcs-vibecast"
 CRITICAL_PREFIXES = ("LAW", "INVENT", "PUBLISH", "HARVEST", "SOT", "BACKUP")
 
 
@@ -55,6 +56,14 @@ def run(cmd: list[str], timeout: int = 60) -> tuple[int, str]:
 
 def sha(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()[:12]
+
+
+def read_json(path: Path) -> dict:
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
 
 
 def main() -> int:
@@ -300,13 +309,9 @@ def main() -> int:
     )
 
     # Drive backup-code
-    drive = None
-    cloud = Path.home() / "Library/CloudStorage"
-    if cloud.is_dir():
-        for p in cloud.rglob("GCS-VibeCast-Offload"):
-            if p.is_dir():
-                drive = p
-                break
+    rc, out = run([sys.executable, str(SCRIPTS / "resolve_windows_host.py"), "--drive-offload"], 10)
+    drive_path = Path(out.strip()) if rc == 0 and out.strip() else None
+    drive = drive_path if drive_path and drive_path.is_dir() else None
     checks.append(
         Check(
             "G090",
@@ -459,6 +464,235 @@ def main() -> int:
             "LaunchAgent loaded in launchctl list",
             "PASS" if la_loaded else ("PARTIAL" if plist.is_file() else "FAIL"),
             "loaded" if la_loaded else "plist only or missing",
+        )
+    )
+
+    # Current installed/runtime/custody receipts. These are additive checks;
+    # none promotes the real-media G080 product gate.
+    rc, launch_out = run(
+        ["launchctl", "print", "gui/501/com.kyle.gcs.vibecast-review-feedback"],
+        10,
+    )
+    health_rc, health_out = run(
+        ["curl", "-fsS", "--max-time", "3", "http://127.0.0.1:8765/healthz"],
+        5,
+    )
+    try:
+        health = json.loads(health_out)
+    except Exception:
+        health = {}
+    feedback_runtime_ok = (
+        rc == 0
+        and health_rc == 0
+        and health.get("ok") is True
+        and health.get("may_publish") is False
+    )
+    checks.append(
+        Check(
+            "G109",
+            "AUTO",
+            "review feedback LaunchAgent loopback health",
+            "PASS" if feedback_runtime_ok else "FAIL",
+            f"launchctl_rc={rc} health_rc={health_rc} day={health.get('day')}",
+        )
+    )
+
+    parity = read_json(GCS_RECEIPTS / "WINDOWS_SCRIPT_HASH_PARITY_LATEST.json")
+    parity_ok = (
+        parity.get("status") == "PASS"
+        and parity.get("all_match") is True
+        and int(parity.get("file_count") or 0) >= 21
+    )
+    checks.append(
+        Check(
+            "G110",
+            "SOT",
+            "Windows deployed-script SHA-256 parity",
+            "PASS" if parity_ok else "FAIL",
+            f"files={parity.get('file_count')} all_match={parity.get('all_match')}",
+        )
+    )
+
+    backup = read_json(RECEIPTS / "MAC_BACKUP_VIBECAST_LATEST.json")
+    backup_ok = (
+        backup.get("status") == "PASS"
+        and backup.get("authority_bundle_verified") is True
+        and int(backup.get("extension_files") or 0) >= 5
+        and backup.get("returns_working_set_verified") is True
+    )
+    checks.append(
+        Check(
+            "G111",
+            "BACKUP",
+            "off-device bundle and working-set backup",
+            "PASS" if backup_ok else "FAIL",
+            f"schema={backup.get('schema')} extensions={backup.get('extension_files')} "
+            f"working_set={backup.get('returns_working_set_files')}",
+        )
+    )
+
+    schema = read_json(RECEIPTS / "SCHEMA_AUDIT_LATEST.json")
+    schema_ok = schema.get("status") == "PASS" and schema.get("missing_n") == 0
+    checks.append(
+        Check(
+            "G112",
+            "SOT",
+            "versioned JSON schema coverage",
+            "PASS" if schema_ok else "FAIL",
+            f"files={schema.get('files_scanned')} missing={schema.get('missing_n')}",
+        )
+    )
+
+    extension = read_json(GCS_RECEIPTS / "EXTENSION_SURFACE_LATEST.json")
+    extension_ok = (
+        extension.get("status") == "PASS"
+        and extension.get("may_publish") is False
+        and {"tde-default", "tfe-default"}.issubset(set(extension.get("brand_packs") or []))
+    )
+    checks.append(
+        Check(
+            "G113",
+            "SOT",
+            "fail-closed plugin and twin-brand plans",
+            "PASS" if extension_ok else "FAIL",
+            f"checks={extension.get('checks')}",
+        )
+    )
+
+    chat = read_json(GCS_RECEIPTS / "CHAT_DETECTOR_REGRESSION_LATEST.json")
+    chat_ok = chat.get("status") == "PASS" and all((chat.get("checks") or {}).values())
+    checks.append(
+        Check(
+            "G114",
+            "PRODUCT",
+            "conditional chat blur real-media regression",
+            "PASS" if chat_ok else "FAIL",
+            f"checks={chat.get('checks')}",
+        )
+    )
+
+    rotation = read_json(GCS_RECEIPTS / "LOG_ROTATION_LATEST.json")
+    rotation_ok = (
+        rotation.get("status") == "PASS"
+        and rotation.get("cadence_owner") == "com.kyle.gcs.wow-soft-poll-harvest"
+    )
+    checks.append(
+        Check(
+            "G115",
+            "AUTO",
+            "log retention receipt and cadence owner",
+            "PASS" if rotation_ok else "FAIL",
+            f"keep={rotation.get('keep_compressed')} owner={rotation.get('cadence_owner')}",
+        )
+    )
+
+    resume = read_json(GCS_RECEIPTS / "WINDOWS_RESUME_READINESS_LATEST.json")
+    resume_ok = (
+        resume.get("status") == "READY_FOR_HUMAN_CAPTURE"
+        and (resume.get("profile") or {}).get("product_path_ok") is True
+        and (resume.get("resume_card") or {}).get("exists") is True
+    )
+    checks.append(
+        Check(
+            "G116",
+            "SOT",
+            "Windows resume profile and card readback",
+            "PASS" if resume_ok else "FAIL",
+            f"status={resume.get('status')} auto_hide={(resume.get('auto_hide_ui') or {}).get('installed')}",
+        )
+    )
+
+    secrets = read_json(GCS_RECEIPTS / "GITLEAKS_FULL_SCAN_LATEST.json")
+    head_rc, head_out = run(["git", "rev-parse", "HEAD"], 5)
+    secrets_ok = (
+        secrets.get("status") == "PASS"
+        and (secrets.get("history") or {}).get("findings") == 0
+        and (secrets.get("working_tree") or {}).get("findings") == 0
+        and head_rc == 0
+        and secrets.get("head") == head_out.strip()
+    )
+    checks.append(
+        Check(
+            "G117",
+            "SOT",
+            "full-history and working-tree secret scan at HEAD",
+            "PASS" if secrets_ok else "FAIL",
+            f"receipt_head={str(secrets.get('head') or '')[:12]} current={head_out.strip()[:12]}",
+        )
+    )
+
+    feedback_test = read_json(GCS_RECEIPTS / "REVIEW_FEEDBACK_SERVER_TEST_LATEST.json")
+    feedback_checks = set(feedback_test.get("checks") or [])
+    feedback_test_ok = (
+        feedback_test.get("status") == "PASS"
+        and {"CONCURRENT_POSTS_PRESERVED", "ATOMIC_JSON_VALID"}.issubset(feedback_checks)
+    )
+    checks.append(
+        Check(
+            "G118",
+            "AUTO",
+            "feedback atomic concurrent-write regression",
+            "PASS" if feedback_test_ok else "FAIL",
+            f"checks={len(feedback_checks)}",
+        )
+    )
+
+    rc, out = run([sys.executable, str(SCRIPTS / "test_poll_admission.py")], 20)
+    checks.append(
+        Check(
+            "G119",
+            "HARVEST",
+            "READY bypasses poll rate-limit cache",
+            "PASS" if rc == 0 else "FAIL",
+            out.strip()[-160:],
+        )
+    )
+    rc, out = run([sys.executable, str(SCRIPTS / "test_watch_single_instance.py")], 20)
+    checks.append(
+        Check(
+            "G120",
+            "AUTO",
+            "watch single-instance and unknown-file preservation",
+            "PASS" if rc == 0 else "FAIL",
+            out.strip()[-160:],
+        )
+    )
+
+    public_extensions = REPO / "extensions"
+    rc, out = run([sys.executable, str(REPO / "scripts" / "vibecast_extensions.py"), "validate"], 20)
+    checks.append(
+        Check(
+            "G121",
+            "BACKUP",
+            "public sample includes executable extension registry",
+            "PASS" if public_extensions.is_dir() and rc == 0 else "FAIL",
+            out.strip()[-160:],
+        )
+    )
+
+    brief = BROLL / "returner-daily-2026-08-09" / "NEXT_NIGHT_BRIEF.md"
+    brief_text = brief.read_text(encoding="utf-8") if brief.is_file() else ""
+    brief_ok = "c-pride-15s-start" in brief_text and "Human KEEP ids" in brief_text
+    checks.append(
+        Check(
+            "G122",
+            "PRODUCT",
+            "next-night brief carries real KEEP identifiers",
+            "PASS" if brief_ok else "FAIL",
+            str(brief),
+        )
+    )
+
+    hook_rc, hook_out = run(["git", "rev-parse", "--git-path", "hooks/pre-commit"], 5)
+    hook = Path(hook_out.strip()) if hook_rc == 0 and hook_out.strip() else None
+    hook_text = hook.read_text(encoding="utf-8") if hook and hook.is_file() else ""
+    checks.append(
+        Check(
+            "G123",
+            "SOT",
+            "pre-commit Windows parity admission installed",
+            "PASS" if "BEGIN GCS_VIBECAST_WINDOWS_PARITY_V1" in hook_text else "FAIL",
+            str(hook),
         )
     )
 

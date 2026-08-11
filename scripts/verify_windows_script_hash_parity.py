@@ -37,6 +37,7 @@ FILES = (
     "Auto-Session-End-If-Masters.ps1",
     "Gcs-SessionEnd-Guards.ps1",
     "Windows-Preflight.ps1",
+    "Windows-Resume-Readiness.ps1",
     "Run-NightlyInboxes.ps1",
     "Run-CaptureInbox.ps1",
     "Run-MementoInbox.ps1",

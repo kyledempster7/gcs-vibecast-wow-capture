@@ -98,6 +98,12 @@ if [[ -f "${ROOT}/markers/SESSION.jsonl" ]]; then
   python3 "$SCRIPTS/join_markers.py" \
     --markers "${ROOT}/markers/SESSION.jsonl" \
     --out "$ANALYSIS/MARKER_JOIN.json" || true
+  if [[ -f "$CAND/MANIFEST.json" && -f "$ANALYSIS/MARKER_JOIN.json" ]]; then
+    python3 "$SCRIPTS/annotate_manifest_marker_windows.py" \
+      --manifest "$CAND/MANIFEST.json" \
+      --join "$ANALYSIS/MARKER_JOIN.json" \
+      --in-place || true
+  fi
 fi
 
 echo "== done harvest_mac =="

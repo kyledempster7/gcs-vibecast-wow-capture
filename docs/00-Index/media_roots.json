@@ -1,7 +1,7 @@
 {
   "schema": "gcs_media_roots/v2",
   "version": 2,
-  "updated_at_utc": "2026-08-11T04:55:00Z",
+  "updated_at_utc": "2026-08-11T05:38:00Z",
   "sole_vault_home": "Games/WoW",
   "windows": {
     "host": "3900x",
@@ -22,6 +22,11 @@
     "essay_drop": "/Users/kyle/Movies/WoW-Essays",
     "hyperframes_kit": "Games/WoW/04-Story-and-Capture/hyperframes-brand-kit",
     "google_drive_offload": "/Users/kyle/Library/CloudStorage/GoogleDrive-kyledempster7@gmail.com/My Drive/GCS-VibeCast-Offload"
+  },
+  "custody": {
+    "authority_branch": "codex/gcs-vibecast-unattended-custody-20260811",
+    "authority_worktree": "/Users/kyle/Kyles_Vault/.worktrees/kyles-corner-gcs-vibecast-20260811",
+    "public_sample_repo": "/Users/kyle/src/gcs-vibecast-wow-capture"
   },
   "vault_lists": {
     "capture_inbox": "Games/WoW/04-Story-and-Capture/capture-inbox",
