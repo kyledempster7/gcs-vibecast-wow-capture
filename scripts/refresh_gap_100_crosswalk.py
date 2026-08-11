@@ -452,21 +452,18 @@ def main() -> int:
         doc["counts"] = dict(Counter(row["status"] for row in doc["rows"]))
         doc["row_count"] = len(doc["rows"])
         doc["refresh_policy"] = "explicit_current_proofs_only; no_structural_as_live_e2e"
-        doc["closure_actions"] = list(
-            dict.fromkeys(
-                list(doc.get("closure_actions") or [])
-                + [
-                    "Deployed and hash-read-back all 24 Windows-facing scripts/cards through the spaced product path",
-                    "Configured guarded AutoHideUI Gather/Cinematic profiles offline with original-file backup and exact readback",
-                    "Proved Auto Session-End dispatch and no-candidate enhancement refusal with isolated fixtures",
-                    "Installed and proved the durable loopback review-feedback LaunchAgent and atomic concurrency contract",
-                    "Annotated the real 08-09 manifest with source-master marker windows without cross-master inference",
-                    "Backed up the exact authority branch, executable extensions, receipts, and non-video Returns working set",
-                    "Pushed and read back both the public VibeCast sample and refreshed wow-explorer-portable main",
-                    "Ran the full history/current-tree secret scan and the 53-check executable gauntlet at final authority HEAD",
-                ]
-            )
-        )
+        doc["closure_actions"] = [
+            "Proved residual-day idempotency without re-harvest, media creation, or false same-day promotion",
+            "Deployed and hash-read-back all 24 Windows-facing scripts/cards through the spaced product path",
+            "Configured guarded AutoHideUI Gather/Cinematic profiles offline with original-file backup and exact readback",
+            "Proved Auto Session-End dispatch and no-candidate enhancement refusal with isolated fixtures",
+            "Installed and proved the durable loopback review-feedback LaunchAgent and atomic concurrency contract",
+            "Annotated the real 08-09 manifest with source-master marker windows without cross-master inference",
+            "Validated fail-closed TDE/TFE portable plans and the suggestion-only local AI extension",
+            "Backed up the exact authority branch, executable extensions, receipts, and non-video Returns working set",
+            "Pushed and read back both the public VibeCast sample and refreshed wow-explorer-portable main",
+            "Ran the full history/current-tree secret scan and the 57-check executable gauntlet at final authority HEAD",
+        ]
         doc.setdefault("evidence_index", {}).update(
             {
                 "windows_script_parity": proof["parity_path"],

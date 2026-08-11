@@ -1,4 +1,4 @@
-# VibeCast status — 2026-08-11 02:06
+# VibeCast status — 2026-08-11 02:52
 
 **Citadel:** [[GCS_CITADEL]] (VibeCast = GCS · TWE wing) · [[KYLE_OS]] · [[SIMPLE_START]]
 
@@ -6,7 +6,7 @@
 
 | Piece | Status |
 |-------|--------|
-| Product truth | **RUNTIME_PARTIAL_E2E_UNPROVEN** · closed=81 partial=13 open=6 |
+| Product truth | **RUNTIME_PARTIAL_E2E_UNPROVEN** · closed=89 partial=7 open=4 |
 | VibeCast OS document | PRESENT (structural only) |
 | Pipeline map document | PRESENT (structural only) |
 | Latest vibe session | `2026-08-09` |
@@ -33,4 +33,4 @@ bash scripts/post_night_mac.sh
 python3 scripts/vibecast_status.py
 ```
 
-Generated 2026-08-11T02:06:32
+Generated 2026-08-11T02:52:25

@@ -42,11 +42,11 @@ def render(source: str, doc: dict) -> str:
             )
             seen.add(gap)
         elif line.startswith("**Live scored:**"):
-            output.append("**Canonical source:** Codex 100-row owner crosswalk; run `sync_gap_100_ledger.py` after a refresh.  ")
-        elif line.startswith("**Canonical synchronized:**"):
-            output.append("**Canonical source:** Codex 100-row owner crosswalk; run `sync_gap_100_ledger.py` after a refresh.  ")
+            output.append("**Canonical source:** Codex 100-row owner crosswalk; run `sync_gap_100_ledger.py` after a refresh.")
+        elif line.startswith("**Canonical synchronized:**") or line.startswith("**Canonical source:**"):
+            output.append("**Canonical source:** Codex 100-row owner crosswalk; run `sync_gap_100_ledger.py` after a refresh.")
         elif line.startswith("**Legend:**"):
-            output.append("**Legend:** **CLOSED** current proof closes the named bug · **PARTIAL** safe work complete but real/human proof remains · **OPEN** real capture/audio/human action required  ")
+            output.append("**Legend:** **CLOSED** current proof closes the named bug · **PARTIAL** safe work complete but real/human proof remains · **OPEN** real capture/audio/human action required")
         else:
             output.append(line)
     if seen != set(range(1, 101)):
@@ -84,7 +84,7 @@ def render(source: str, doc: dict) -> str:
     actions = list(dict.fromkeys(doc.get("closure_actions") or []))
     shipped = ["## Patches shipped with this gauntlet wave", ""]
     shipped.extend(f"{index}. {action}" for index, action in enumerate(actions, start=1))
-    shipped.append("")
+    shipped.extend(["", ""])
     text, n = re.subn(
         r"## Patches shipped with this gauntlet wave.*?(?=## (?:Top 10 to tackle next|Remaining product/human boundaries))",
         "\n".join(shipped),
