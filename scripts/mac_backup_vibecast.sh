@@ -93,7 +93,7 @@ if [[ -d "$REPO/.git" ]]; then
   fi
   for f in GCS_CITADEL.md VIBECAST_OS.md MEDIA_SOR_DUAL_MACHINE.md KYLE_OS.md \
            TODAY_WINDOWS_SESSION.md media_roots.json GITHUB_PORTABLE.md GCS_STATUS.md \
-           PRODUCT_THESIS_VIBECAST.md GCS_PIPELINE_HEALTH.md; do
+           VIBECAST_STATUS.md PRODUCT_THESIS_VIBECAST.md GCS_PIPELINE_HEALTH.md; do
     [[ -f "$WOW/00-Index/$f" ]] && cp "$WOW/00-Index/$f" "$REPO/docs/00-Index/" || true
   done
   [[ -f "$PLIST" ]] && cp "$PLIST" "$REPO/launchagents/" || true
@@ -117,7 +117,7 @@ if [[ -d "$MEDIA/Moments-Library" ]]; then
 fi
 [[ -f "$PLIST" ]] && cp "$PLIST" "$BC/launchagents/" || true
 for f in GCS_CITADEL.md VIBECAST_OS.md MEDIA_SOR_DUAL_MACHINE.md KYLE_OS.md \
-         TODAY_WINDOWS_SESSION.md media_roots.json; do
+         TODAY_WINDOWS_SESSION.md media_roots.json VIBECAST_STATUS.md; do
   [[ -f "$WOW/00-Index/$f" ]] && cp "$WOW/00-Index/$f" "$BC/00-Index-pins/" || true
 done
 cp "$WOW/04-Story-and-Capture/RESTORE_AND_BACKUP.md" "$BC/RESTORE/" 2>/dev/null || true
