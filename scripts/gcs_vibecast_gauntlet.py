@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""GCS·VibeCast gauntlet — re-runnable systems bug surface (decades harness).
+"""GCS·VibeCast gauntlet — re-runnable systems checks (honest N, not '100 bugs').
+
+This is an executable check suite (~30–40 checks). The GAUNTLET_100 ledger is a
+separate wishlist of risk themes — do not claim 100 behavioral checks ran.
 
 Exit 0 if no FAIL in critical classes; 1 if any critical FAIL; 2 tool error.
 No invent FOOTAGE. No publish. No Factory writes.
@@ -325,18 +328,156 @@ def main() -> int:
             )
         )
 
+    # --- reliability residual checks (Codex waves) ---
+    soft = BROLL / "SOFT_POLL_LATEST.json"
+    if soft.is_file():
+        try:
+            sd = json.loads(soft.read_text(encoding="utf-8"))
+            schema_ok = str(sd.get("schema") or "").startswith("gcs_soft_poll_ready/")
+            checks.append(
+                Check(
+                    "G100",
+                    "LAW",
+                    "soft_poll schema present",
+                    "PASS" if schema_ok else "FAIL",
+                    str(sd.get("schema")),
+                )
+            )
+            # v2 qualifies if any day reports candidates_qualified_n field
+            days = sd.get("days") or []
+            has_q = any(
+                isinstance(d, dict) and "candidates_qualified_n" in d for d in days
+            )
+            checks.append(
+                Check(
+                    "G101",
+                    "HARVEST",
+                    "soft_poll reports candidates_qualified_n (v2 quality)",
+                    "PASS" if has_q else "PARTIAL",
+                    "qualified field present" if has_q else "redeploy soft_poll_windows.ps1",
+                )
+            )
+            rt = sd.get("ready_today")
+            if rt is None and days:
+                today = datetime.now().strftime("%Y-%m-%d")
+                for d in days:
+                    if isinstance(d, dict) and d.get("day") == today:
+                        rt = bool(d.get("ready"))
+            checks.append(
+                Check(
+                    "G102",
+                    "LAW",
+                    "ready mirrors ready_today when both set",
+                    "PASS"
+                    if sd.get("ready") is None or rt is None or bool(sd.get("ready")) == bool(rt)
+                    else "FAIL",
+                    f"ready={sd.get('ready')} ready_today={rt}",
+                )
+            )
+        except Exception as e:
+            checks.append(Check("G100", "LAW", "soft_poll readable", "FAIL", str(e)))
+    else:
+        checks.append(Check("G100", "LAW", "SOFT_POLL_LATEST exists", "FAIL", str(soft)))
+
+    harvest_src = (SCRIPTS / "harvest_if_ready.sh").read_text(encoding="utf-8", errors="replace")
+    checks.append(
+        Check(
+            "G103",
+            "HARVEST",
+            "harvest_if_ready claims before analysis",
+            "PASS" if ".harvest_claim.lockdir" in harvest_src else "FAIL",
+            "claimdir gate",
+        )
+    )
+    guards = SCRIPTS / "Gcs-SessionEnd-Guards.ps1"
+    checks.append(
+        Check(
+            "G104",
+            "SOT",
+            "Gcs-SessionEnd-Guards.ps1 present",
+            "PASS" if guards.is_file() else "FAIL",
+            str(guards),
+        )
+    )
+    export_src = (SCRIPTS / "Export-ShipCandidates.ps1").read_text(
+        encoding="utf-8", errors="replace"
+    )
+    checks.append(
+        Check(
+            "G105",
+            "EXPORT",
+            "export fail-closed skip_zone (NO_USABLE_WINDOWS)",
+            "PASS" if "NO_USABLE_WINDOWS" in export_src else "FAIL",
+            "W0-4 string",
+        )
+    )
+    dual = SCRIPTS / "run_dual_audio_10s_probe.sh"
+    checks.append(
+        Check(
+            "G106",
+            "AUDIO",
+            "dual_audio 10s probe wrapper present",
+            "PASS" if dual.is_file() else "FAIL",
+            str(dual),
+        )
+    )
+    # League evidence honesty
+    league_sb = (
+        STORY
+        / "social"
+        / "package"
+        / "EXPLORERS_LEAGUE_PITCH_STORYBOARD.json"
+    )
+    if league_sb.is_file():
+        try:
+            lb = json.loads(league_sb.read_text(encoding="utf-8"))
+            caps = [s for s in (lb.get("shots") or []) if s.get("captured")]
+            labeled = all(
+                s.get("evidence_class") in ("agent_assigned", "human_confirmed", "detector")
+                for s in caps
+            ) if caps else True
+            checks.append(
+                Check(
+                    "G107",
+                    "PRODUCT",
+                    "League captured shots have evidence_class",
+                    "PASS" if labeled else "FAIL",
+                    f"captured={len(caps)}",
+                )
+            )
+        except Exception as e:
+            checks.append(Check("G107", "PRODUCT", "League storyboard readable", "FAIL", str(e)))
+
+    # LaunchAgent loaded vs merely present
+    plist = Path.home() / "Library/LaunchAgents/com.kyle.gcs.wow-soft-poll-harvest.plist"
+    rc, out = run(["launchctl", "list"], 10)
+    la_loaded = "com.kyle.gcs.wow-soft-poll-harvest" in (out or "")
+    checks.append(
+        Check(
+            "G108",
+            "AUTO",
+            "LaunchAgent loaded in launchctl list",
+            "PASS" if la_loaded else ("PARTIAL" if plist.is_file() else "FAIL"),
+            "loaded" if la_loaded else "plist only or missing",
+        )
+    )
+
     # write report
     RECEIPTS.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    n_checks = len(checks)
     summary = {
-        "schema": "gcs_vibecast_gauntlet/v1",
+        "schema": "gcs_vibecast_gauntlet/v2",
+        "name": "gcs_vibecast_executable_checks",
+        "not_100_bug_claim": True,
+        "n_executable_checks": n_checks,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "counts": {
             s: sum(1 for c in checks if c.status == s)
             for s in ("PASS", "FAIL", "PARTIAL", "OPEN", "N/A")
         },
         "checks": [asdict(c) for c in checks],
-        "law": "no_invent_no_publish_no_factory_writes",
+        "law": "no_invent_no_publish_no_factory_writes; honest_N_not_100",
     }
     out_json = RECEIPTS / f"GAUNTLET_RUN_{ts}.json"
     out_json.write_text(json.dumps(summary, indent=2), encoding="utf-8")
@@ -344,6 +485,7 @@ def main() -> int:
 
     fails = [c for c in checks if c.status == "FAIL"]
     crit_fails = [c for c in fails if c.cls in ("LAW", "INVENT", "PUBLISH", "HARVEST", "SOT", "BACKUP")]
+    print(f"n_executable_checks={n_checks} (not a 100-bug claim)")
     print(json.dumps(summary["counts"], indent=2))
     for c in checks:
         print(f"{c.status:7} {c.id} [{c.cls}] {c.title} — {c.note[:100]}")

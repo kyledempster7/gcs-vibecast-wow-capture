@@ -6,6 +6,7 @@ Fail-closed:
 - only attach if file exists under day-dir candidates/
 - armed stays false
 - without KEEP or without --map / --auto-suggest hits, SKIP cleanly
+- semantic maps are agent_assigned unless --human-confirmed (Codex T2)
 
 product_id: twe_explorers_league_community_pitch_v1
 """
@@ -121,31 +122,40 @@ def write_progress(board: dict, day: str, attachments: list[dict]) -> None:
     if not attachments:
         lines.append("_None — waiting for KEEP + explicit map or --auto-suggest with real files._")
     else:
-        lines.append("| keep_id | shot_id | path | mode |")
-        lines.append("|---------|---------|------|------|")
+        lines.append("| keep_id | shot_id | path | mode | evidence |")
+        lines.append("|---------|---------|------|------|----------|")
         for a in attachments:
             lines.append(
-                f"| `{a['keep_id']}` | `{a['shot_id']}` | `{a['path']}` | {a['mode']} |"
+                f"| `{a['keep_id']}` | `{a['shot_id']}` | `{a['path']}` | {a['mode']} | "
+                f"`{a.get('evidence_class', 'agent_assigned')}` |"
             )
     lines += [
         "",
         "## Shot board",
         "",
-        "| shot_id | captured | media_path |",
-        "|---------|----------|------------|",
+        "| shot_id | captured | evidence | media_path |",
+        "|---------|----------|----------|------------|",
     ]
     for s in board.get("shots") or []:
         mp = s.get("media_path") or "—"
+        ev = s.get("evidence_class") or ("agent_assigned" if s.get("captured") else "—")
         lines.append(
-            f"| `{s.get('shot_id')}` | {'yes' if s.get('captured') else 'no'} | {mp} |"
+            f"| `{s.get('shot_id')}` | {'yes' if s.get('captured') else 'no'} | `{ev}` | {mp} |"
         )
     lines += [
+        "",
+        "## Evidence law",
+        "",
+        "- `agent_assigned` = path real, semantic shot claim is **agent judgment** (not detector/OCR proof).",
+        "- `human_confirmed` = Kyle or review-pack confirmed the shot meaning.",
+        "- `detector` = machine signal (OCR/zone/tag) cited on the shot.",
         "",
         "## Next",
         "",
         "1. Capture remaining P0 shots (hub · craft · gather).",
         "2. KEEP in review-pack.",
         "3. `map_keep_to_league_pitch.py --day-dir … --auto-suggest` or `--map keep=shot`.",
+        "4. Promote evidence with `--human-confirmed` only after real review.",
         "",
     ]
     PROGRESS.write_text("\n".join(lines), encoding="utf-8")
@@ -176,7 +186,13 @@ def main() -> int:
         action="store_true",
         help="Write storyboard + progress (default dry-run print)",
     )
+    ap.add_argument(
+        "--human-confirmed",
+        action="store_true",
+        help="Mark attachments evidence_class=human_confirmed (default agent_assigned)",
+    )
     args = ap.parse_args()
+    evidence = "human_confirmed" if args.human_confirmed else "agent_assigned"
     day_dir = args.day_dir.resolve()
     if not day_dir.is_dir():
         print(f"map_pitch SKIP no_day_dir {day_dir}")
@@ -230,17 +246,24 @@ def main() -> int:
         if not path or not path.is_file():
             skipped.append(f"{kid}->{shot_id} missing_file")
             continue
-        # attach
+        # attach — path proven; semantic shot_id is agent_assigned unless human_confirmed
         shot_by_id[shot_id]["media_path"] = str(path.resolve())
         shot_by_id[shot_id]["captured"] = True
         shot_by_id[shot_id]["keep_id"] = kid
         shot_by_id[shot_id]["map_mode"] = mode
+        shot_by_id[shot_id]["evidence_class"] = evidence
+        shot_by_id[shot_id]["evidence_note"] = (
+            "real file path; shot meaning not detector-proven"
+            if evidence == "agent_assigned"
+            else "human confirmed shot meaning"
+        )
         attachments.append(
             {
                 "keep_id": kid,
                 "shot_id": shot_id,
                 "path": str(path.resolve()),
                 "mode": mode,
+                "evidence_class": evidence,
             }
         )
 
@@ -262,6 +285,11 @@ def main() -> int:
     board["last_map_utc"] = datetime.now(timezone.utc).isoformat()
     board["last_map_day"] = day_dir.name
     board["product_id"] = PRODUCT_ID
+    board["evidence_default"] = evidence
+    board["evidence_law"] = (
+        "path real when captured; semantic shot_id is agent_assigned "
+        "until human_confirmed or detector"
+    )
 
     print(
         f"map_pitch plan={len(plan)} attached={len(attachments)} skipped={len(skipped)} "

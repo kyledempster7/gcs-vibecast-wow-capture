@@ -21,5 +21,5 @@ done
 python3 "$SCRIPTS/audio_green_probe.py" "${ARGS[@]}"
 echo "PROBE_JSON=$OUT"
 if [[ -f "$OUT" ]]; then
-  python3 -c "import json;d=json.load(open('$OUT'));print('green_eligible',d.get('green_eligible') or d.get('dual_ok') or d.get('status'));print('streams',d.get('audio_stream_n') or d.get('streams_n'))"
+  python3 -c "import json;d=json.load(open('''$OUT'''));print('status',d.get('status'));print('audio_streams',d.get('audio_stream_count'));print('stamp',d.get('stamp_written'))"
 fi
