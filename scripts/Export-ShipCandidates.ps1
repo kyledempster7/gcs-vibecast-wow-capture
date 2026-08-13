@@ -253,12 +253,33 @@ foreach ($src in $MasterPaths) {
   }
 }
 
+# Merge prior ship slices so MANIFEST lists every mp4 in candidates\, not only this batch.
+$known = @{}
+foreach ($it in $items) { $known[[string]$it.filename] = $true }
+Get-ChildItem -LiteralPath $cand -Filter '*.mp4' -File -ErrorAction SilentlyContinue | ForEach-Object {
+  if ($known.ContainsKey($_.Name)) { return }
+  $sha = (Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLower()
+  $dur = & $ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 $_.FullName 2>$null
+  $items += [ordered]@{
+    id            = "cand-$Day-prior-$($_.BaseName)"
+    role          = 'ship_candidate'
+    localPath     = $_.FullName
+    filename      = $_.Name
+    bytes         = $_.Length
+    duration_sec  = [math]::Round([double]$dur, 3)
+    sha256        = $sha
+    source_master = ''
+    source_sha256 = ''
+    extract       = @{ method = 'merged_existing_candidate' }
+  }
+}
+
 $manifest = [ordered]@{
   schema           = 'gcs_vibecast_ship_candidates/v1'
   day              = $Day
   generated_at_utc = (Get-Date).ToUniversalTime().ToString('o')
   host             = $env:COMPUTERNAME
-  law              = 'approved candidates only -- not raw OBS dump'
+  law              = 'approved candidates only -- not raw OBS dump; all day candidates'
   transfer         = @{ preferred = 'tailscale_scp'; fallback = 'google_drive_GCS-VibeCast-Offload' }
   markers          = @{
     path     = $MarkersJsonl
@@ -270,8 +291,11 @@ $manifest = [ordered]@{
   candidates       = $items
 }
 $manPath = Join-Path $dayRoot 'MANIFEST.json'
-[IO.File]::WriteAllText($manPath, ($manifest | ConvertTo-Json -Depth 8))
-Write-Host "MANIFEST $manPath"
+$manCand = Join-Path $cand 'MANIFEST.json'
+$manJson = ($manifest | ConvertTo-Json -Depth 8)
+[IO.File]::WriteAllText($manPath, $manJson)
+[IO.File]::WriteAllText($manCand, $manJson)
+Write-Host "MANIFEST $manPath count=$($items.Count)"
 
 if ($ToDrive) {
   $driveDay = "G:\My Drive\GCS-VibeCast-Offload\$Day"

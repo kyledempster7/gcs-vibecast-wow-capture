@@ -32,6 +32,7 @@ python3 "$ROOT/windows_reachability.py" || true
 echo
 
 echo "---- package / daily board truth ----"
+python3 "$ROOT/harvest_completeness.py" --write-live || true
 python3 "$ROOT/returner_daily_board.py" || true
 python3 "$ROOT/skip_day_receipt.py" || true
 echo

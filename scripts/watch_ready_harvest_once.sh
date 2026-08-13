@@ -119,10 +119,17 @@ PY
   if [[ $? -eq 0 ]]; then
     bash "$SCRIPTS/post_play_harvest.sh" "$DAY" >>"$DETAIL" 2>&1
     HRC=$?
-    if [[ "$HRC" -eq 0 ]]; then
+    python3 "$SCRIPTS/harvest_completeness.py" --day "$DAY" --quiet --write-live
+    COMP=$?
+    if [[ "$HRC" -eq 0 && "$COMP" -eq 0 ]]; then
       bash "$SCRIPTS/notify_review_ready.sh" "$DAY" >>"$DETAIL" 2>&1 || true
       echo "DONE"
       exit 0
+    fi
+    if [[ "$HRC" -eq 0 && "$COMP" -ne 0 ]]; then
+      echo "harvest incomplete mac_n<win_n — keep watching" >>"$DETAIL"
+      sleep "$SLEEP_SEC"
+      continue
     fi
     echo "FAILED"
     exit 1

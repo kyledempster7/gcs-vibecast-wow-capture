@@ -292,6 +292,15 @@ def main() -> int:
         f"Spec: `04-Story-and-Capture/PRODUCT_SYSTEM_SPEC.md`",
         "",
     ]
+    try:
+        subprocess.run(
+            [sys.executable, str(SCRIPTS / "harvest_completeness.py"), "--write-live"],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    except OSError:
+        pass
     out = INDEX / "GCS_PIPELINE_HEALTH.md"
     out.write_text("\n".join(lines), encoding="utf-8")
     # also story

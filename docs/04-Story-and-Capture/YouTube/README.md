@@ -2,7 +2,7 @@
 type: index
 status: active
 created: 2026-08-05
-updated: 2026-08-06
+updated: 2026-08-11
 area: WoW YouTube
 ---
 
@@ -17,6 +17,7 @@ area: WoW YouTube
 |------|------|
 | **Tour (simple)** | [[WORKBOOK]] |
 | **Creative (record)** | [[CREATIVE_FIRST]] |
+| **Talking sheets** | [[WOW_TALKING_SHEET_TEMPLATE|reusable template]] · [[AUG11_AUTHENTIC_WOW_INTRO_TALKING_SHEET#Creator Media sealed handoff — current grounded fill-in|August 11 authentic intro]] |
 | **Series board** | [[WOTLK_Veteran_Midnight_Return_Series]] |
 | **Batch grind** | [[BATCH_RECORD_BOARD]] |
 | **B-roll** | [[PLAYER_BROLL_NOTES]] |

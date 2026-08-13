@@ -19,6 +19,8 @@ FLEET = Path.home() / ".codex" / "saturday-fleet-readiness"
 FLEET_CFG = FLEET / "fleet-week-2026-08-08.json"
 SOCIAL = Path.home() / "Movies" / "WoW-Social-Workflow"
 BROLL = Path.home() / "Movies" / "WoW-Broll-Workflow"
+RETURNS = BROLL / "Returns"
+LIVE = RETURNS / "LIVE.json"
 DI = (
     Path.home()
     / "Library"
@@ -28,6 +30,37 @@ DI = (
     / "control-plane"
     / "delivery-independence"
 )
+
+
+def live_day() -> str | None:
+    if not LIVE.is_file():
+        return None
+    try:
+        data = json.loads(LIVE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    day = data.get("day")
+    return str(day) if day else None
+
+
+def latest_returner() -> str:
+    live = live_day()
+    if live:
+        return live
+    movies_days = []
+    if RETURNS.is_dir():
+        movies_days = sorted(
+            [
+                p.name.replace("returner-daily-", "")
+                for p in RETURNS.iterdir()
+                if p.is_dir() and p.name.startswith("returner-daily-")
+                and any((p / "candidates").glob("*.mp4"))
+            ],
+            reverse=True,
+        )
+    if movies_days:
+        return movies_days[0]
+    return latest(DAILY)
 
 
 def latest(dirpath: Path) -> str:
@@ -72,7 +105,7 @@ def main() -> int:
         "| Wing | What it is | Status |",
         "|------|------------|--------|",
         f"| **Factory** | Saturday TWE/TDE/TFE zone weeks | fleet dir {'🟢' if FLEET.is_dir() else '🔴'} · cfg {'🟢' if FLEET_CFG.is_file() else '🟡'} |",
-        f"| **VibeCast** | Your play nights → Returner Daily / podcast | session `{latest(SESS)}` · daily `{latest(DAILY)}` |",
+        f"| **VibeCast** | Your play nights → Returner Daily / podcast | session `{latest(SESS)}` · daily `{latest_returner()}` |",
         f"| **Armory** | Packages before publish | {len(pkgs)} package file(s) · go = Kyle only |",
         f"| **Play door** | Kyle OS | {'🟢' if (INDEX / 'KYLE_OS.md').is_file() else '🔴'} |",
         f"| **Audio stamp** | Game sound 10s | **{audio_status()}** |",
@@ -95,7 +128,7 @@ def main() -> int:
         f"| Check | Value |",
         f"|-------|-------|",
         f"| Latest vibe session | `{latest(SESS)}` |",
-        f"| Latest Returner Daily | `{latest(DAILY)}` |",
+        f"| Latest Returner Daily | `{latest_returner()}` |",
         f"| Brand on packages | **twe** (GCS TWE) |",
         f"| Essay drop | `~/Movies/WoW-Essays` |",
         "",

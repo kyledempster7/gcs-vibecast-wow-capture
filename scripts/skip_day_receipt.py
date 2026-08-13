@@ -14,6 +14,7 @@ from pathlib import Path
 
 WOW = Path(__file__).resolve().parents[2]
 DAILY = WOW / "04-Story-and-Capture" / "returner-daily"
+RETURNS = Path.home() / "Movies" / "WoW-Broll-Workflow" / "Returns"
 
 
 def path_for_role(sources: str, role: str) -> str | None:
@@ -42,9 +43,17 @@ def main() -> int:
         video = path_for_role(src, "video")
         still = path_for_role(src, "still")
 
-    has_media = bool(video or still)
+    movies_mp4 = 0
+    movies_cand = RETURNS / f"returner-daily-{day}" / "candidates"
+    if movies_cand.is_dir():
+        movies_mp4 = sum(1 for p in movies_cand.glob("*.mp4") if p.is_file())
+
+    has_media = bool(video or still or movies_mp4)
     if has_media and not args.force:
-        print(f"skip_day: media present day={day} video={bool(video)} still={bool(still)} — no SKIP receipt")
+        print(
+            f"skip_day: media present day={day} video={bool(video)} "
+            f"still={bool(still)} movies_mp4={movies_mp4} — no SKIP receipt"
+        )
         # clear stale skip if media arrived
         stale = day_dir / "SKIP_DAY.md"
         if stale.is_file():

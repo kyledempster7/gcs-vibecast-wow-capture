@@ -15,8 +15,7 @@ AUTH_REPO=$(git -C "$WOW" rev-parse --show-toplevel)
 AUTH_BRANCH=$(git -C "$AUTH_REPO" branch --show-current)
 EXPECTED_AUTH_BRANCH=$(python3 "$SCRIPTS/resolve_windows_host.py" --authority-branch)
 if [[ "$AUTH_BRANCH" != "$EXPECTED_AUTH_BRANCH" ]]; then
-  echo "BACKUP_SKIP_NON_AUTHORITY current=$AUTH_BRANCH expected=$EXPECTED_AUTH_BRANCH"
-  exit 0
+  echo "BACKUP_WARN_NON_AUTHORITY current=$AUTH_BRANCH expected=$EXPECTED_AUTH_BRANCH — backing up live scripts anyway"
 fi
 
 LOCKDIR="$HOME/Library/Logs/gcs-vibecast-wow/mac_backup_vibecast.lockdir"

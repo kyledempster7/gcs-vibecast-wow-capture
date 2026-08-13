@@ -73,6 +73,7 @@ fi
 
 n=$(ls "$CAND"/*.mp4 2>/dev/null | wc -l | tr -d ' ')
 echo "candidates_mp4=$n"
+python3 "$SCRIPTS/harvest_completeness.py" --day "$DAY" --write-live || true
 if [[ "$n" -eq 0 ]]; then
   echo "EMPTY — Windows harvest not ready yet. Re-run when staged."
   exit 2

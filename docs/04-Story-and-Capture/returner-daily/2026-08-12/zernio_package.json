@@ -1,0 +1,44 @@
+{
+  "schema": "social_fleet_provider_neutral_post_package/v1_local",
+  "status": "NOT_ARMED",
+  "brand": "twe",
+  "day": "2026-08-12",
+  "product": "returner_daily",
+  "platforms": [
+    "instagram",
+    "tiktok"
+  ],
+  "caption": {
+    "body": "# Caption draft \u2014 2026-08-12\n\n**Status:** baked from day folder (no caption.md) \u00b7 edit before go\n\n## Feed\n\n```\nReturner Daily 2026-08-12\n\nReturner energy \u00b7 edit before go \u00b7 NOT published\n```"
+  },
+  "media": [
+    {
+      "role": "video",
+      "path": "/Users/kyle/Movies/WoW-Broll-Workflow/Returns/returner-daily-2026-08-12/candidates/cand-2026-08-12-01-t30-s0-161120.mp4",
+      "exists": true,
+      "sha256": "aa2fc6fd8a5724d6adc56d918351b231d276f7ccd56da55f8c37e2ede6fdba7e"
+    }
+  ],
+  "product_ready": true,
+  "hold_reason": null,
+  "kyle_go": false,
+  "publishNow": false,
+  "generated_at": "2026-08-13T02:38:31.077099+00:00",
+  "notes": "Local package only. Arm via outbox --kyle-go. No auto Zernio fire. Media present \u2014 still NOT_ARMED until Kyle go.",
+  "gcs": {
+    "citadel": "GCS",
+    "wing": "VibeCast",
+    "brand": "twe",
+    "product": "returner_daily"
+  },
+  "arm": "NOT_ARMED",
+  "may_publish": false,
+  "arm_check": {
+    "allowed": false,
+    "why": "not_armed",
+    "package_sha256": "b69f34c007c13383efaaf3bfc76924a1f6133f87c92c4aa845756f3bf32228c6",
+    "arm_path": "/Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/04-Story-and-Capture/returner-daily/2026-08-12/ARM_STATE.json",
+    "checked_at_utc": "2026-08-13T02:38:31.082851+00:00",
+    "law": "default_deny_stitch_cannot_arm"
+  }
+}

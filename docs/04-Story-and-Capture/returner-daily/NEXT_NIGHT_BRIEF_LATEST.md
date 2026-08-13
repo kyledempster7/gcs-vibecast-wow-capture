@@ -1,25 +1,22 @@
-# Next night brief — from `returner-daily-2026-08-09`
+# Next night brief — from `returner-daily-2026-08-12`
 
-Generated: 2026-08-11 01:06
+Generated: 2026-08-12 22:35
 
 ## Shot mix last harvest
 
-- **orbit**: 8
-- **fly_or_travel**: 4
-- **still_or_load**: 2
-- **gameplay**: 1
+- _(no MOTION_TAGS)_
 
 ## Human KEEP ids
 
-`c`, `c-pride-15s-start`
+- _(none logged)_
 
 ## Machine signals
 
 - Speech peaks: `SKIP_AMBIENCE_OR_EMPTY`
 - Audio night role: `broll_bed_with_mic_cue` (mic = AI cue by default)
-- Zone OCR hints: `Mardum`
-- Pride vertical ready: **3**
-- Chat detect true/false: **3/5**
+- Zone OCR hints: `Dalaran`
+- Pride vertical ready: **0**
+- Chat detect true/false: **0/0**
 - SHORTLIST present: yes
 
 ## Record more of (agent advice)

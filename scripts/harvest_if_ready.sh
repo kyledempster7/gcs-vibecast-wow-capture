@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Exactly-once-ish: READY → harvest_mac. No invent. No publish.
-# Exit: 0 harvested OR already-locked, 1 not ready, 2 fail, 3 claim held by other
+# READY → harvest_mac. Lock means claimed, not "never pull again".
+# If windows_cand_n > mac_mp4_n, harvest again even when .harvest_once exists.
+# Exit: 0 harvested OR already-complete, 1 not ready, 2 fail, 3 claim held by other
 # Codex P0-3: atomic harvest CLAIM before any analysis / soft-fail work.
 # Set HARVEST_FORCE_POLL=1 to always soft_poll before decide (after claim).
 set -euo pipefail
@@ -27,11 +28,6 @@ release_claim() {
 }
 
 # --- Atomic claim BEFORE ready checks / analysis (Codex gap 27/50) ---
-if [[ -f "$LOCK" ]]; then
-  echo "SKIP already harvested once for $DAY (lock $LOCK) exit=0"
-  exit 0
-fi
-
 if ! mkdir "$CLAIMDIR" 2>/dev/null; then
   opid=""
   [[ -f "$CLAIMPID" ]] && opid=$(cat "$CLAIMPID" 2>/dev/null || true)
@@ -50,6 +46,20 @@ fi
 printf '%s\n' "$SELF" >"$CLAIMPID"
 date -u +%Y-%m-%dT%H:%M:%SZ >"$CLAIMHB"
 trap 'release_claim' EXIT
+
+# Lock + completeness: skip only when Mac already has >= Windows qualified count.
+if [[ -f "$LOCK" ]]; then
+  set +e
+  python3 "$SCRIPTS/harvest_completeness.py" --day "$DAY"
+  COMP_RC=$?
+  set -e
+  if [[ "$COMP_RC" -eq 0 ]]; then
+    echo "SKIP already complete for $DAY (lock $LOCK) exit=0"
+    python3 "$SCRIPTS/harvest_completeness.py" --day "$DAY" --write-live --quiet || true
+    exit 0
+  fi
+  echo "INCOMPLETE after lock — re-harvest mac_n<win_n day=$DAY"
+fi
 
 today_ready_from_latest() {
   python3 - "$LATEST" "$DAY" <<'PY'
@@ -123,6 +133,7 @@ date -u +%Y-%m-%dT%H:%M:%SZ > "$LOCK"
 if [[ -f "$SCRIPTS/catalog_query.py" ]]; then
   python3 "$SCRIPTS/catalog_query.py" --rebuild || true
 fi
+python3 "$SCRIPTS/harvest_completeness.py" --day "$DAY" --write-live || true
 echo "HARVEST_OK day=$DAY"
 if [[ -f "$SCRIPTS/notify_review_ready.sh" ]]; then
   bash "$SCRIPTS/notify_review_ready.sh" "$DAY" || true

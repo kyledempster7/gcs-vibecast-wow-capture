@@ -1,19 +1,19 @@
-# GCS pipeline health — 2026-08-10 18:47
+# GCS pipeline health — 2026-08-12 23:15
 
 | Check | State | Note |
 |-------|-------|------|
-| Windows online | 🟢 | verdict=ONLINE_TS+soft_poll_ssh_fresh_50s |
-| Soft-poll READY | 🟡 | ready_today=false · stale other-day READY still staged · 2026-08-10:markers_only_no_candidates, 2026-08-09:candidates_present |
-| OBS product path | 🟡 | running=True path_ok=True tracks=3 today_masters=False raw=0 cand=0 · press OBS Record then Session-End |
-| Harvest freshness | 🟡 | `returner-daily-2026-08-09` · day ~43h old · STALE prior day |
+| Windows online | 🟢 | verdict=OFFLINE+soft_poll_ssh_fresh_0s |
+| Soft-poll READY | 🟢 | ready_today=true · 2026-08-12:candidates_qualified, 2026-08-11:candidates_qualified |
+| OBS product path | 🟢 | running=True path_ok=True tracks=7 today_masters=True raw=1 cand=0 |
+| Harvest freshness | 🟢 | today · harvest 7h age |
 | Audio stamp | 🟡 | OPEN (not GREEN) |
-| Latest return day | — | `returner-daily-2026-08-09` |
-| Markers SESSION.jsonl | 🟢 | |
-| Candidates | 🟡 15 mp4 (prior day — not tonight) | |
-| Pride vertical | 🟡 3 vertical | |
+| Latest return day | — | `returner-daily-2026-08-12` |
+| Markers SESSION.jsonl | 🟡 empty/missing | |
+| Candidates | 🟢 20 mp4 | |
+| Pride vertical | 🟡 0 vertical | |
 | Speech peaks | — | `SKIP_AMBIENCE_OR_EMPTY` |
-| Review SHORTLIST | 🟡 | |
-| Publish arm | 🟢 | ARM_STATE default deny (armed=false) · ARM_STATE.json |
+| Review SHORTLIST | 🟢 | |
+| Publish arm | 🟡 | ARMED/may_publish files: returner_daily_2026-08-09.ARMED.json — verify go |
 
 ## Next
 

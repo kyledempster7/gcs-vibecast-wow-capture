@@ -33,7 +33,23 @@ def list_files(inbox: Path, since_hours: float | None) -> tuple[list[Path], str 
         files = [p for p in inbox.rglob("*") if p.is_file()]
     except OSError as e:
         return [], f"{type(e).__name__}: {e}"
-    files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+
+    def _rank(p: Path) -> tuple[int, float]:
+        parts = {x.lower() for x in p.parts}
+        name = p.name.lower()
+        if "_receipts" in parts or name.startswith("obs_path_probe"):
+            return (3, -p.stat().st_mtime)
+        if "_scripts" in parts:
+            return (3, -p.stat().st_mtime)
+        if "candidates" in parts and name.endswith(".mp4"):
+            return (0, -p.stat().st_mtime)
+        if "raw" in parts and name.endswith(".mp4"):
+            return (1, -p.stat().st_mtime)
+        if name.endswith(".mp4"):
+            return (2, -p.stat().st_mtime)
+        return (4, -p.stat().st_mtime)
+
+    files.sort(key=_rank)
     if since_hours is not None and since_hours > 0:
         cutoff = datetime.now().timestamp() - since_hours * 3600
         files = [p for p in files if p.stat().st_mtime >= cutoff]
@@ -58,6 +74,7 @@ def render(
         "## Honesty rails",
         "",
         "- Paths only — **not** FOOTAGE_WISHLIST ticks.",
+        "- Prefer `candidates/*.mp4` and `raw/*.mp4`. OBS `_receipts` probes are not masters.",
         "- Do **not** invent episode coverage from filenames.",
         "- When a real take matches a shot line, human/agent ticks FOOTAGE with this path.",
         "",

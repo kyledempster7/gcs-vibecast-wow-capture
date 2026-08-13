@@ -172,7 +172,16 @@ while [[ $(date +%s) -lt $END ]]; do
     continue
   }
 
-  bash "$SCRIPTS/ensure_single_watch.sh" "$DAY" >>"$LOG" 2>&1 || log "ensure_watch_warn"
+  # After harvest is complete, do not respawn watch (latch-consumed thrash).
+  set +e
+  python3 "$SCRIPTS/harvest_completeness.py" --day "$DAY" --quiet
+  HARVEST_COMPLETE=$?
+  set -e
+  if [[ "$HARVEST_COMPLETE" -eq 0 ]]; then
+    log "watch_skip harvest_complete day=$DAY"
+  else
+    bash "$SCRIPTS/ensure_single_watch.sh" "$DAY" >>"$LOG" 2>&1 || log "ensure_watch_warn"
+  fi
 
   # Operator: soft_poll (rate-limited) + Auto-Session-End + harvest if ready
   # NEVER enable set -e here — operator/not-ready exit 1 is normal agent-green.
@@ -198,8 +207,21 @@ PY
   TODAY_READY=$?
 
   if [[ "$TODAY_READY" -eq 0 ]]; then
-    if [[ -f "$OUT/returner-daily-${DAY}/.harvest_once" ]] || [[ -d "$OUT/returner-daily-${DAY}/candidates" ]]; then
+    set +e
+    python3 "$SCRIPTS/harvest_completeness.py" --day "$DAY" --quiet --write-live
+    COMPLETE_RC=$?
+    set -e
+    if [[ "$COMPLETE_RC" -eq 0 ]]; then
       harvested_today=1
+    elif [[ -f "$OUT/returner-daily-${DAY}/.harvest_once" ]] || [[ -d "$OUT/returner-daily-${DAY}/candidates" ]]; then
+      harvested_today=0
+      log "ready but harvest incomplete — post_play_harvest"
+      bash "$SCRIPTS/post_play_harvest.sh" "$DAY" >>"$LOG" 2>&1
+      write_status "HARVESTING" "incremental pull mac_n<win_n"
+      sleep "$TICK_SEC"
+      continue
+    fi
+    if [[ "$COMPLETE_RC" -eq 0 ]]; then
       if [[ -f "$OUT/returner-daily-${DAY}/analysis/human_verdicts.json" ]]; then
         if grep -q '"KEEP"' "$OUT/returner-daily-${DAY}/analysis/human_verdicts.json" 2>/dev/null; then
           python3 "$SCRIPTS/write_weight_row.py" --day-dir "$OUT/returner-daily-${DAY}" --note "golden residual" >>"$LOG" 2>&1

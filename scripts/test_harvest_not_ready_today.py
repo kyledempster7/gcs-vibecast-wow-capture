@@ -48,7 +48,11 @@ def test_live_not_ready_exits_1() -> None:
     # exit 1 = not ready; 0 only if already harvested lock
     assert r.returncode in (0, 1), (r.returncode, r.stdout, r.stderr)
     if r.returncode == 0:
-        assert "already harvested" in (r.stdout + r.stderr).lower() or "SKIP" in r.stdout
+        assert (
+            "already harvested" in (r.stdout + r.stderr).lower()
+            or "already complete" in (r.stdout + r.stderr).lower()
+            or "SKIP" in r.stdout
+        )
         print("PASS harvest already-locked or skip path exit 0")
     else:
         assert "not READY" in r.stdout or "SKIP" in r.stdout or "not ready" in r.stdout.lower(), r.stdout

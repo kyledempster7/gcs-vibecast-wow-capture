@@ -1,0 +1,9 @@
+{
+  "schema": "gcs_arm_state/v0",
+  "armed": false,
+  "day": "2026-08-12",
+  "kyle_go": false,
+  "package_sha256": null,
+  "updated_at_utc": "2026-08-13T02:38:31.082496+00:00",
+  "law": "default_deny_until_go_hash"
+}
