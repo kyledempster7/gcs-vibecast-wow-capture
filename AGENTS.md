@@ -4,7 +4,9 @@ This checkout is the **portable sample** (`kyledempster7/gcs-vibecast-wow-captur
 
 | Need | Open |
 |------|------|
+| Research walk | `docs/00-Index/GCS_RESEARCH_INDEX.md` |
 | Gameplan | `docs/00-Index/GCS_GAMEPLAN.md` |
+| If it fired today | `docs/00-Index/GCS_PRODUCTION_FIRE.md` |
 | House map | `docs/00-Index/GCS_CITADEL.md` |
 | Live scripts | vault `Games/WoW/wow-roster-tracker/scripts/` |
 | Claudes_Corner door | `Claudes_Corner/projects/gcs/` |

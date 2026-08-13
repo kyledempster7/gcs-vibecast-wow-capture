@@ -12,6 +12,9 @@ audience: Kyle + agents
 **GCS = Gaming Content Studio.**  
 That is the **only** studio name. Everything else is a **wing, door, or product** inside it.
 
+**Loop overlay:** `control-plane/receipts/capacity/TWE_LOOP_GAP_CAL_20260813T0124ET/` (live calendar + full-loop gaps). Do not invent a second citadel.  
+**Pictures:** [[TWE_SYSTEM_VISUALS]]
+
 ```
                     ┌─────────────────────────────┐
                     │   GCS — Gaming Content Studio │
@@ -67,7 +70,11 @@ That is the **only** studio name. Everything else is a **wing, door, or product*
 | Live walk-through with agent | Say *“walk me through”* → [[AGENT_WALK_KYLE]] |
 | “What is this whole system?” | **This file** (GCS_CITADEL) |
 | How play feeds posts / factory | [[INTERPROMO_MAP]] |
+| People door (Discord) | [Lichforge Explorer's League](https://discord.gg/TyaQUvCH2B) |
 | Agent board | [[GCS_STATUS]] |
+| Where / want / how | [[GCS_GAMEPLAN]] |
+| If every rail went hot | [[GCS_PRODUCTION_FIRE]] · [[GCS_RESEARCH_INDEX]] |
+| If every rail went hot | [[GCS_PRODUCTION_FIRE]] · [[GCS_RESEARCH_INDEX]] |
 
 You do **not** need ENGINE_MASTER, ten handoffs, or factory paths on a play night.
 

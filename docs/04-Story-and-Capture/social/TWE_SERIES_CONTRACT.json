@@ -1,0 +1,85 @@
+{
+  "schema": "twe-series-dispatch/v1",
+  "brand": "TWE",
+  "citadel": "GCS",
+  "doctrine": "Games/WoW/00-Index/TWE_DISPATCH_10X.md",
+  "updated": "2026-08-13",
+  "assumption": "Wild Head = Wowhead. IV/WH videos are utility remix fuel for Pulse, not product titles.",
+  "alarm_unchanged": {
+    "file": "control-plane/delivery-independence/TWE_DAILY_EXPECTED.json",
+    "expected_products_per_day": {"broll": 2, "carousel": 1},
+    "note": "Do not raise the alarm to 8 until Pulse and Returner Daily are productized and admitted."
+  },
+  "operator_intended_not_alarm": {
+    "around_azeroth_broll": 2,
+    "place_carousel": 1,
+    "returner_daily_carousel": 1,
+    "pulse": 2,
+    "note": "Kyle 8-slot list. Pulse max 1-2 after reshape (cut two utility slots). Playing carousel skip-legal."
+  },
+  "series": [
+    {
+      "id": "around_azeroth",
+      "name": "Around Azeroth",
+      "was": "B-roll videos",
+      "daily": 2,
+      "platforms": ["youtube_shorts", "instagram_reels", "tiktok", "x", "facebook_reels"],
+      "cta": "soft_substack_or_weekly_door",
+      "skip_if": "no_real_master"
+    },
+    {
+      "id": "place",
+      "name": "Place",
+      "was": "factory carousel",
+      "daily": 1,
+      "platforms": ["instagram", "tiktok", "x", "pinterest"],
+      "cta": "soft_substack_zone_letter",
+      "skip_if": "no_accept_pack"
+    },
+    {
+      "id": "returner_daily",
+      "name": "Returner Daily",
+      "was": "I'm actually playing carousel",
+      "daily": 1,
+      "platforms": ["instagram", "facebook_reels", "youtube_shorts", "tiktok"],
+      "cta": "soft_league_waitlist",
+      "skip_if": "no_play_evidence",
+      "skip_receipt": "returner-daily/YYYY-MM-DD/SKIP.md"
+    },
+    {
+      "id": "pulse",
+      "name": "The Pulse",
+      "was": "2 Icy Veins + 2 Wowhead videos",
+      "daily_max": 2,
+      "platforms": ["x", "youtube_shorts", "threads"],
+      "cta": "soft_substack_pulse",
+      "hook_ban": ["Icy Veins", "Wowhead", "Wild Head"],
+      "source_order": ["official_wow_news", "one_utility_site_credited_not_titled"],
+      "voice": "returner_translation_not_minmax"
+    },
+    {
+      "id": "field_notes",
+      "name": "Field Notes",
+      "was": "daily YouTube long-form dump of shorts",
+      "cadence": "1_per_day_or_3_per_week",
+      "platforms": ["youtube_long"],
+      "length_min": 8,
+      "length_max": 12,
+      "fuel": "vo_over_gather_broll_or_honest_day_tape"
+    }
+  ],
+  "funnel": {
+    "order": ["shorts_reels_fb", "substack", "waitlist_or_discord_after_receipt", "play_together_thrall", "twitch_ambient_quiet"],
+    "cta_law": "one_door_per_week_of_posts",
+    "discord_live": false,
+    "discord_invite_verified": true,
+    "discord_ops": "scaffold",
+    "discord_note": "Invite URL live 2026-08-13 (Lichforge). Guild/events/waitlist still scaffold. discord_live stays false so agents do not treat the League as a live ops product.",
+    "never": ["invent_roster", "hard_sell_discord", "fake_playing_carousel"]
+  },
+  "platforms_facebook": {
+    "role": "returner_older_demo",
+    "allow": ["around_azeroth", "returner_daily", "place"],
+    "starve": ["raw_pulse_remix"]
+  }
+}

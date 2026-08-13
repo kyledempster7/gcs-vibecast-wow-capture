@@ -1,38 +1,40 @@
 # Handoff
-**When:** 2026-08-13 America/New_York
+**When:** 2026-08-13 02:55 America/New_York
 **Lane:** gcs-overview-stitch
 **Seat:** aios_grok
 **Workspace:** /Users/kyle/src/gcs-vibecast-wow-capture
 **Signal:** PRE_COMPACT — next agent must boot from this file, not chat.
 
 ## Done
-- Named TWE series (Pulse / Around Azeroth / Place / Returner Daily / Field Notes)
-- Four-seat read-only swarm (sample repo · vault doors · Saturday factory · auto_blogger/twe)
-- Stitched `docs/00-Index/GCS_GAMEPLAN.md` + sample `AGENTS.md`
-- Thin doors: vault `Games/WoW/00-Index/GCS_GAMEPLAN.md` · `Claudes_Corner/projects/gcs/`
-- Alarm still 2 B-roll + 1 carousel; Saturday UNARMED; no publish/remint
+- Gameplan stitch + thin `projects/gcs` door
+- Production-fire 10×: `docs/00-Index/GCS_PRODUCTION_FIRE.md` + LINK_MAP + RESEARCH_INDEX + LANE_MEMORY
+- Four-seat fire swarm: remainder is the only hot rail; Saturday UNARMED; TT token expires 16:02 ET
+- Contract: invite verified, `discord_live` still false, ops scaffold
+- Alarm still 2+1; no remint / no mass-migrate / no publish
 
 ## Open
-- Commit/push this sample repo if not already
-- Pulse caption rewrite (no site-name titles)
-- Facebook clone of magnet formats only
-- Field Notes template on **live** scripts, then selective sample sync
-- Honest play night → Returner Daily or SKIP
+- Watch 10:00 / 18:00 / 20:00 ET remainder (do not remint)
+- TikTok token before 16:02 ET (product/provider; not remint)
+- Pulse caption rewrite; Facebook magnet clone; Field Notes on live scripts
+- Play night → Returner pack or SKIP; Saturday stays UNARMED
+- Do not push `projects/gcs` from the TPG fix branch
 
 ## Next
-Read `docs/00-Index/GCS_GAMEPLAN.md` then `Claudes_Corner/projects/gcs/README.md`. Do not mass-migrate the vault.
+Read `docs/00-Index/GCS_RESEARCH_INDEX.md` then `GCS_PRODUCTION_FIRE.md`. Do not remint. Do not mass-migrate.
 
 ## Key paths
-- /Users/kyle/src/gcs-vibecast-wow-capture/docs/00-Index/GCS_GAMEPLAN.md
+- /Users/kyle/src/gcs-vibecast-wow-capture/docs/00-Index/GCS_PRODUCTION_FIRE.md
+- /Users/kyle/src/gcs-vibecast-wow-capture/docs/00-Index/GCS_RESEARCH_INDEX.md
 - /Users/kyle/Kyles_Vault/Claudes_Corner/projects/gcs/README.md
-- /Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/wow-roster-tracker/scripts/
+- /Users/kyle/Library/Application Support/UAH/butler/control-plane/delivery-independence/HB_ZERNIO_NOW.md
 - /Users/kyle/.codex/saturday-fleet-readiness/CURRENT.json
-- /Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/00-Index/TWE_DISPATCH_10X.md
+- /Users/kyle/Kyles_Vault/kyles_corner/Games/WoW/wow-roster-tracker/scripts/
 
 ## Do not re-do
 - 8-slot Imagineer SWOT
 - Home-wide find / vault layout execute
-- Treating ~/src sample as live script SoT
+- Treating ~/src or the Aug-11 authority worktree as live script SoT
+- Retry consumed TikTok occurrence 29fe6e49…
 
 ## Blockers
-- None for stitch. Publish/arm still Kyle go. Freeze CLASSIFY_ONLY.
+- Publish/arm still Kyle go. Freeze CLASSIFY_ONLY. TT token clock is today's only hot external wall.

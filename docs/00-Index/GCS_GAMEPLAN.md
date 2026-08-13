@@ -9,7 +9,8 @@ audience: cold agents
 # GCS gameplan — where / want / how
 
 **This file is the stitch.** Public sample repo. Not a dashboard. Not a migrate order.  
-**Swarm:** four read-only seats 2026-08-13 (VibeCast sample · vault doors · Saturday factory · auto_blogger/twe).
+**Swarm:** four read-only seats 2026-08-13 (VibeCast sample · vault doors · Saturday factory · auto_blogger/twe).  
+**If it fired today:** [[GCS_PRODUCTION_FIRE]] · homes: [[GCS_LINK_MAP]] · walk order: [[GCS_RESEARCH_INDEX]].
 
 ## Where we are
 
@@ -66,7 +67,7 @@ Somebody = named series + one sit-down (Field Notes) + one door. Not 80 posts/da
 ## Strengths / weaknesses (citadel)
 
 **Strengths:** named house; remainder social loop real; B-roll magnet; play→KEEP→NOT_ARMED machine; brand lock (human layer); Kyle plate = play + go.  
-**Weaknesses:** half-loop; three brains; sample ≠ live scripts; vault absorbing doctrine; playing carousel unproven daily; factory UNARMED vs HB remainder; funnel is invite-without-ritual.
+**Weaknesses:** half-loop; three brains; sample ≠ live scripts; vault absorbing doctrine; playing carousel unproven daily; factory UNARMED vs HB remainder; funnel is invite-without-ritual; boards green on file presence; TikTok token can die before the 20:00 carousel.
 
 ## Cold-agent bans
 
